@@ -16,12 +16,41 @@
                 }
             </div>
 
+            <div class="grid grid-cols-2 gap-4">
+                <div class="form-group">
+                    <label for="type" class="form-label">Tipo de Cuenta</label>
+                    <p-select
+                        [options]="accountTypes"
+                        formControlName="type"
+                        optionLabel="label"
+                        optionValue="value"
+                        placeholder="Seleccionar"
+                        appendTo="body">
+                    </p-select>
+                </div>
+                <div class="form-group">
+                    <label for="market" class="form-label">Mercado</label>
+                    <p-select
+                        [options]="marketTypes"
+                        formControlName="market"
+                        optionLabel="label"
+                        optionValue="value"
+                        placeholder="Seleccionar"
+                        appendTo="body">
+                    </p-select>
+                </div>
+            </div>
+
             <div class="form-group">
                 <label for="currency" class="form-label">Divisa Base</label>
-                <input type="text" pInputText id="currency" formControlName="currency" placeholder="USD, EUR, BTC" />
-                @if (accountForm.get('currency')?.invalid && accountForm.get('currency')?.touched) {
-                    <small class="p-error">La divisa es obligatoria.</small>
-                }
+                <p-select
+                    [options]="currencies"
+                    formControlName="currency"
+                    optionLabel="label"
+                    optionValue="value"
+                    placeholder="Seleccione Divisa"
+                    appendTo="body">
+                </p-select>
             </div>
 
             <div class="form-group">
@@ -30,7 +59,7 @@
                     id="initialBalance"
                     formControlName="initialBalance"
                     mode="currency"
-                    currency="USD"
+                    [currency]="accountForm.get('currency')?.value || 'USD'"
                     locale="es-ES"
                     placeholder="0.00"
                 ></p-inputNumber>

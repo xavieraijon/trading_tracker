@@ -1,4 +1,4 @@
-import { Component, inject, OnInit, signal } from '@angular/core';
+import { Component, inject, OnInit, signal, effect } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { TableModule } from 'primeng/table';
@@ -13,6 +13,7 @@ import { SelectModule } from 'primeng/select';
 import { TradesService, Trade } from '../../trades.service';
 import { TradeFormDialogComponent } from '../trade-form/trade-form.component';
 import { AccountsService, Account } from '../../../accounts/accounts.service';
+import { FilterStore } from '../../../../core/filter.store';
 
 @Component({
   selector: 'app-trades-list',
@@ -49,9 +50,16 @@ export class TradesListComponent implements OnInit {
   private accountsService = inject(AccountsService);
   private messageService = inject(MessageService);
   private confirmationService = inject(ConfirmationService);
+  private filterStore = inject(FilterStore);
+
+  constructor() {
+      effect(() => {
+          const accountId = this.filterStore.selectedAccountId();
+          this.loadTrades(accountId);
+      });
+  }
 
   ngOnInit() {
-    this.loadTrades();
     this.loadAccounts();
   }
 
@@ -83,7 +91,7 @@ export class TradesListComponent implements OnInit {
           detail: `Se han importado ${res.imported} operaciones (${res.skipped} duplicadas)`
         });
         this.importDialog = false;
-        this.loadTrades();
+        this.loadTrades(this.filterStore.selectedAccountId());
       },
       error: () => {
         this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Error al importar archivo' });
@@ -92,9 +100,11 @@ export class TradesListComponent implements OnInit {
     });
   }
 
-  loadTrades() {
+  loadTrades(accountId: string | null = null) {
     this.loading = true;
-    this.tradesService.findAll().subscribe({
+    const id = accountId || undefined;
+
+    this.tradesService.findAll(id).subscribe({
       next: (data) => {
         this.trades.set(data);
         this.loading = false;
@@ -117,12 +127,14 @@ export class TradesListComponent implements OnInit {
   }
 
   onSave() {
-    this.loadTrades();
+    // Reload with current filter
+    this.loadTrades(this.filterStore.selectedAccountId());
     this.messageService.add({ severity: 'success', summary: 'Éxito', detail: 'Operación guardada' });
   }
 
   exportTrades() {
-    this.tradesService.exportCsv().subscribe({
+    const accountId = this.filterStore.selectedAccountId() || undefined;
+    this.tradesService.exportCsv(accountId).subscribe({
       next: (blob) => {
         const url = window.URL.createObjectURL(blob);
         const a = document.createElement('a');

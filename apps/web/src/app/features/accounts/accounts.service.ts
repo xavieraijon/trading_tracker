@@ -9,9 +9,17 @@ export interface Account {
   initialBalance: number;
   balance: number;
   userId: string;
+  type?: string;
+  market?: string;
 }
 
-export type CreateAccountDto = Pick<Account, 'name' | 'currency' | 'initialBalance'>;
+export interface CreateAccountDto {
+  name: string;
+  currency: string;
+  initialBalance: number;
+  type: string;
+  market: string;
+}
 export type UpdateAccountDto = Partial<CreateAccountDto>;
 
 @Injectable({

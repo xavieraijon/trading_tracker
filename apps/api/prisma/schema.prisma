@@ -26,6 +26,9 @@ model Account {
   currency       String   @default("USD")
   initialBalance Decimal  @db.Decimal(18,2)
 
+  type           AccountType @default(PERSONAL)
+  market         MarketType  @default(CFD)
+
   dailyLossLimit Decimal? @db.Decimal(18,2)
   maxLossLimit   Decimal? @db.Decimal(18,2)
   profitTarget   Decimal? @db.Decimal(18,2)
@@ -77,4 +80,17 @@ model Trade {
   @@index([accountId, openAt])
   @@index([userId, openAt])
   @@index([externalId])
+}
+
+enum AccountType {
+  PERSONAL
+  PROP_FIRM
+}
+
+enum MarketType {
+  CFD
+  FUTURES
+  SPOT
+  CRYPTO
+  STOCKS
 }

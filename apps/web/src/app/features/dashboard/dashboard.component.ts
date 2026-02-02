@@ -1,8 +1,9 @@
-import { Component, inject, OnInit, signal } from '@angular/core';
+import { Component, inject, OnInit, signal, effect } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { CardModule } from 'primeng/card';
 import { ChartModule } from 'primeng/chart';
 import { TradesService } from '../trades/trades.service';
+import { FilterStore } from '../../core/filter.store';
 
 @Component({
   selector: 'app-dashboard',
@@ -11,7 +12,7 @@ import { TradesService } from '../trades/trades.service';
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.scss'
 })
-export class DashboardComponent implements OnInit {
+export class DashboardComponent {
   stats = signal<any>(null);
   chartData = signal<any>(null);
   chartOptions = {
@@ -42,13 +43,19 @@ export class DashboardComponent implements OnInit {
   };
 
   private tradesService = inject(TradesService);
+  private filterStore = inject(FilterStore);
 
-  ngOnInit() {
-    this.loadStats();
+  constructor() {
+    effect(() => {
+        const accountId = this.filterStore.selectedAccountId();
+        this.loadStats(accountId);
+    });
   }
 
-  loadStats() {
-    this.tradesService.getStats().subscribe({
+  loadStats(accountId: string | null) {
+    // If accountId is null, we pass undefined to get global stats
+    const id = accountId || undefined;
+    this.tradesService.getStats(id).subscribe({
       next: (data) => {
         this.stats.set(data);
         this.prepareChartData(data.equityCurve);

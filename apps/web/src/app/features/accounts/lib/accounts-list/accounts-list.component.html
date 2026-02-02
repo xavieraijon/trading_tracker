@@ -30,6 +30,8 @@
             <ng-template pTemplate="header">
                 <tr>
                     <th pSortableColumn="name">Nombre <p-sortIcon field="name"></p-sortIcon></th>
+                    <th pSortableColumn="type">Tipo <p-sortIcon field="type"></p-sortIcon></th>
+                    <th pSortableColumn="market">Mercado <p-sortIcon field="market"></p-sortIcon></th>
                     <th pSortableColumn="currency">Divisa <p-sortIcon field="currency"></p-sortIcon></th>
                     <th pSortableColumn="balance">Balance Actual <p-sortIcon field="balance"></p-sortIcon></th>
                     <th class="text-center">Acciones</th>
@@ -38,6 +40,8 @@
             <ng-template pTemplate="body" let-account>
                 <tr>
                     <td class="font-semibold">{{ account.name }}</td>
+                    <td>{{ account.type }}</td>
+                    <td>{{ account.market }}</td>
                     <td><span class="badge badge-neutral">{{ account.currency }}</span></td>
                     <td class="font-mono text-lg">{{ account.balance | currency:account.currency }}</td>
                     <td class="text-center">

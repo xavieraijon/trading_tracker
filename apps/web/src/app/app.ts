@@ -1,19 +1,28 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, OnInit, signal } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import { ButtonModule } from 'primeng/button';
 import { MenuModule } from 'primeng/menu';
 import { AvatarModule } from 'primeng/avatar';
+import { SelectModule } from 'primeng/select';
 import { AuthService } from './core/auth/auth.service';
+import { AccountsService, Account } from './features/accounts/accounts.service';
+import { FilterStore } from './core/filter.store';
 
 @Component({
-  imports: [RouterModule, CommonModule, ButtonModule, MenuModule, AvatarModule],
+  imports: [RouterModule, CommonModule, ButtonModule, MenuModule, AvatarModule, SelectModule, FormsModule],
   selector: 'app-root',
   templateUrl: './app.html',
   styleUrl: './app.scss',
 })
-export class App {
+export class App implements OnInit {
   authService = inject(AuthService);
+  accountsService = inject(AccountsService);
+  filterStore = inject(FilterStore);
+
+  accounts = signal<Account[]>([]);
+  selectedAccount = signal<string | null>(null);
 
   userMenuItems = [
     { label: 'Mi Perfil', icon: 'pi pi-user' },
@@ -21,6 +30,22 @@ export class App {
     { separator: true },
     { label: 'Cerrar Sesión', icon: 'pi pi-power-off', command: () => this.logout() }
   ];
+
+  ngOnInit() {
+    if (this.authService.isAuthenticated()) {
+      this.loadAccounts();
+    }
+  }
+
+  loadAccounts() {
+    this.accountsService.findAll().subscribe(data => {
+      this.accounts.set(data);
+    });
+  }
+
+  onAccountChange() {
+    this.filterStore.setAccount(this.selectedAccount());
+  }
 
   logout() {
     this.authService.logout();

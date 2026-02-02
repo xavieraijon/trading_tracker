@@ -27,8 +27,39 @@
         }
 
         <!-- User Zone -->
-        <div class="user-zone">
+        <div class="user-zone flex items-center gap-4">
             @if (authService.isAuthenticated()) {
+                <div class="account-selector hidden md:block">
+                     <p-select
+                        [options]="accounts()"
+                        optionLabel="name"
+                        optionValue="id"
+                        [(ngModel)]="selectedAccount"
+                        (onChange)="onAccountChange()"
+                        placeholder="Todas las Cuentas"
+                        [showClear]="true"
+                        class="w-56"
+                        variant="filled">
+                        <ng-template pTemplate="selectedItem" let-selectedOption>
+                            <div class="flex items-center gap-2" *ngIf="selectedOption">
+                                <i class="pi pi-wallet text-muted"></i>
+                                <span>{{ selectedOption.name }}</span>
+                            </div>
+                            <div class="flex items-center gap-2" *ngIf="!selectedOption">
+                                <i class="pi pi-globe text-primary"></i>
+                                <span>Todas las Cuentas</span>
+                            </div>
+                        </ng-template>
+                        <ng-template let-account pTemplate="item">
+                            <div class="flex items-center gap-2">
+                                <i class="pi pi-wallet text-sm text-muted"></i>
+                                <span>{{ account.name }}</span>
+                                <span class="text-xs text-muted ml-auto bg-gray-100 px-2 py-0.5 rounded">{{ account.currency }}</span>
+                            </div>
+                        </ng-template>
+                    </p-select>
+                </div>
+
                 <div class="flex items-center gap-4">
                     <p-button
                         icon="pi pi-user"
