@@ -382,4 +382,13 @@ export class TradesService {
       where: { id },
     });
   }
+
+  async getUniqueInstruments(userId: string) {
+    const trades = await this.prisma.trade.findMany({
+      where: { userId },
+      select: { instrument: true },
+      distinct: ['instrument'],
+    });
+    return trades.map(t => t.instrument).sort();
+  }
 }

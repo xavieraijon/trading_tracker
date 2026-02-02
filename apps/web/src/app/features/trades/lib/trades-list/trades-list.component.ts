@@ -49,14 +49,18 @@ import { FilterStore } from '../../../../core/filter.store';
 })
 export class TradesListComponent implements OnInit {
   trades = signal<Trade[]>([]);
-  loading: boolean = true;
-  tradeDialog: boolean = false;
-  importDialog: boolean = false;
-  accountDialog: boolean = false;
+  accounts = signal<any[]>([]);
+  instruments = signal<{label: string, value: string | null}[]>([]);
+  loading = false;
+
+  // Dialogs
+  importDialog = false;
+  importAccountId: string | null = null;
+  tradeDialog = false;
+  accountDialog = false;
   selectedAccountForCreation: any = null;
   selectedTrade: Trade | null = null;
 
-  importAccountId: string = '';
   importFile: File | null = null;
 
   private tradesService = inject(TradesService);
@@ -80,20 +84,20 @@ export class TradesListComponent implements OnInit {
   }
 
   daysOptions = [
-      { label: '30d', value: 30 },
-      { label: '60d', value: 60 },
-      { label: '90d', value: 90 },
+      { label: '30 Días', value: 30 },
+      { label: '60 Días', value: 60 },
+      { label: '90 Días', value: 90 },
       { label: 'Todo', value: null }
   ];
 
   sideOptions = [
-      { label: 'Todos', value: null },
-      { label: 'Long', value: 'LONG' },
-      { label: 'Short', value: 'SHORT' }
+      { label: 'Cualquiera', value: null },
+      { label: 'Long 📈', value: 'LONG' },
+      { label: 'Short 📉', value: 'SHORT' }
   ];
 
   marketOptions = [
-      { label: 'Todos', value: null },
+      { label: 'Cualquiera', value: null },
       { label: 'CFD', value: 'CFD' },
       { label: 'Futuros', value: 'FUTURES' },
       { label: 'Spot', value: 'SPOT' },
@@ -111,9 +115,18 @@ export class TradesListComponent implements OnInit {
 
   ngOnInit() {
     this.loadAccounts();
+    this.loadInstruments();
   }
 
-  accounts = this.accountsService.accounts;
+  loadInstruments() {
+    this.tradesService.getUniqueInstruments().subscribe(data => {
+      const options = [
+        { label: 'Todos', value: null },
+        ...data.map(i => ({ label: i, value: i }))
+      ];
+      this.instruments.set(options);
+    });
+  }
 
   loadAccounts() {
     this.accountsService.load();
@@ -139,7 +152,7 @@ export class TradesListComponent implements OnInit {
     if (!this.importFile) return;
 
     this.loading = true;
-    this.tradesService.importMt5(this.importAccountId, this.importFile).subscribe({
+    this.tradesService.importMt5(this.importAccountId || '', this.importFile).subscribe({
       next: (res) => {
         if (res.action === 'REQUIRE_ACCOUNT_CREATION') {
             this.loading = false;

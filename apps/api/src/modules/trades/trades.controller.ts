@@ -11,6 +11,11 @@ import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 export class TradesController {
   constructor(private readonly tradesService: TradesService) {}
 
+  @Get('instruments')
+  getInstruments(@Request() req) {
+    return this.tradesService.getUniqueInstruments(req.user.userId);
+  }
+
   @Post('import/mt5')
   @UseInterceptors(FileInterceptor('file'))
   async importMt5(

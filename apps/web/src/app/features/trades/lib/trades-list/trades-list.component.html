@@ -77,39 +77,62 @@
     <p-toast></p-toast>
     <p-confirmDialog></p-confirmDialog>
 
-    <div class="filter-bar bullish-card mb-6 p-4">
-        <div class="flex flex-wrap items-center gap-6">
+    <div class="filters-container bullish-card mb-8">
+        <div class="filters-header p-4 border-b border-gray-100 flex justify-between items-center">
+            <div class="flex items-center gap-2">
+                <i class="pi pi-filter text-primary"></i>
+                <span class="font-bold text-sm uppercase tracking-wider text-muted">Filtros Avanzados</span>
+            </div>
+            <p-button
+                label="Limpiar Filtros"
+                icon="pi pi-filter-slash"
+                [text]="true"
+                severity="secondary"
+                size="small"
+                (onClick)="clearFilters()"
+            ></p-button>
+        </div>
+
+        <div class="filters-body p-6 flex flex-wrap gap-8 items-end">
             <!-- Rango de Días -->
-            <div class="filter-group">
-                <span class="filter-label">Periodo</span>
+            <div class="filter-field">
+                <label>Periodo de Tiempo</label>
                 <p-selectButton
                     [options]="daysOptions"
                     [ngModel]="filterStore.daysRange()"
                     (ngModelChange)="onFilterChange('daysRange', $event)"
                     optionLabel="label"
                     optionValue="value"
+                    styleClass="compact-select-button"
                 ></p-selectButton>
             </div>
 
-            <!-- Instrumento Search -->
-            <div class="filter-group flex-1 min-w-[200px]">
-                <span class="filter-label">Instrumento</span>
-                <p-iconField iconPosition="left">
-                    <p-inputIcon styleClass="pi pi-search"></p-inputIcon>
-                    <input
-                        type="text"
-                        pInputText
-                        placeholder="Buscar par (e.g. NAS100)"
-                        class="w-full"
-                        [ngModel]="filterStore.instrument()"
-                        (ngModelChange)="onFilterChange('instrument', $event)"
-                    />
-                </p-iconField>
+            <!-- Instrumento Dropdown -->
+            <div class="filter-field min-w-[200px]">
+                <label>Instrumento</label>
+                <p-select
+                    [options]="instruments()"
+                    [ngModel]="filterStore.instrument()"
+                    (ngModelChange)="onFilterChange('instrument', $event)"
+                    optionLabel="label"
+                    optionValue="value"
+                    placeholder="Todos los pares"
+                    [filter]="true"
+                    filterBy="label"
+                    class="w-full premium-select"
+                >
+                    <ng-template pTemplate="selectedItem" let-selectedOption>
+                        <div class="flex items-center gap-2">
+                             <i class="pi pi-chart-line text-blue-500"></i>
+                             <span>{{ selectedOption.label }}</span>
+                        </div>
+                    </ng-template>
+                </p-select>
             </div>
 
             <!-- Tipo (Long/Short) -->
-            <div class="filter-group">
-                <span class="filter-label">Tipo</span>
+            <div class="filter-field">
+                <label>Dirección</label>
                 <p-select
                     [options]="sideOptions"
                     [ngModel]="filterStore.side()"
@@ -117,33 +140,22 @@
                     optionLabel="label"
                     optionValue="value"
                     placeholder="L/S"
-                    class="w-32"
+                    class="w-40 premium-select"
                 ></p-select>
             </div>
 
             <!-- Mercado -->
-            <div class="filter-group">
-                <span class="filter-label">Mercado</span>
+            <div class="filter-field">
+                <label>Mercado / Tipo</label>
                 <p-select
                     [options]="marketOptions"
                     [ngModel]="filterStore.accountMarket()"
                     (ngModelChange)="onFilterChange('accountMarket', $event)"
                     optionLabel="label"
                     optionValue="value"
-                    placeholder="Todos"
-                    class="w-40"
+                    placeholder="Cualquiera"
+                    class="w-44 premium-select"
                 ></p-select>
-            </div>
-
-            <!-- Reset Filters -->
-            <div class="flex items-end h-[58px]">
-                <p-button
-                    icon="pi pi-filter-slash"
-                    [text]="true"
-                    severity="secondary"
-                    (onClick)="clearFilters()"
-                    pTooltip="Limpiar Filtros"
-                ></p-button>
             </div>
         </div>
     </div>

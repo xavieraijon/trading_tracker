@@ -67,7 +67,11 @@ export class TradesService {
     return this.http.get<Trade>(`${this.apiUrl}/${id}`);
   }
 
-  update(id: string, trade: UpdateTradeDto): Observable<Trade> {
+  getUniqueInstruments(): Observable<string[]> {
+    return this.http.get<string[]>(`${this.apiUrl}/instruments`);
+  }
+
+  update(id: string, trade: Partial<Trade>): Observable<Trade> {
     return this.http.patch<Trade>(`${this.apiUrl}/${id}`, trade);
   }
 
