@@ -110,13 +110,21 @@ export class DashboardComponent {
     scales: {
       x: {
         grid: { display: false },
-        ticks: { color: '#64748b', font: { family: 'Outfit' } }
-      },
-      y: {
-        grid: { borderDash: [5, 5], color: 'rgba(226, 232, 240, 0.6)' },
         ticks: {
           color: '#64748b',
-          font: { family: 'Outfit' },
+          font: { family: 'Outfit', size: 11 },
+          autoSkip: true,
+          maxRotation: 45,
+          minRotation: 0
+        }
+      },
+      y: {
+        grid: { borderDash: [5, 5], color: 'rgba(226, 232, 240, 0.6)', drawTicks: false },
+        border: { display: false },
+        ticks: {
+          color: '#64748b',
+          font: { family: 'Outfit', size: 11 },
+          padding: 10,
           callback: (value: any) => '$' + value
         }
       }

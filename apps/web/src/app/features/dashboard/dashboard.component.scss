@@ -27,6 +27,14 @@
     border-left: 4px solid #ef4444 !important;
 }
 
+.chart-area {
+    min-height: 500px;
+    height: 500px;
+    margin-top: 2rem;
+    position: relative;
+    width: 100%;
+}
+
 .kpi-icon-container {
     width: 32px;
     height: 32px;
