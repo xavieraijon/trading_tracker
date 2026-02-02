@@ -79,9 +79,11 @@
 
     <div class="filters-container bullish-card mb-8">
         <div class="filters-header p-4 border-b border-gray-100 flex justify-between items-center">
-            <div class="flex items-center gap-2">
-                <i class="pi pi-filter text-primary"></i>
-                <span class="font-bold text-sm uppercase tracking-wider text-muted">Filtros Avanzados</span>
+            <div class="flex items-center gap-3">
+                <div class="filter-icon-bg">
+                    <i class="pi pi-filter text-primary"></i>
+                </div>
+                <span class="font-bold text-sm uppercase tracking-wider text-slate-600">Filtros de Análisis</span>
             </div>
             <p-button
                 label="Limpiar Filtros"
@@ -90,72 +92,78 @@
                 severity="secondary"
                 size="small"
                 (onClick)="clearFilters()"
+                class="hover-shake"
             ></p-button>
         </div>
 
-        <div class="filters-body p-6 flex flex-wrap gap-8 items-end">
-            <!-- Rango de Días -->
-            <div class="filter-field">
-                <label>Periodo de Tiempo</label>
-                <p-selectButton
-                    [options]="daysOptions"
-                    [ngModel]="filterStore.daysRange()"
-                    (ngModelChange)="onFilterChange('daysRange', $event)"
-                    optionLabel="label"
-                    optionValue="value"
-                    styleClass="compact-select-button"
-                ></p-selectButton>
-            </div>
+        <div class="filters-body p-6">
+            <div class="filters-grid">
+                <!-- Rango de Días -->
+                <div class="filter-field">
+                    <label>Periodo de Tiempo</label>
+                    <p-selectButton
+                        [options]="daysOptions"
+                        [ngModel]="filterStore.daysRange()"
+                        (ngModelChange)="onFilterChange('daysRange', $event)"
+                        optionLabel="label"
+                        optionValue="value"
+                        styleClass="compact-select-button"
+                    ></p-selectButton>
+                </div>
 
-            <!-- Instrumento Dropdown -->
-            <div class="filter-field min-w-[200px]">
-                <label>Instrumento</label>
-                <p-select
-                    [options]="instruments()"
-                    [ngModel]="filterStore.instrument()"
-                    (ngModelChange)="onFilterChange('instrument', $event)"
-                    optionLabel="label"
-                    optionValue="value"
-                    placeholder="Todos los pares"
-                    [filter]="true"
-                    filterBy="label"
-                    class="w-full premium-select"
-                >
-                    <ng-template pTemplate="selectedItem" let-selectedOption>
-                        <div class="flex items-center gap-2">
-                             <i class="pi pi-chart-line text-blue-500"></i>
-                             <span>{{ selectedOption.label }}</span>
-                        </div>
-                    </ng-template>
-                </p-select>
-            </div>
+                <!-- Instrumento Dropdown -->
+                <div class="filter-field">
+                    <label>Instrumento</label>
+                    <p-select
+                        [options]="instruments()"
+                        [ngModel]="filterStore.instrument()"
+                        (ngModelChange)="onFilterChange('instrument', $event)"
+                        optionLabel="label"
+                        optionValue="value"
+                        placeholder="Todos los pares"
+                        [filter]="true"
+                        filterBy="label"
+                        appendTo="body"
+                        class="w-full premium-select"
+                    >
+                        <ng-template pTemplate="selectedItem" let-selectedOption>
+                            <div class="flex items-center gap-2">
+                                 <i class="pi pi-chart-line text-blue-500"></i>
+                                 <span>{{ selectedOption.label }}</span>
+                            </div>
+                        </ng-template>
+                    </p-select>
+                </div>
 
-            <!-- Tipo (Long/Short) -->
-            <div class="filter-field">
-                <label>Dirección</label>
-                <p-select
-                    [options]="sideOptions"
-                    [ngModel]="filterStore.side()"
-                    (ngModelChange)="onFilterChange('side', $event)"
-                    optionLabel="label"
-                    optionValue="value"
-                    placeholder="L/S"
-                    class="w-40 premium-select"
-                ></p-select>
-            </div>
+                <!-- Tipo (Long/Short) -->
+                <div class="filter-field">
+                    <label>Dirección</label>
+                    <p-select
+                        [options]="sideOptions"
+                        [ngModel]="filterStore.side()"
+                        (ngModelChange)="onFilterChange('side', $event)"
+                        optionLabel="label"
+                        optionValue="value"
+                        placeholder="Cualquiera"
+                        appendTo="body"
+                        class="w-full premium-select"
+                    ></p-select>
+                </div>
 
-            <!-- Mercado -->
-            <div class="filter-field">
-                <label>Mercado / Tipo</label>
-                <p-select
-                    [options]="marketOptions"
-                    [ngModel]="filterStore.accountMarket()"
-                    (ngModelChange)="onFilterChange('accountMarket', $event)"
-                    optionLabel="label"
-                    optionValue="value"
-                    placeholder="Cualquiera"
-                    class="w-44 premium-select"
-                ></p-select>
+                <!-- Mercado -->
+                <div class="filter-field">
+                    <label>Mercado / Tipo</label>
+                    <p-select
+                        [options]="marketOptions"
+                        [ngModel]="filterStore.accountMarket()"
+                        (ngModelChange)="onFilterChange('accountMarket', $event)"
+                        optionLabel="label"
+                        optionValue="value"
+                        placeholder="Cualquiera"
+                        appendTo="body"
+                        class="w-full premium-select"
+                    ></p-select>
+                </div>
             </div>
         </div>
     </div>
