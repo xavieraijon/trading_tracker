@@ -155,4 +155,10 @@
         (visibleChange)="hideDialog()"
         (saved)="onSave()"
     ></app-trade-form>
+
+    <app-account-dialog
+        [(visible)]="accountDialog"
+        [account]="selectedAccountForCreation"
+        (saved)="onAccountSaved($event)"
+    ></app-account-dialog>
 </div>

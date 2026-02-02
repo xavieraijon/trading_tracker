@@ -15,6 +15,107 @@ export interface MT5ParsedTrade {
   pnlNet: number;
 }
 
+export interface MT5ReportInfo {
+  accountLogin?: string;
+  accountName?: string;
+  company?: string;
+  currency?: string;
+  balance?: number;
+}
+
+export function extractReportInfo(html: string): MT5ReportInfo {
+  const $ = cheerio.load(html);
+  const info: MT5ReportInfo = {};
+
+  // Try to find the header table or div containing account info
+  // Common MT5 format: Has a header with "Account: 123456 - Name" and "Company"
+
+  const headerText = $('body').text(); // Naive but might capture top text
+
+  // Strategy 1: Look for specific patterns in text nodes immediately in body or top divs
+  // Example: "Account: 123456" or "Login: 123456"
+
+  // MT5 reports often put info in a list or simple text at top
+  // "Name (Account): 112233" or "112233 (Name)"
+  // "Company: FTMO"
+
+  // Let's iterate over ALL elements that might contain this info
+  // Usually in <li> or <div> or just text nodes
+
+  // Generic Regex approach on the whole text snippet of the header
+  // Limit to first 2000 chars to avoid performance issues
+  const textSnippet = headerText.substring(0, 3000);
+
+  // 1. Account / Login (More robust)
+  // Patterns: "Account: 123456", "Login: 123456", "Cuenta: 123456", "#123456", or just a large number near "Name/Nombre"
+  const accountMatch =
+    textSnippet.match(/(?:Account|Login|Cuenta|#):\s*(\d+)/i) ||
+    textSnippet.match(/(\d{5,})\s*[\(]?/); // Look for 5+ digits at start of lines or in parentheses
+
+  if (accountMatch) {
+    info.accountLogin = accountMatch[1].trim();
+  }
+
+  // 2. Company / Broker
+  // "Broker: XYZ", "Company: ABC", "Empresa: ABC", "Servidor: ABC"
+  const companyMatch = textSnippet.match(/(?:Broker|Company|Empresa|Servidor):\s*([^\n\r]+)/i);
+  if (companyMatch) {
+    info.company = companyMatch[1].trim().split('-')[0].trim(); // Get main part if it has - ServerX
+  } else {
+      // Try to guess from Title
+      const title = $('title').text();
+      if (title && !title.includes('Report') && !title.includes('Statement')) {
+          info.company = title.trim();
+      }
+  }
+
+  // 3. Currency / Divisa
+  // "Currency: USD", "Moneda: EUR", or in Deposit line "Deposit: 10000.00 USD"
+  const currencyMatch =
+    textSnippet.match(/(?:Currency|Moneda|Divisa):\s*([A-Z]{3})/i) ||
+    textSnippet.match(/(?:Deposit|Depósito|Balance):?\s*[\d\s\.,]+\s*([A-Z]{3})/i) ||
+    textSnippet.match(/\s([A-Z]{3})\s/); // Last resort: find any 3-letter uppercase code
+
+  if (currencyMatch) {
+    info.currency = currencyMatch[1];
+  }
+
+  // 4. Initial Balance
+  // "Deposit: 10000.00", "Depósito: 10.000,00", "Balance: 10000"
+  const balanceMatch = textSnippet.match(/(?:Deposit|Depósito|Balance|Inversión):\s*([\d\s\.,]+)/i);
+  if (balanceMatch) {
+    const rawBalance = balanceMatch[1].replace(/\s/g, '');
+    // Try to parse number handling both . and , as decimals (MT5 uses user locale)
+    // Most common: 10,000.00 or 10.000,00
+    info.balance = parseInitialBalance(rawBalance);
+  }
+
+  return info;
+}
+
+function parseInitialBalance(str: string): number {
+    // If it has both , and ., usually thousands separator and decimal
+    if (str.includes(',') && str.includes('.')) {
+        if (str.indexOf('.') < str.indexOf(',')) {
+            // format 10.000,00
+            return parseFloat(str.replace(/\./g, '').replace(',', '.'));
+        } else {
+            // format 10,000.00
+            return parseFloat(str.replace(/,/g, ''));
+        }
+    }
+    // If only has , it might be decimal or thousands
+    if (str.includes(',')) {
+        // If , is near the end (2-3 digits after), assume decimal
+        const parts = str.split(',');
+        if (parts[parts.length - 1].length <= 2) {
+            return parseFloat(str.replace(',', '.'));
+        }
+        return parseFloat(str.replace(',', ''));
+    }
+    return parseFloat(str);
+}
+
 export function parseMT5Html(html: string): MT5ParsedTrade[] {
   const $ = cheerio.load(html);
   const trades: MT5ParsedTrade[] = [];
@@ -109,7 +210,7 @@ export function parseMT5Html(html: string): MT5ParsedTrade[] {
         return;
       }
 
-      console.log(`Successfully parsed trade ${ticket}: ${symbol} ${type} ${volumeVal} @ ${openPrice}`);
+      // console.log(`Successfully parsed trade ${ticket}: ${symbol} ${type} ${volumeVal} @ ${openPrice}`);
 
       trades.push({
         openAt: parseMT5Date(openAtStr),

@@ -21,8 +21,8 @@ export class App implements OnInit {
   accountsService = inject(AccountsService);
   filterStore = inject(FilterStore);
 
-  accounts = signal<Account[]>([]);
-  selectedAccount = signal<string | null>(null);
+  accounts = this.accountsService.accounts;
+  selectedAccountValue: string | null = null;
 
   userMenuItems = [
     { label: 'Mi Perfil', icon: 'pi pi-user' },
@@ -32,19 +32,16 @@ export class App implements OnInit {
   ];
 
   ngOnInit() {
+    // Sync with global filter state
+    this.selectedAccountValue = this.filterStore.selectedAccountId();
+
     if (this.authService.isAuthenticated()) {
-      this.loadAccounts();
+      this.accountsService.load();
     }
   }
 
-  loadAccounts() {
-    this.accountsService.findAll().subscribe(data => {
-      this.accounts.set(data);
-    });
-  }
-
   onAccountChange() {
-    this.filterStore.setAccount(this.selectedAccount());
+    this.filterStore.setAccount(this.selectedAccountValue);
   }
 
   logout() {

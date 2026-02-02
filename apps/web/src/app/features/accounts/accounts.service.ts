@@ -1,4 +1,4 @@
-import { Injectable, inject } from '@angular/core';
+import { Injectable, inject, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
@@ -11,6 +11,7 @@ export interface Account {
   type?: 'PERSONAL' | 'PROP_FIRM';
   market?: 'CFD' | 'FUTURES' | 'SPOT' | 'CRYPTO' | 'STOCKS';
   broker?: string;
+  externalId?: string;
   createdAt: string;
   updatedAt: string;
 }
@@ -21,6 +22,8 @@ export interface CreateAccountDto {
   initialBalance: number;
   type: string;
   market: string;
+  broker?: string;
+  externalId?: string;
 }
 export type UpdateAccountDto = Partial<CreateAccountDto>;
 
@@ -30,6 +33,14 @@ export type UpdateAccountDto = Partial<CreateAccountDto>;
 export class AccountsService {
   private http = inject(HttpClient);
   private apiUrl = '/api/accounts';
+
+  accounts = signal<Account[]>([]);
+
+  load() {
+    this.findAll().subscribe(data => {
+      this.accounts.set(data);
+    });
+  }
 
   create(account: CreateAccountDto): Observable<Account> {
     return this.http.post<Account>(this.apiUrl, account);

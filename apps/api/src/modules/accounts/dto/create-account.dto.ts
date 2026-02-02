@@ -14,6 +14,14 @@ export class CreateAccountDto {
   @IsNotEmpty()
   currency: string;
 
+  @IsString()
+  @IsOptional()
+  broker?: string;
+
+  @IsString()
+  @IsOptional()
+  externalId?: string;
+
   @IsEnum(AccountType)
   @IsOptional()
   type?: AccountType;

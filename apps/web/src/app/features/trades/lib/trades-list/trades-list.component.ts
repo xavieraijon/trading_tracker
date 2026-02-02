@@ -12,6 +12,7 @@ import { DialogModule } from 'primeng/dialog';
 import { SelectModule } from 'primeng/select';
 import { TradesService, Trade } from '../../trades.service';
 import { TradeFormDialogComponent } from '../trade-form/trade-form.component';
+import { AccountDialogComponent } from '../../../accounts/lib/account-dialog/account-dialog.component';
 import { AccountsService, Account } from '../../../accounts/accounts.service';
 import { FilterStore } from '../../../../core/filter.store';
 
@@ -29,7 +30,8 @@ import { FilterStore } from '../../../../core/filter.store';
     TagModule,
     DialogModule,
     SelectModule,
-    TradeFormDialogComponent
+    TradeFormDialogComponent,
+    AccountDialogComponent
   ],
   providers: [MessageService, ConfirmationService],
   templateUrl: './trades-list.component.html',
@@ -37,10 +39,11 @@ import { FilterStore } from '../../../../core/filter.store';
 })
 export class TradesListComponent implements OnInit {
   trades = signal<Trade[]>([]);
-  accounts = signal<Account[]>([]);
   loading: boolean = true;
   tradeDialog: boolean = false;
   importDialog: boolean = false;
+  accountDialog: boolean = false;
+  selectedAccountForCreation: any = null;
   selectedTrade: Trade | null = null;
 
   importAccountId: string = '';
@@ -63,41 +66,97 @@ export class TradesListComponent implements OnInit {
     this.loadAccounts();
   }
 
+  accounts = this.accountsService.accounts;
+
   loadAccounts() {
-    this.accountsService.findAll().subscribe(data => this.accounts.set(data));
+    this.accountsService.load();
   }
 
   onMt5Upload(event: any) {
     const file = event.target.files[0];
     if (file) {
       this.importFile = file;
-      this.importDialog = true;
-      // Auto-select first account if only one
-      if (this.accounts().length === 1) {
-        this.importAccountId = this.accounts()[0].id;
-      }
+      this.importAccountId = ''; // Start with auto-detect
+
+      // Attempt auto-import in next tick to avoid NG0100 (ExpressionChangedAfterItHasBeenCheckedError)
+      setTimeout(() => {
+        this.confirmImport();
+      });
+
+      // Reset input so it can be triggered again with same file
+      event.target.value = '';
     }
   }
 
   confirmImport() {
-    if (!this.importAccountId || !this.importFile) return;
+    if (!this.importFile) return;
 
     this.loading = true;
     this.tradesService.importMt5(this.importAccountId, this.importFile).subscribe({
       next: (res) => {
+        if (res.action === 'REQUIRE_ACCOUNT_CREATION') {
+            this.loading = false;
+            this.importDialog = false;
+
+            this.confirmationService.confirm({
+                message: `Hemos detectado operaciones de una cuenta nueva: <b>${res.meta.company} (${res.meta.login})</b>. <br><br>¿Quieres crear esta cuenta ahora mismo?`,
+                header: 'Nueva Cuenta Detectada',
+                icon: 'pi pi-info-circle',
+                acceptLabel: 'Sí, Crear Cuenta',
+                rejectLabel: 'Cerrar',
+                accept: () => {
+                    this.selectedAccountForCreation = {
+                        name: `${res.meta.company} - ${res.meta.login}`,
+                        broker: res.meta.company,
+                        externalId: res.meta.login,
+                        currency: res.meta.currency,
+                        initialBalance: res.meta.balance
+                    };
+                    this.accountDialog = true;
+                }
+            });
+            return;
+        }
+
         this.messageService.add({
           severity: 'success',
           summary: 'Importación Completada',
           detail: `Se han importado ${res.imported} operaciones (${res.skipped} duplicadas)`
         });
         this.importDialog = false;
+        this.importAccountId = '';
         this.loadTrades(this.filterStore.selectedAccountId());
       },
-      error: () => {
-        this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Error al importar archivo' });
+      error: (err) => {
         this.loading = false;
+        const detail = err.error?.message || 'Error al importar archivo';
+
+        if (detail.includes('No se ha podido detectar')) {
+            // Failure to auto-detect -> show manual dialog
+            this.importDialog = true;
+        } else {
+            this.messageService.add({ severity: 'error', summary: 'Error', detail });
+        }
       }
     });
+  }
+
+  onAccountSaved(newAccount: any) {
+      // Refresh accounts list
+      this.loadAccounts();
+      this.messageService.add({ severity: 'success', summary: 'Cuenta Creada', detail: 'Cuenta asociada correctamente. Importando operaciones...' });
+
+      this.selectedAccountForCreation = null;
+      this.accountDialog = false;
+
+      // If we got the new account, use its ID directly to be sure
+      if (newAccount && newAccount.id) {
+          this.importAccountId = newAccount.id;
+      } else {
+          this.importAccountId = ''; // Fallback to auto-detect (which should work now)
+      }
+
+      this.confirmImport();
   }
 
   loadTrades(accountId: string | null = null) {

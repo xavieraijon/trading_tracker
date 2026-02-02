@@ -18,7 +18,6 @@ import { AccountDialogComponent } from '../account-dialog/account-dialog.compone
   styleUrl: './accounts-list.component.scss'
 })
 export class AccountsListComponent implements OnInit {
-  accounts = signal<Account[]>([]);
   selectedAccounts: Account[] | null = null;
   accountDialog: boolean = false;
   account: Account | null = null;
@@ -31,11 +30,10 @@ export class AccountsListComponent implements OnInit {
     this.loadAccounts();
   }
 
+  accounts = this.accountsService.accounts;
+
   loadAccounts() {
-    this.accountsService.findAll().subscribe({
-      next: (data) => this.accounts.set(data),
-      error: (err) => this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Could not load accounts' })
-    });
+    this.accountsService.load();
   }
 
   openNew() {
@@ -50,16 +48,16 @@ export class AccountsListComponent implements OnInit {
 
   deleteAccount(account: Account) {
     this.confirmationService.confirm({
-      message: 'Are you sure you want to delete ' + account.name + '?',
-      header: 'Confirm',
+      message: '¿Estás seguro de borrar la cuenta ' + account.name + '? Se eliminarán también todas sus operaciones asociadas de forma permanente.',
+      header: 'Confirmar Borrado Permanente',
       icon: 'pi pi-exclamation-triangle',
       accept: () => {
         this.accountsService.remove(account.id).subscribe({
             next: () => {
-                this.accounts.set(this.accounts().filter((val: Account) => val.id !== account.id));
-                this.messageService.add({ severity: 'success', summary: 'Successful', detail: 'Account Deleted', life: 3000 });
+                this.accountsService.load(); // Reloads shared state after deletion
+                this.messageService.add({ severity: 'success', summary: 'Éxito', detail: 'Cuenta eliminada', life: 3000 });
             },
-            error: () => this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Could not delete account' })
+            error: () => this.messageService.add({ severity: 'error', summary: 'Error', detail: 'No se pudo eliminar la cuenta' })
         });
       }
     });
@@ -72,6 +70,6 @@ export class AccountsListComponent implements OnInit {
   onSave() {
     this.accountDialog = false;
     this.loadAccounts();
-    this.messageService.add({ severity: 'success', summary: 'Successful', detail: 'Account Saved', life: 3000 });
+    this.messageService.add({ severity: 'success', summary: 'Éxito', detail: 'Cuenta guardada', life: 3000 });
   }
 }

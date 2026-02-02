@@ -1,6 +1,7 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, Request, Query, UseInterceptors, UploadedFile, BadRequestException } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { TradesService } from './trades.service';
+import { extractReportInfo } from './mt5-parser';
 import { CreateTradeDto } from './dto/create-trade.dto';
 import { UpdateTradeDto } from './dto/update-trade.dto';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
@@ -42,7 +43,41 @@ export class TradesController {
        html = buffer.toString('utf16le');
     }
 
-    return this.tradesService.importMt5(req.user.userId, accountId, html);
+    // 1. Extract Info (Login, Broker, etc.)
+    const reportInfo = extractReportInfo(html);
+    console.log('Detected Report Info:', reportInfo);
+
+    // 2. If accountId provided, just import there
+    if (accountId && accountId !== 'undefined' && accountId !== '') {
+       return this.tradesService.importMt5(req.user.userId, accountId, html);
+    }
+
+    // 3. If NO accountId, try to find one by Login/ExternalId
+    if (reportInfo.accountLogin) {
+        console.log(`Searching for account with externalId: ${reportInfo.accountLogin}`);
+        const existingAccount = await this.tradesService.findAccountByExternalId(req.user.userId, reportInfo.accountLogin);
+        if (existingAccount) {
+            console.log(`Auto-detected account found: ${existingAccount.id} (${existingAccount.name})`);
+            return this.tradesService.importMt5(req.user.userId, existingAccount.id, html);
+        } else {
+            console.log(`No account found for externalId: ${reportInfo.accountLogin}`);
+        }
+    }
+
+    // 4. If still no account, return Requirement to Create One
+    if (reportInfo.accountLogin) {
+        return {
+            action: 'REQUIRE_ACCOUNT_CREATION',
+            meta: {
+                login: reportInfo.accountLogin,
+                company: reportInfo.company || 'Unknown Broker',
+                currency: reportInfo.currency || 'USD',
+                balance: reportInfo.balance || 0
+            }
+        };
+    }
+
+    throw new BadRequestException('No se ha podido detectar la cuenta automáticamente en este informe. Por favor, selecciónala manualmente.');
   }
 
   @Post()

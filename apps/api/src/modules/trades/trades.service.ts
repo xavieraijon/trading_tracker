@@ -8,6 +8,15 @@ import { parseMT5Html } from './mt5-parser';
 export class TradesService {
   constructor(private prisma: PrismaService) {}
 
+  async findAccountByExternalId(userId: string, externalId: string) {
+    return this.prisma.account.findFirst({
+      where: {
+        userId,
+        externalId
+      }
+    });
+  }
+
   private calculateTradeMetrics(data: any) {
     const { side, quantity, entryPrice, exitPrice, fees, swap, commission, riskAmount } = data;
 

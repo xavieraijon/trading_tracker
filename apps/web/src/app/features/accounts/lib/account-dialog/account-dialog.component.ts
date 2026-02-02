@@ -58,7 +58,8 @@ export class AccountDialogComponent implements OnChanges, OnInit {
       initialBalance: [0, [Validators.required, Validators.min(0)]],
       type: ['PERSONAL', Validators.required],
       market: ['CFD', Validators.required],
-      broker: ['']
+      broker: [''],
+      externalId: ['']
     });
   }
 
@@ -86,7 +87,8 @@ export class AccountDialogComponent implements OnChanges, OnInit {
         initialBalance: this.account.initialBalance,
         type: this.account.type || 'PERSONAL',
         market: this.account.market || 'CFD',
-        broker: this.account.broker || ''
+        broker: this.account.broker || '',
+        externalId: this.account.externalId || ''
       });
     } else if (changes['account'] && !this.account) {
         this.accountForm.reset({
@@ -95,7 +97,8 @@ export class AccountDialogComponent implements OnChanges, OnInit {
             initialBalance: 0,
             type: 'PERSONAL',
             market: 'CFD',
-            broker: ''
+            broker: '',
+            externalId: ''
         });
     }
   }
@@ -111,20 +114,20 @@ export class AccountDialogComponent implements OnChanges, OnInit {
     this.loading = true;
     const formValue = this.accountForm.value;
 
-    const request$ = this.account ?
+    const request$ = (this.account && this.account.id) ?
         this.accountsService.update(this.account.id, formValue) :
         this.accountsService.create(formValue);
 
     request$.subscribe({
-        next: () => {
+        next: (response: any) => {
             this.loading = false;
-            this.saved.emit();
+            // The update call might return a status/count, create returns the object
+            this.saved.emit(response);
             this.hideDialog();
-            this.loadUserBrokers(); // Reload brokers after save
+            this.loadUserBrokers();
         },
         error: () => {
             this.loading = false;
-            // Error handling usually done in parent via toast
         }
     });
   }
