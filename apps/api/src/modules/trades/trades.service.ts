@@ -126,6 +126,9 @@ export class TradesService {
         ...(accountId ? { accountId } : {}),
         closeAt: { not: null }
       },
+      include: {
+        account: { select: { name: true } }
+      },
       orderBy: { closeAt: 'asc' }
     });
 
@@ -135,12 +138,16 @@ export class TradesService {
         winRate: 0,
         profitFactor: 0,
         totalPnL: 0,
+        avgWin: 0,
+        avgLoss: 0,
+        expectancy: 0,
+        maxDrawdown: 0,
         equityCurve: []
       };
     }
 
     const winningTrades = trades.filter(t => Number(t.pnlNet) > 0);
-    const losingTrades = trades.filter(t => Number(t.pnlNet) < 0);
+    const losingTrades = trades.filter(t => Number(t.pnlNet) <= 0);
 
     const grossProfit = winningTrades.reduce((acc, t) => acc + Number(t.pnlNet), 0);
     const grossLoss = Math.abs(losingTrades.reduce((acc, t) => acc + Number(t.pnlNet), 0));
@@ -149,13 +156,40 @@ export class TradesService {
     const winRate = (winningTrades.length / trades.length) * 100;
     const profitFactor = grossLoss === 0 ? grossProfit : grossProfit / grossLoss;
 
-    // Equity Curve starting from 0 (normalized) or from account initial balance if only one account
+    const avgWin = winningTrades.length > 0 ? grossProfit / winningTrades.length : 0;
+    const avgLoss = losingTrades.length > 0 ? grossLoss / losingTrades.length : 0;
+
+    // Expectancy = (Probability of Win * Avg Win) - (Probability of Loss * Avg Loss)
+    const probWin = winningTrades.length / trades.length;
+    const probLoss = losingTrades.length / trades.length;
+    const expectancy = (probWin * avgWin) - (probLoss * avgLoss);
+
+    // Equity Curve and Max Drawdown calculation
     let currentEquity = 0;
+    let peak = 0;
+    let maxDrawdown = 0;
+
     const equityCurve = trades.map(t => {
       currentEquity += Number(t.pnlNet);
+
+      // Update Peak for Drawdown
+      if (currentEquity > peak) {
+        peak = currentEquity;
+      }
+
+      // Calculate Drawdown from Peak
+      const dd = peak - currentEquity;
+      if (dd > maxDrawdown) {
+        maxDrawdown = dd;
+      }
+
       return {
         date: t.closeAt,
-        equity: currentEquity
+        equity: currentEquity,
+        pnl: Number(t.pnlNet),
+        instrument: t.instrument,
+        accountName: t.account?.name || 'Desconocida',
+        side: t.side
       };
     });
 
@@ -164,6 +198,10 @@ export class TradesService {
       winRate,
       profitFactor,
       totalPnL,
+      avgWin,
+      avgLoss,
+      expectancy,
+      maxDrawdown,
       equityCurve
     };
   }
