@@ -78,25 +78,7 @@
     <p-confirmDialog></p-confirmDialog>
 
     <div class="filters-container bullish-card mb-8">
-        <div class="filters-header p-4 border-b border-gray-100 flex justify-between items-center">
-            <div class="flex items-center gap-3">
-                <div class="filter-icon-bg">
-                    <i class="pi pi-filter text-primary"></i>
-                </div>
-                <span class="font-bold text-sm uppercase tracking-wider text-slate-600">Filtros de Análisis</span>
-            </div>
-            <p-button
-                label="Limpiar Filtros"
-                icon="pi pi-filter-slash"
-                [text]="true"
-                severity="secondary"
-                size="small"
-                (onClick)="clearFilters()"
-                class="hover-shake"
-            ></p-button>
-        </div>
-
-        <div class="filters-body p-6">
+        <div class="filters-body p-8">
             <div class="filters-grid">
                 <!-- Rango de Días -->
                 <div class="filter-field">
@@ -127,10 +109,12 @@
                         class="w-full premium-select"
                     >
                         <ng-template pTemplate="selectedItem" let-selectedOption>
-                            <div class="flex items-center gap-2">
-                                 <i class="pi pi-chart-line text-blue-500"></i>
-                                 <span>{{ selectedOption.label }}</span>
-                            </div>
+                            @if (selectedOption) {
+                                <div class="flex items-center gap-2">
+                                     <i class="pi pi-chart-line text-blue-500"></i>
+                                     <span>{{ selectedOption.label }}</span>
+                                </div>
+                            }
                         </ng-template>
                     </p-select>
                 </div>
@@ -147,14 +131,29 @@
                         placeholder="Cualquiera"
                         appendTo="body"
                         class="w-full premium-select"
-                    ></p-select>
+                    >
+                        <ng-template pTemplate="selectedItem" let-selectedOption>
+                            @if (selectedOption && selectedOption.value) {
+                                <p-tag [value]="selectedOption.label" [severity]="getSideSeverity(selectedOption.value)"></p-tag>
+                            } @else {
+                                <span>Cualquiera</span>
+                            }
+                        </ng-template>
+                        <ng-template pTemplate="item" let-option>
+                            @if (option.value) {
+                                <p-tag [value]="option.label" [severity]="getSideSeverity(option.value)"></p-tag>
+                            } @else {
+                                <span>{{ option.label }}</span>
+                            }
+                        </ng-template>
+                    </p-select>
                 </div>
 
                 <!-- Mercado -->
                 <div class="filter-field">
                     <label>Mercado / Tipo</label>
                     <p-select
-                        [options]="marketOptions"
+                        [options]="markets()"
                         [ngModel]="filterStore.accountMarket()"
                         (ngModelChange)="onFilterChange('accountMarket', $event)"
                         optionLabel="label"
@@ -163,6 +162,18 @@
                         appendTo="body"
                         class="w-full premium-select"
                     ></p-select>
+                </div>
+
+                <!-- Acciones -->
+                <div class="filter-actions h-[48px] flex items-center">
+                    <p-button
+                        label="Limpiar Filtros"
+                        icon="pi pi-filter-slash"
+                        [text]="true"
+                        severity="secondary"
+                        (onClick)="clearFilters()"
+                        class="hover-shake"
+                    ></p-button>
                 </div>
             </div>
         </div>

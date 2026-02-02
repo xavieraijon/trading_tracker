@@ -16,6 +16,11 @@ export class TradesController {
     return this.tradesService.getUniqueInstruments(req.user.userId);
   }
 
+  @Get('markets')
+  getMarkets(@Request() req) {
+    return this.tradesService.getUniqueMarkets(req.user.userId);
+  }
+
   @Post('import/mt5')
   @UseInterceptors(FileInterceptor('file'))
   async importMt5(

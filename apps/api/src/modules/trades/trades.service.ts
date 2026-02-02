@@ -389,6 +389,18 @@ export class TradesService {
       select: { instrument: true },
       distinct: ['instrument'],
     });
-    return trades.map(t => t.instrument).sort();
+    return trades.map(t => t.instrument).filter(Boolean).sort();
+  }
+
+  async getUniqueMarkets(userId: string) {
+    const accounts = await this.prisma.account.findMany({
+      where: {
+        userId,
+        trades: { some: {} } // Has at least one trade
+      },
+      select: { market: true },
+      distinct: ['market'],
+    });
+    return accounts.map(a => a.market).filter(Boolean).sort();
   }
 }

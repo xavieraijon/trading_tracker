@@ -51,6 +51,7 @@ export class TradesListComponent implements OnInit {
   trades = signal<Trade[]>([]);
   accounts = signal<any[]>([]);
   instruments = signal<{label: string, value: string | null}[]>([]);
+  markets = signal<{label: string, value: string | null}[]>([]);
   loading = false;
 
   // Dialogs
@@ -92,17 +93,8 @@ export class TradesListComponent implements OnInit {
 
   sideOptions = [
       { label: 'Cualquiera', value: null },
-      { label: 'Long 📈', value: 'LONG' },
-      { label: 'Short 📉', value: 'SHORT' }
-  ];
-
-  marketOptions = [
-      { label: 'Cualquiera', value: null },
-      { label: 'CFD', value: 'CFD' },
-      { label: 'Futuros', value: 'FUTURES' },
-      { label: 'Spot', value: 'SPOT' },
-      { label: 'Crypto', value: 'CRYPTO' },
-      { label: 'Stocks', value: 'STOCKS' }
+      { label: 'Long', value: 'LONG' },
+      { label: 'Short', value: 'SHORT' }
   ];
 
   onFilterChange(type: string, value: any) {
@@ -116,6 +108,7 @@ export class TradesListComponent implements OnInit {
   ngOnInit() {
     this.loadAccounts();
     this.loadInstruments();
+    this.loadMarkets();
   }
 
   loadInstruments() {
@@ -125,6 +118,16 @@ export class TradesListComponent implements OnInit {
         ...data.map(i => ({ label: i, value: i }))
       ];
       this.instruments.set(options);
+    });
+  }
+
+  loadMarkets() {
+    this.tradesService.getUniqueMarkets().subscribe(data => {
+      const options = [
+        { label: 'Cualquiera', value: null },
+        ...data.map(m => ({ label: m, value: m }))
+      ];
+      this.markets.set(options);
     });
   }
 

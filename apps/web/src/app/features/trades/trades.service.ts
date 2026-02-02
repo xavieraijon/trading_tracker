@@ -71,6 +71,10 @@ export class TradesService {
     return this.http.get<string[]>(`${this.apiUrl}/instruments`);
   }
 
+  getUniqueMarkets(): Observable<string[]> {
+    return this.http.get<string[]>(`${this.apiUrl}/markets`);
+  }
+
   update(id: string, trade: Partial<Trade>): Observable<Trade> {
     return this.http.patch<Trade>(`${this.apiUrl}/${id}`, trade);
   }
