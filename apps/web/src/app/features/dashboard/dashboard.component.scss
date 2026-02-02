@@ -111,3 +111,41 @@
 .kpi-card {
     animation: fadeInSlideUp 0.5s ease-out forwards;
 }
+
+/* Timeframe Selector Refinement */
+.timeframe-selector {
+    ::ng-deep .p-selectbutton {
+        display: flex;
+        background: #f8fafc;
+        padding: 4px;
+        border-radius: 12px;
+        border: 1px solid #f1f5f9;
+
+        .p-button {
+            background: transparent;
+            border: none !important;
+            color: #64748b;
+            font-size: 0.75rem;
+            padding: 0.5rem 1rem;
+            border-radius: 8px !important;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            font-weight: 700;
+            box-shadow: none !important;
+
+            &.p-highlight {
+                background: white !important;
+                color: #10b981 !important; // Green primary
+                box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03) !important;
+            }
+
+            &:not(.p-highlight):hover {
+                background: rgba(0,0,0,0.02) !important;
+                color: #475569 !important;
+            }
+
+            .p-button-label {
+                display: none; // Using our template instead
+            }
+        }
+    }
+}

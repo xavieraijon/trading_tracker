@@ -1,21 +1,31 @@
 import { Component, inject, OnInit, signal, effect } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import { CardModule } from 'primeng/card';
 import { ChartModule } from 'primeng/chart';
 import { TooltipModule } from 'primeng/tooltip';
+import { SelectButtonModule } from 'primeng/selectbutton';
 import { TradesService } from '../trades/trades.service';
 import { FilterStore } from '../../core/filter.store';
 
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [CommonModule, CardModule, ChartModule, TooltipModule],
+  imports: [CommonModule, CardModule, ChartModule, TooltipModule, SelectButtonModule, FormsModule],
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.scss'
 })
 export class DashboardComponent {
   stats = signal<any>(null);
   chartData = signal<any>(null);
+  selectedTimeframe = signal<'trade' | 'day' | 'week' | 'month'>('trade');
+
+  timeframeOptions = [
+    { label: 'Trades', value: 'trade', icon: 'pi pi-list' },
+    { label: 'Día', value: 'day', icon: 'pi pi-calendar' },
+    { label: 'Semana', value: 'week', icon: 'pi pi-calendar-plus' },
+    { label: 'Mes', value: 'month', icon: 'pi pi-calendar-minus' }
+  ];
 
   // Sparkline state
   pnlSparkline = signal<any>(null);
@@ -54,19 +64,43 @@ export class DashboardComponent {
         displayColors: false,
         callbacks: {
           title: (items: any) => {
+            const timeframe = this.selectedTimeframe();
             const index = items[0].dataIndex;
-            const trade = this.stats().equityCurve[index];
-            return `${trade.side === 'LONG' ? '🟩 LONG' : '🟥 SHORT'} - ${trade.instrument}`;
+            const stats = this.stats();
+
+            if (timeframe === 'trade') {
+                const trade = stats.equityCurve[index];
+                return `${trade.side === 'LONG' ? '🟩 LONG' : '🟥 SHORT'} - ${trade.instrument}`;
+            }
+
+            return `Balance al final del periodo`;
           },
           label: (item: any) => {
-            const trade = this.stats().equityCurve[item.dataIndex];
-            const pnl = trade.pnl >= 0 ? `+${trade.pnl.toFixed(2)}` : `${trade.pnl.toFixed(2)}`;
+            const timeframe = this.selectedTimeframe();
+            const index = item.dataIndex;
+            const stats = this.stats();
+
+            let dataPoint;
+            if (timeframe === 'trade') {
+                dataPoint = stats.equityCurve[index];
+            } else {
+                dataPoint = this.aggregateData(stats.equityCurve, timeframe)[index];
+            }
+
+            const pnlStr = dataPoint.pnl !== undefined ?
+                (dataPoint.pnl >= 0 ? `+$${dataPoint.pnl.toFixed(2)}` : `-$${Math.abs(dataPoint.pnl).toFixed(2)}`) :
+                'N/A';
+
             const lines = [
-                `Resultado: $${pnl}`,
-                `Equidad: $${trade.equity.toFixed(2)}`,
-                `Cuenta: ${trade.accountName}`,
-                `Fecha: ${new Date(trade.date).toLocaleDateString()}`
+                `Equidad: $${dataPoint.equity.toFixed(2)}`,
+                `Fecha: ${new Date(dataPoint.date).toLocaleDateString()}`
             ];
+
+            if (timeframe === 'trade') {
+                lines.unshift(`Resultado: ${pnlStr}`);
+                lines.push(`Cuenta: ${dataPoint.accountName}`);
+            }
+
             return lines;
           }
         }
@@ -103,10 +137,14 @@ export class DashboardComponent {
     this.tradesService.getStats(id).subscribe({
       next: (data) => {
         this.stats.set(data);
-        this.prepareChartData(data.equityCurve);
+        this.prepareChartData();
         this.prepareSparklines(data.equityCurve);
       }
     });
+  }
+
+  onTimeframeChange() {
+    this.prepareChartData();
   }
 
   prepareSparklines(curve: any[]) {
@@ -171,15 +209,30 @@ export class DashboardComponent {
     });
   }
 
-  prepareChartData(curve: any[]) {
-    if (!curve || curve.length === 0) return;
+  prepareChartData() {
+    const stats = this.stats();
+    if (!stats || !stats.equityCurve || stats.equityCurve.length === 0) return;
+
+    let dataPoints = stats.equityCurve;
+    const timeframe = this.selectedTimeframe();
+
+    if (timeframe !== 'trade') {
+        dataPoints = this.aggregateData(stats.equityCurve, timeframe);
+    }
 
     this.chartData.set({
-      labels: curve.map((_, index) => `${index + 1}`),
+      labels: dataPoints.map((p: any) => {
+          const date = new Date(p.date);
+          if (timeframe === 'trade') return date.toLocaleDateString();
+          if (timeframe === 'day') return date.toLocaleDateString(undefined, { day: '2-digit', month: 'short' });
+          if (timeframe === 'week') return `S${this.getWeekNumber(date)}`;
+          if (timeframe === 'month') return date.toLocaleDateString(undefined, { month: 'short', year: '2-digit' });
+          return date.toLocaleDateString();
+      }),
       datasets: [
         {
           label: 'Equity',
-          data: curve.map(point => point.equity),
+          data: dataPoints.map((point: any) => point.equity),
           fill: true,
           borderColor: '#059669',
           borderWidth: 3,
@@ -196,13 +249,37 @@ export class DashboardComponent {
           pointBackgroundColor: '#ffffff',
           pointBorderColor: '#059669',
           pointBorderWidth: 2,
-          pointRadius: 4,
-          pointHoverRadius: 7,
-          pointHoverBackgroundColor: '#059669',
-          pointHoverBorderColor: '#ffffff',
-          pointHoverBorderWidth: 2
+          pointRadius: timeframe === 'trade' ? 4 : 6,
+          pointHoverRadius: 8
         }
       ]
     });
+  }
+
+  private aggregateData(curve: any[], timeframe: 'day' | 'week' | 'month'): any[] {
+      const groups: { [key: string]: any } = {};
+
+      curve.forEach(p => {
+          const date = new Date(p.date);
+          let key = '';
+          if (timeframe === 'day') key = date.toISOString().split('T')[0];
+          else if (timeframe === 'week') {
+              const weekNo = this.getWeekNumber(date);
+              key = `${date.getFullYear()}-W${weekNo}`;
+          }
+          else if (timeframe === 'month') key = `${date.getFullYear()}-${date.getMonth() + 1}`;
+
+          // Keep the last equity entry for the period to show progress
+          groups[key] = p;
+      });
+
+      return Object.values(groups).sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
+  }
+
+  private getWeekNumber(d: Date): number {
+    d = new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()));
+    d.setUTCDate(d.getUTCDate() + 4 - (d.getUTCDay() || 7));
+    const yearStart = new Date(Date.UTC(d.getUTCFullYear(),0,1));
+    return Math.ceil((((d.getTime() - yearStart.getTime()) / 86400000) + 1)/7);
   }
 }
