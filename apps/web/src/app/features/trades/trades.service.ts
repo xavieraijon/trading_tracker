@@ -59,6 +59,7 @@ export class TradesService {
     currency?: string;
     accountMarket?: string;
   } = {}): Observable<Trade[]> {
+    filters = filters || {};
     let params = new HttpParams();
     Object.entries(filters).forEach(([key, value]) => {
       if (value !== null && value !== undefined && value !== '') {

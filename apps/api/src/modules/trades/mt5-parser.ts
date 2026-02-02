@@ -210,9 +210,40 @@ export function parseMT5Html(html: string): MT5ParsedTrade[] {
       const side = (type.includes('buy') || type.includes('long')) ? 'LONG' : 'SHORT';
 
       // Calculate Risk Amount if S/L is present
+      // We use Ratio-based calculation to be independent of Contract Size
       let riskAmount = undefined;
+      let calculatedR = undefined;
+
       if (stopLoss && stopLoss > 0) {
-          riskAmount = Math.abs(openPrice - stopLoss) * volumeVal;
+          const priceRisk = Math.abs(openPrice - stopLoss);
+
+          if (priceRisk > 0) {
+              // 1. Calculate Technical R (Price based)
+              // Long: (Exit - Open) / (Open - SL)
+              // Short: (Open - Exit) / (SL - Open) => same as (Exit - Open)*(-1) / (Open - SL) NO.
+              // Short: Risk is SL - Open. Reward is Open - Exit.
+              // R = (Open - Exit) / (SL - Open).
+
+              let priceReward = 0;
+              if (side === 'LONG') {
+                  priceReward = closePrice - openPrice;
+              } else {
+                  priceReward = openPrice - closePrice;
+              }
+
+              // R-Multiple based purely on price distance
+              const technicalR = priceReward / priceRisk;
+
+              // 2. Derive Monetary Risk from PnL Gross
+              // R = PnL / Risk  =>  Risk = PnL / R
+              // If R is very close to 0 (Break Even), we can't calculate Risk this way safely.
+              if (Math.abs(technicalR) > 0.01) {
+                   riskAmount = Math.abs(profit / technicalR);
+              }
+
+              // We store the technical R to be used if PnL based R fails or for reference
+              // But currently the interface only supports riskAmount, so we prioritize that.
+          }
       }
 
       trades.push({

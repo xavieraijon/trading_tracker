@@ -74,23 +74,27 @@ export class TradesListComponent implements OnInit {
 
   constructor() {
       effect(() => {
-          const range = this.filterStore.dateRange();
-          const startDate = range && range[0] ? range[0].toISOString() : undefined;
-          const endDate = range && range[1] ? range[1].toISOString() : undefined;
-
-          const filters = {
-              accountId: this.filterStore.selectedAccountId() || undefined,
-              startDate,
-              endDate,
-              daysRange: this.filterStore.daysRange() || undefined,
-              side: this.filterStore.side() || undefined,
-              instrument: this.filterStore.instrument() || undefined,
-              accountMarket: this.filterStore.accountMarket() || undefined,
-              currency: this.filterStore.currency() || undefined
-          };
-          this.loadTrades(filters);
+          this.loadTrades(this.currentFilters);
       });
   }
+
+  get currentFilters() {
+      const range = this.filterStore.dateRange();
+      const startDate = range && range[0] ? range[0].toISOString() : undefined;
+      const endDate = range && range[1] ? range[1].toISOString() : undefined;
+
+      return {
+          accountId: this.filterStore.selectedAccountId() || undefined,
+          startDate,
+          endDate,
+          daysRange: this.filterStore.daysRange() || undefined,
+          side: this.filterStore.side() || undefined,
+          instrument: this.filterStore.instrument() || undefined,
+          accountMarket: this.filterStore.accountMarket() || undefined,
+          currency: this.filterStore.currency() || undefined
+      };
+  }
+
 
   sideOptions = [
       { label: 'Cualquiera', value: null },
@@ -189,7 +193,7 @@ export class TradesListComponent implements OnInit {
         });
         this.importDialog = false;
         this.importAccountId = '';
-        this.loadTrades(this.filterStore.selectedAccountId());
+        this.loadTrades(this.currentFilters);
       },
       error: (err) => {
         this.loading = false;
