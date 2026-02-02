@@ -39,11 +39,13 @@
             </ng-template>
             <ng-template pTemplate="body" let-account>
                 <tr>
-                    <td class="font-semibold">{{ account.name }}</td>
-                    <td>{{ account.type }}</td>
-                    <td>{{ account.market }}</td>
+                    <td class="font-bold text-lg">{{ account.name }}</td>
+                    <td><span class="text-muted">{{ getAccountTypeLabel(account.type) }}</span></td>
+                    <td><span class="badge" [ngClass]="getMarketBadgeClass(account.market)">{{ account.market }}</span></td>
                     <td><span class="badge badge-neutral">{{ account.currency }}</span></td>
-                    <td class="font-mono text-lg">{{ account.balance | currency:account.currency }}</td>
+                    <td class="font-mono text-xl" [ngClass]="getBalanceClass(account)">
+                        {{ account.balance | currency:account.currency }}
+                    </td>
                     <td class="text-center">
                         <div class="flex justify-center gap-3">
                             <p-button

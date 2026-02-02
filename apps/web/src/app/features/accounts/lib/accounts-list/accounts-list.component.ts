@@ -72,4 +72,27 @@ export class AccountsListComponent implements OnInit {
     this.loadAccounts();
     this.messageService.add({ severity: 'success', summary: 'Éxito', detail: 'Cuenta guardada', life: 3000 });
   }
+
+  getAccountTypeLabel(type: string): string {
+    const labels: Record<string, string> = {
+      'PERSONAL': 'Capital Propio',
+      'PROP_FIRM': 'Prop Firm / Fondeo'
+    };
+    return labels[type] || type;
+  }
+
+  getMarketBadgeClass(market: string): string {
+    const classes: Record<string, string> = {
+      'CFD': 'badge-cfd',
+      'FUTURES': 'badge-futures',
+      'SPOT': 'badge-spot',
+      'CRYPTO': 'badge-crypto',
+      'STOCKS': 'badge-stocks'
+    };
+    return classes[market] || 'badge-neutral';
+  }
+
+  getBalanceClass(account: Account): string {
+    return account.balance >= account.initialBalance ? 'text-success font-bold' : 'text-danger font-bold';
+  }
 }

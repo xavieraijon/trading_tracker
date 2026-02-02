@@ -344,6 +344,17 @@ h1, h2, h3, h4, .font-heading {
 .badge-long { background: #d1fae5; color: #065f46; }
 .badge-short { background: #fee2e2; color: #991b1b; }
 .badge-neutral { background: #f1f5f9; color: #475569; }
+.badge-cfd { background: #e0f2fe; color: #0369a1; }
+.badge-futures { background: #f3e8ff; color: #7e22ce; }
+.badge-spot { background: #dcfce7; color: #15803d; }
+.badge-crypto { background: #ffedd5; color: #c2410c; }
+.badge-stocks { background: #ccfbf1; color: #0f766e; }
+
+.text-success { color: var(--success) !important; }
+.text-danger { color: var(--error) !important; }
+.font-bold { font-weight: 700 !important; }
+.font-semibold { font-weight: 600 !important; }
+.text-muted { color: var(--text-muted) !important; }
 
 /* Ensure PrimeNG TAG matches our badges */
 .p-tag {

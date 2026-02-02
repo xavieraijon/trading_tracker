@@ -16,9 +16,32 @@ export class AccountsService {
     });
   }
 
-  findAll(userId: string) {
-    return this.prisma.account.findMany({
+  async findAll(userId: string) {
+    const accounts = await this.prisma.account.findMany({
       where: { userId },
+      include: {
+        trades: {
+          select: {
+            pnlNet: true,
+          },
+        },
+      },
+    });
+
+    return accounts.map((account) => {
+      const totalPnl = account.trades.reduce(
+        (acc, trade) => acc + Number(trade.pnlNet),
+        0,
+      );
+      const balance = Number(account.initialBalance) + totalPnl;
+
+      // Clean up the object to return
+      const { trades, ...accountData } = account;
+      return {
+        ...accountData,
+        balance,
+        initialBalance: Number(account.initialBalance),
+      };
     });
   }
 
