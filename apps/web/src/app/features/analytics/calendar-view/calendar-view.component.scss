@@ -67,8 +67,14 @@
     /* Hover effect mimicking Tradervue's file icon reveal/highlight */
     &:hover {
         background-color: #f8fafc;
-        .day-actions {
-            opacity: 1;
+    }
+
+    &.has-trades {
+        cursor: pointer;
+
+        &:hover {
+            background-color: #f1f5f9;
+            box-shadow: inset 0 0 0 2px #e2e8f0;
         }
     }
 }
@@ -133,4 +139,34 @@
     font-size: 0.75rem;
     color: #64748b;
     margin-top: 0.25rem;
+}
+
+/* Popover Styling */
+::ng-deep .calendar-details-overlay {
+    background: #ffffff !important;
+    border: 1px solid #e2e8f0 !important;
+    border-radius: 16px !important;
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04) !important;
+    padding: 0 !important;
+    overflow: hidden;
+
+    .p-popover-content {
+        padding: 0;
+    }
+
+    .p-datatable {
+        .p-datatable-thead > tr > th {
+            background: #f8fafc;
+            color: #64748b;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            padding: 0.75rem 1rem;
+        }
+
+        .p-datatable-tbody > tr > td {
+            padding: 0.75rem 1rem;
+            border-bottom: 1px solid #f1f5f9;
+        }
+    }
 }

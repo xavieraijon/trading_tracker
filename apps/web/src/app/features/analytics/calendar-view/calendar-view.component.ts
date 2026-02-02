@@ -1,10 +1,12 @@
-import { Component, OnInit, inject, signal, effect } from '@angular/core';
+import { Component, OnInit, inject, signal, effect, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ButtonModule } from 'primeng/button';
 import { CardModule } from 'primeng/card';
 import { TooltipModule } from 'primeng/tooltip';
-import { TradesService } from '../../trades/trades.service';
+import { PopoverModule, Popover } from 'primeng/popover';
+import { TableModule } from 'primeng/table';
+import { TradesService, Trade } from '../../trades/trades.service';
 import { FilterStore } from '../../../core/filter.store';
 
 interface CalendarDay {
@@ -15,6 +17,7 @@ interface CalendarDay {
   tradesCount?: number;
   wins?: number;
   losses?: number;
+  trades?: Trade[];
 }
 
 interface WeeklySummary {
@@ -32,17 +35,18 @@ interface CalendarWeek {
 @Component({
   selector: 'app-calendar-view',
   standalone: true,
-  imports: [CommonModule, FormsModule, ButtonModule, CardModule, TooltipModule],
+  imports: [CommonModule, FormsModule, ButtonModule, CardModule, TooltipModule, PopoverModule, TableModule],
   templateUrl: './calendar-view.component.html',
   styleUrl: './calendar-view.component.scss'
 })
 export class CalendarViewComponent implements OnInit {
   currentDate = signal(new Date());
-  calendarWeeks = signal<CalendarWeek[]>([]); // Changed from flat days to weeks
+  calendarWeeks = signal<CalendarWeek[]>([]);
   monthlyStats = signal({ pnl: 0, trades: 0, winRate: 0 });
   loading = signal(false);
+  selectedDay = signal<CalendarDay | null>(null);
 
-  weekDays = ['Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb', 'Dom', 'Total']; // Added Total
+  weekDays = ['Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb', 'Dom', 'Total'];
 
   private tradesService = inject(TradesService);
   private filterStore = inject(FilterStore);
@@ -55,7 +59,6 @@ export class CalendarViewComponent implements OnInit {
   }
 
   ngOnInit() {
-    // Initial load handled by effect
   }
 
   changeMonth(delta: number) {
@@ -69,28 +72,32 @@ export class CalendarViewComponent implements OnInit {
     this.loading.set(true);
     const id = accountId || undefined;
 
+    // Fetch both aggregated stats and individual trades to show details
     this.tradesService.getCalendarStats(id).subscribe({
-      next: (data) => {
-        this.generateCalendar(data);
-        this.calculateMonthlyStats(data);
-        this.loading.set(false);
+      next: (stats) => {
+        this.tradesService.findAll(id).subscribe({
+            next: (trades) => {
+                this.generateCalendar(stats, trades);
+                this.calculateMonthlyStats(stats);
+                this.loading.set(false);
+            },
+            error: () => this.loading.set(false)
+        });
       },
       error: () => this.loading.set(false)
     });
   }
 
-  generateCalendar(stats: any[]) {
+  generateCalendar(stats: any[], allTrades: Trade[]) {
     const year = this.currentDate().getFullYear();
     const month = this.currentDate().getMonth();
 
     const firstDay = new Date(year, month, 1);
     const lastDay = new Date(year, month + 1, 0);
 
-    // Adjust for Monday start
     let startDayOfWeek = firstDay.getDay() - 1;
     if (startDayOfWeek === -1) startDayOfWeek = 6;
 
-    // Create flat array of days first, then chunk
     const days: CalendarDay[] = [];
 
     // Previous month padding
@@ -106,10 +113,20 @@ export class CalendarViewComponent implements OnInit {
     // Current month days
     const statsMap = new Map(stats.map(s => [s.date, s]));
 
+    // Group all trades by date (string YYYY-MM-DD)
+    const tradesByDate = new Map<string, Trade[]>();
+    allTrades.forEach(t => {
+        if (!t.closeAt) return;
+        const dateKey = new Date(t.closeAt).toISOString().split('T')[0];
+        if (!tradesByDate.has(dateKey)) tradesByDate.set(dateKey, []);
+        tradesByDate.get(dateKey)?.push(t);
+    });
+
     for (let i = 1; i <= lastDay.getDate(); i++) {
         const date = new Date(year, month, i);
         const dateStr = date.toISOString().split('T')[0];
         const dayStats = statsMap.get(dateStr);
+        const dayTrades = tradesByDate.get(dateStr) || [];
 
         days.push({
             date: date,
@@ -118,11 +135,12 @@ export class CalendarViewComponent implements OnInit {
             pnl: dayStats?.pnl,
             tradesCount: dayStats?.count,
             wins: dayStats?.wins,
-            losses: dayStats?.losses
+            losses: dayStats?.losses,
+            trades: dayTrades
         });
     }
 
-    // Next month padding to complete the last week
+    // Next month padding
     const remainingDays = 7 - (days.length % 7);
     if (remainingDays < 7) {
         for (let i = 1; i <= remainingDays; i++) {
@@ -138,13 +156,11 @@ export class CalendarViewComponent implements OnInit {
     const weeks: CalendarWeek[] = [];
     for (let i = 0; i < days.length; i += 7) {
         const weekDays = days.slice(i, i + 7);
-
-        // Calculate weekly summary
         const summary = weekDays.reduce((acc, d) => {
             if (d.pnl) acc.pnl += d.pnl;
             if (d.tradesCount) acc.tradesCount += d.tradesCount;
             return acc;
-        }, { pnl: 0, tradesCount: 0, label: `Week ${weeks.length + 1}`, isCurrentMonth: weekDays.some(d => d.isCurrentMonth) });
+        }, { pnl: 0, tradesCount: 0, label: `Semana ${weeks.length + 1}`, isCurrentMonth: weekDays.some(d => d.isCurrentMonth) });
 
         weeks.push({ days: weekDays, summary });
     }
@@ -153,7 +169,6 @@ export class CalendarViewComponent implements OnInit {
   }
 
   calculateMonthlyStats(stats: any[]) {
-      // Filter stats for current month only
       const year = this.currentDate().getFullYear();
       const month = this.currentDate().getMonth();
 
@@ -171,7 +186,20 @@ export class CalendarViewComponent implements OnInit {
   }
 
   getPnlClass(pnl?: number) {
-      if (!pnl) return 'text-slate-400';
+      if (!pnl && pnl !== 0) return 'text-slate-400';
       return pnl >= 0 ? 'text-emerald-600' : 'text-rose-600';
+  }
+
+  toggleDetails(event: any, day: CalendarDay, op: Popover) {
+    if (!day.trades || day.trades.length === 0) return;
+    this.selectedDay.set(day);
+    op.toggle(event);
+  }
+
+  getTradeTooltip(day: CalendarDay): string {
+      if (!day.tradesCount) return 'Sin operaciones';
+      const wins = day.wins || 0;
+      const losses = day.losses || 0;
+      return `${day.tradesCount} Operaciones (${wins} Ganadas, ${losses} Perdidas)`;
   }
 }
