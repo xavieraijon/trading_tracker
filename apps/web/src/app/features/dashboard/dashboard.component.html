@@ -176,7 +176,7 @@
                         </div>
                     </div>
 
-                    <div class="chart-wrapper h-[400px]">
+                    <div class="chart-area">
                         @if (chartData()) {
                             <p-chart type="line" [data]="chartData()" [options]="chartOptions" height="100%"></p-chart>
                         } @else {
