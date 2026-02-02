@@ -190,23 +190,18 @@ export class CalendarViewComponent implements OnInit {
       return pnl >= 0 ? 'text-emerald-600' : 'text-rose-600';
   }
 
-  toggleDetails(event: any, day: CalendarDay, op: Popover) {
+  toggleDetails(event: MouseEvent, day: CalendarDay, op: Popover) {
     if (!day.trades || day.trades.length === 0) return;
 
-    const isDifferentDay = this.selectedDay() && this.selectedDay()?.date !== day.date;
-    const anchor = event.currentTarget; // Siempre la casilla (.day-cell)
+    // Importante: detener la propagación para evitar que el listener global de PrimeNG
+    // interfiera mientras actualizamos el estado del día seleccionado.
+    event.stopPropagation();
 
-    if (isDifferentDay) {
-        op.hide();
-        // Un pequeño delay asegura que PrimeNG limpie el estado anterior antes de reposicionar
-        setTimeout(() => {
-            this.selectedDay.set(day);
-            op.show(anchor);
-        }, 10);
-    } else {
-        this.selectedDay.set(day);
-        op.toggle(anchor);
-    }
+    this.selectedDay.set(day);
+
+    // Al pasar el currentTarget (la casilla .day-cell), PrimeNG v21 reposiciona
+    // el popover correctamente incluso si ya estaba abierto.
+    op.toggle(event, event.currentTarget as HTMLElement);
   }
 
   getTradeTooltip(day: CalendarDay): string {
