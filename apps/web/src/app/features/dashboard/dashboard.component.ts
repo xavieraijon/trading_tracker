@@ -54,6 +54,8 @@ export class DashboardComponent {
   };
   chartOptions = {
     maintainAspectRatio: false,
+    responsive: true,
+    aspectRatio: 2.5,
     plugins: {
       legend: { display: false },
       tooltip: {
