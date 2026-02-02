@@ -15,15 +15,26 @@ export class DashboardComponent implements OnInit {
   stats = signal<any>(null);
   chartData = signal<any>(null);
   chartOptions = {
+    maintainAspectRatio: false,
     plugins: {
-      legend: {
-        display: false
+      legend: { display: false },
+      tooltip: {
+        backgroundColor: '#1e293b',
+        padding: 12,
+        titleFont: { size: 14, weight: 'bold' },
+        bodyFont: { size: 13 },
+        displayColors: false
       }
     },
     scales: {
+      x: {
+        grid: { display: false },
+        ticks: { color: '#64748b' }
+      },
       y: {
-        beginAtZero: false,
+        grid: { borderDash: [5, 5], color: '#e2e8f0' },
         ticks: {
+          color: '#64748b',
           callback: (value: any) => '$' + value
         }
       }
@@ -55,9 +66,12 @@ export class DashboardComponent implements OnInit {
           label: 'Equity',
           data: curve.map(point => point.equity),
           fill: true,
-          borderColor: '#42A5F5',
+          borderColor: '#059669',
+          backgroundColor: 'rgba(5, 150, 105, 0.1)',
           tension: 0.4,
-          backgroundColor: 'rgba(66, 165, 245, 0.2)'
+          pointBackgroundColor: '#059669',
+          pointRadius: 4,
+          pointHoverRadius: 6
         }
       ]
     });

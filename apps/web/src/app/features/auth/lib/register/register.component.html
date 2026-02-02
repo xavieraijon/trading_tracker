@@ -1,54 +1,75 @@
-<div class="register-layout">
-    <p-card header="Crear Cuenta" styleClass="register-card shadow-lg">
-        <form [formGroup]="registerForm" (ngSubmit)="onSubmit()" class="register-form">
+<div class="auth-page-container">
+    <!-- Background Elements -->
+    <div class="auth-bg-gradient"></div>
+    <div class="auth-floating-shapes">
+        <div class="shape shape-1"></div>
+        <div class="shape shape-2"></div>
+    </div>
 
+    <div class="auth-card-wrapper glass-effect">
+        <div class="auth-header text-center mb-8">
+            <div class="auth-logo mb-3">🍌</div>
+            <h2 class="text-3xl font-bold">Únete a la manada</h2>
+            <p class="text-muted mt-2">Empieza a cultivar tus pips con BullishBanana</p>
+        </div>
+
+        <form [formGroup]="registerForm" (ngSubmit)="onSubmit()" class="flex flex-col">
             @if (error) {
-                <p-message severity="error" [text]="error" styleClass="full-width"></p-message>
+                <div class="error-toast flex items-center gap-2 p-4 mb-6 text-sm rounded-xl bg-red-50 text-red-600 border border-red-100">
+                    <i class="pi pi-exclamation-circle font-bold"></i>
+                    <span>{{ error }}</span>
+                </div>
             }
 
-            <div class="field">
-                <p-floatLabel>
+            <div class="form-group">
+                <label for="email" class="form-label">Email</label>
+                <div class="p-input-icon-left w-full">
+                    <i class="pi pi-envelope text-muted"></i>
                     <input
                         pInputText
                         id="email"
                         formControlName="email"
-                        class="full-width"
-                        [class.ng-dirty]="registerForm.get('email')?.touched"
+                        placeholder="tu@email.com"
+                        class="w-full"
                     />
-                    <label for="email">Email</label>
-                </p-floatLabel>
+                </div>
             </div>
 
-            <div class="field mt-4">
-                <p-floatLabel>
+            <div class="form-group">
+                <label for="password" class="form-label">Contraseña</label>
+                <div class="w-full">
                     <p-password
                         id="password"
                         formControlName="password"
                         [toggleMask]="true"
-                        [feedback]="true"
-                        styleClass="full-width"
-                        inputStyleClass="full-width"
-                        promptLabel="Elige una contraseña"
-                        weakLabel="Débil"
-                        mediumLabel="Media"
-                        strongLabel="Fuerte"
-                    ></p-password>
-                    <label for="password">Contraseña</label>
-                </p-floatLabel>
-                <small class="block mt-1 text-gray-500">Mínimo 8 caracteres</small>
+                        placeholder="Mínimo 8 caracteres"
+                        styleClass="w-full"
+                        inputStyleClass="w-full"
+                    >
+                        <ng-template pTemplate="header">
+                            <h6 class="mt-0 mb-2">Seguridad ante todo</h6>
+                        </ng-template>
+                    </p-password>
+                </div>
+            </div>
+
+            <div class="flex items-center gap-3 py-3 mb-2">
+                <i class="pi pi-check-circle text-primary text-base"></i>
+                <span class="text-xs text-muted font-medium">Acepto los términos de trading responsable.</span>
             </div>
 
             <p-button
-                label="Registrarse"
+                label="Crear Cuenta"
                 type="submit"
                 [loading]="loading"
                 [disabled]="registerForm.invalid"
-                styleClass="full-width mt-2"
+                styleClass="w-full py-4 shadow-lg primary-glow"
             ></p-button>
 
-            <div class="text-center mt-3 text-sm">
-                ¿Ya tienes cuenta? <a routerLink="/auth/login" class="link">Inicia sesión</a>
+            <div class="text-center mt-8 text-sm font-medium">
+                ¿Ya eres un Pro?
+                <a routerLink="/auth/login" class="text-primary hover:underline ml-1">Inicia sesión</a>
             </div>
         </form>
-    </p-card>
+    </div>
 </div>

@@ -1,42 +1,91 @@
-<div class="p-4">
-    <h1 class="text-3xl font-bold mb-4">Dashboard de Rendimiento</h1>
+<div class="px-8 py-6">
+    <div class="header-section mb-10">
+        <h1 class="text-4xl font-bold mb-2">Panel de Rendimiento</h1>
+        <p class="text-muted text-lg">Análisis de resultados y métricas de BullishBanana</p>
+    </div>
 
     @if (stats()) {
-        <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
-            <p-card header="Beneficio Total" subheader="Net PnL">
-                <div class="text-2xl font-bold" [class.text-green-500]="stats().totalPnL > 0" [class.text-red-500]="stats().totalPnL < 0">
-                    {{ stats().totalPnL | currency:'USD' }}
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-10">
+            <!-- KPI Cards same as before but inside better grid -->
+            <p-card styleClass="kpi-card">
+                <div class="flex items-center gap-4">
+                    <div class="kpi-icon bg-emerald-100 text-emerald-600">
+                        <i class="pi pi-dollar text-2xl"></i>
+                    </div>
+                    <div>
+                        <div class="text-muted text-sm font-semibold uppercase">Beneficio Neto</div>
+                        <div class="text-3xl font-bold font-mono" [class.pnl-positive]="stats().totalPnL > 0" [class.pnl-negative]="stats().totalPnL < 0">
+                            {{ stats().totalPnL | currency:'USD' }}
+                        </div>
+                    </div>
                 </div>
             </p-card>
 
-            <p-card header="Win Rate" subheader="Porcentaje de acierto">
-                <div class="text-2xl font-bold text-blue-500">
-                    {{ stats().winRate | number:'1.1-2' }}%
+            <p-card styleClass="kpi-card">
+                <div class="flex items-center gap-4">
+                    <div class="kpi-icon bg-blue-100 text-blue-600">
+                        <i class="pi pi-percentage text-2xl"></i>
+                    </div>
+                    <div>
+                        <div class="text-muted text-sm font-semibold uppercase">Win Rate</div>
+                        <div class="text-3xl font-bold text-blue-600 font-mono">
+                            {{ stats().winRate | number:'1.1-2' }}%
+                        </div>
+                    </div>
                 </div>
             </p-card>
 
-            <p-card header="Profit Factor" subheader="Ratio beneficio/riesgo">
-                <div class="text-2xl font-bold text-orange-500">
-                    {{ stats().profitFactor | number:'1.2-2' }}
+            <p-card styleClass="kpi-card">
+                <div class="flex items-center gap-4">
+                    <div class="kpi-icon bg-orange-100 text-orange-600">
+                        <i class="pi pi-bolt text-2xl"></i>
+                    </div>
+                    <div>
+                        <div class="text-muted text-sm font-semibold uppercase">Profit Factor</div>
+                        <div class="text-3xl font-bold text-orange-600 font-mono">
+                            {{ stats().profitFactor | number:'1.2-2' }}
+                        </div>
+                    </div>
                 </div>
             </p-card>
 
-            <p-card header="Operaciones" subheader="Total trades cerrados">
-                <div class="text-2xl font-bold">
-                    {{ stats().totalTrades }}
+            <p-card styleClass="kpi-card">
+                <div class="flex items-center gap-4">
+                    <div class="kpi-icon bg-slate-100 text-slate-600">
+                        <i class="pi pi-sync text-2xl"></i>
+                    </div>
+                    <div>
+                        <div class="text-muted text-sm font-semibold uppercase">Total Trades</div>
+                        <div class="text-3xl font-bold font-mono">
+                            {{ stats().totalTrades }}
+                        </div>
+                    </div>
                 </div>
             </p-card>
         </div>
 
-        <div class="grid grid-cols-1 gap-4">
-            <p-card header="Curva de Capital (Equity Curve)">
-                @if (chartData()) {
-                    <p-chart type="line" [data]="chartData()" [options]="chartOptions" height="400px"></p-chart>
-                } @else {
-                    <div class="flex justify-center items-center h-64 bg-gray-50 rounded">
-                        <p class="text-gray-500">No hay datos suficientes para mostrar la curva.</p>
+        <div class="grid grid-cols-1">
+            <p-card styleClass="bullish-table-container">
+                <div class="p-8">
+                    <div class="flex justify-between items-center mb-10">
+                        <div>
+                            <h2 class="text-2xl font-bold mb-1">Curva de Capital</h2>
+                            <p class="text-muted text-sm">Evolución de tu equity trade a trade</p>
+                        </div>
+                        <div class="badge badge-neutral">Equity Curve</div>
                     </div>
-                }
+
+                    @if (chartData()) {
+                        <div class="chart-wrapper" style="height: 450px;">
+                            <p-chart type="line" [data]="chartData()" [options]="chartOptions" height="100%"></p-chart>
+                        </div>
+                    } @else {
+                        <div class="flex flex-col justify-center items-center h-80 bg-slate-50 rounded-2xl border-2 border-dashed border-slate-200">
+                            <i class="pi pi-chart-line text-4xl text-slate-300 mb-3"></i>
+                            <p class="text-slate-500 font-medium">Necesitas cerrar operaciones para ver la curva.</p>
+                        </div>
+                    }
+                </div>
             </p-card>
         </div>
     } @else {

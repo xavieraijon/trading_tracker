@@ -1,59 +1,67 @@
-<div class="card">
+<div class="px-8 py-6">
+    <div class="header-section mb-10 flex justify-between items-end">
+        <div>
+            <h1 class="text-4xl font-bold mb-3">Gestión de Cuentas</h1>
+            <p class="text-muted text-lg">Control centralizado de tus portafolios y capital disponible</p>
+        </div>
+        <div class="flex gap-3">
+            <p-button
+                label="Nueva Cuenta"
+                icon="pi pi-plus"
+                [rounded]="true"
+                (onClick)="openNew()"
+                styleClass="primary-glow"
+            ></p-button>
+        </div>
+    </div>
+
     <p-toast></p-toast>
     <p-confirmDialog></p-confirmDialog>
 
-    <p-toolbar styleClass="mb-4 gap-2">
-        <ng-template pTemplate="left">
-            <p-button
-                label="New"
-                icon="pi pi-plus"
-                class="mr-2"
-                (onClick)="openNew()"
-            ></p-button>
-        </ng-template>
-    </p-toolbar>
-
-    <p-table
-        [value]="accounts()"
-        [rows]="10"
-        [paginator]="true"
-        [tableStyle]="{ 'min-width': '75rem' }"
-        selectionMode="single"
-        dataKey="id"
-    >
-        <ng-template pTemplate="header">
-            <tr>
-                <th pSortableColumn="name">Name <p-sortIcon field="name"></p-sortIcon></th>
-                <th pSortableColumn="currency">Currency <p-sortIcon field="currency"></p-sortIcon></th>
-                <th pSortableColumn="balance">Balance <p-sortIcon field="balance"></p-sortIcon></th>
-                <th>Actions</th>
-            </tr>
-        </ng-template>
-        <ng-template pTemplate="body" let-account>
-            <tr>
-                <td>{{ account.name }}</td>
-                <td>{{ account.currency }}</td>
-                <td>{{ account.balance | currency:account.currency }}</td>
-                <td>
-                    <p-button
-                        icon="pi pi-pencil"
-                        class="mr-2"
-                        [rounded]="true"
-                        [outlined]="true"
-                        severity="success"
-                        (onClick)="editAccount(account)"
-                    ></p-button>
-                    <p-button
-                        icon="pi pi-trash"
-                        severity="danger"
-                        [rounded]="true"
-                        [outlined]="true"
-                        (onClick)="deleteAccount(account)"
-                    ></p-button>
-                </td>
-            </tr>
-        </ng-template>
-    </p-table>
+    <div class="bullish-table-container">
+        <p-table
+            [value]="accounts()"
+            [rows]="10"
+            [paginator]="true"
+            dataKey="id"
+            styleClass="p-datatable-bullish p-datatable-sm"
+            [responsiveLayout]="'scroll'"
+        >
+            <ng-template pTemplate="header">
+                <tr>
+                    <th pSortableColumn="name">Nombre <p-sortIcon field="name"></p-sortIcon></th>
+                    <th pSortableColumn="currency">Divisa <p-sortIcon field="currency"></p-sortIcon></th>
+                    <th pSortableColumn="balance">Balance Actual <p-sortIcon field="balance"></p-sortIcon></th>
+                    <th class="text-center">Acciones</th>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-account>
+                <tr>
+                    <td class="font-semibold">{{ account.name }}</td>
+                    <td><span class="badge badge-neutral">{{ account.currency }}</span></td>
+                    <td class="font-mono text-lg">{{ account.balance | currency:account.currency }}</td>
+                    <td class="text-center">
+                        <div class="flex justify-center gap-3">
+                            <p-button
+                                icon="pi pi-pencil"
+                                [rounded]="true"
+                                [text]="true"
+                                severity="secondary"
+                                (onClick)="editAccount(account)"
+                            ></p-button>
+                            <p-button
+                                icon="pi pi-trash"
+                                severity="danger"
+                                [rounded]="true"
+                                [text]="true"
+                                (onClick)="deleteAccount(account)"
+                            ></p-button>
+                        </div>
+                    </td>
+                </tr>
+            </ng-template>
+        </p-table>
+    </div>
 
     <app-account-dialog
         [visible]="accountDialog"

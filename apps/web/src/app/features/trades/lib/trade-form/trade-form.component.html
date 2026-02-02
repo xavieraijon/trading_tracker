@@ -2,89 +2,97 @@
     [header]="trade ? 'Editar Operación' : 'Nueva Operación'"
     [(visible)]="visible"
     [modal]="true"
-    [style]="{ width: '500px' }"
-    styleClass="p-fluid"
+    [style]="{ width: '550px' }"
+    styleClass="p-fluid bullish-dialog"
     (onHide)="hideDialog()"
 >
     <ng-template pTemplate="content">
-        <form [formGroup]="tradeForm">
-            <div class="field mb-3">
-                <label for="accountId">Cuenta</label>
+        <form [formGroup]="tradeForm" class="pt-4">
+            <div class="form-group">
+                <label for="accountId" class="form-label">Cuenta de Trading</label>
                 <p-select
                     id="accountId"
                     [options]="accounts"
                     formControlName="accountId"
                     optionLabel="name"
                     optionValue="id"
-                    placeholder="Selecciona una cuenta"
+                    placeholder="Selecciona el origen de los fondos"
                     [appendTo]="'body'"
                 ></p-select>
-                @if (tradeForm.get('accountId')?.invalid && tradeForm.get('accountId')?.touched) {
-                    <small class="p-error">La cuenta es obligatoria.</small>
-                }
             </div>
 
-            <div class="formgrid grid">
-                <div class="field col-8">
-                    <label for="instrument">Instrumento (Symbol)</label>
-                    <input type="text" pInputText id="instrument" formControlName="instrument" placeholder="Ej: EURUSD, BTC" />
-                    @if (tradeForm.get('instrument')?.invalid && tradeForm.get('instrument')?.touched) {
-                        <small class="p-error">El instrumento es obligatorio.</small>
-                    }
+            <div class="grid grid-cols-12 gap-4 mb-6">
+                <div class="col-span-8">
+                    <div class="form-group mb-0">
+                        <label for="instrument" class="form-label">Instrumento / Símbolo</label>
+                        <input type="text" pInputText id="instrument" formControlName="instrument" placeholder="Ej: EURUSD, NVDA, BTC" />
+                    </div>
                 </div>
-                <div class="field col-4 text-center">
-                    <label>L/S</label>
-                    <p-selectButton [options]="sideOptions" formControlName="side" optionLabel="label" optionValue="value"></p-selectButton>
+                <div class="col-span-4">
+                    <div class="form-group mb-0 text-center">
+                        <label class="form-label">Dirección</label>
+                        <p-selectButton
+                            [options]="sideOptions"
+                            formControlName="side"
+                            optionLabel="label"
+                            optionValue="value"
+                            styleClass="w-full"
+                        ></p-selectButton>
+                    </div>
                 </div>
             </div>
 
-            <div class="field mb-3">
-                <label for="openAt">Fecha de Apertura</label>
+            <div class="form-group">
+                <label for="openAt" class="form-label">Fecha y Hora de Apertura</label>
                 <p-datepicker id="openAt" formControlName="openAt" [showTime]="true" [showIcon]="true" appendTo="body"></p-datepicker>
             </div>
 
-            <div class="formgrid grid">
-                <div class="field col-6">
-                    <label for="entryPrice">Precio de Entrada</label>
-                    <p-inputNumber id="entryPrice" formControlName="entryPrice" [minFractionDigits]="2" [maxFractionDigits]="6"></p-inputNumber>
+            <div class="grid grid-cols-2 gap-4 mb-6">
+                <div class="form-group mb-0">
+                    <label for="entryPrice" class="form-label">Precio de Entrada</label>
+                    <p-inputNumber id="entryPrice" formControlName="entryPrice" [minFractionDigits]="2" [maxFractionDigits]="6" mode="decimal"></p-inputNumber>
                 </div>
-                <div class="field col-6">
-                    <label for="quantity">Cantidad (Lotes/Units)</label>
-                    <p-inputNumber id="quantity" formControlName="quantity" [minFractionDigits]="2" [maxFractionDigits]="6"></p-inputNumber>
+                <div class="form-group mb-0">
+                    <label for="quantity" class="form-label">Cantidad / Lotes</label>
+                    <p-inputNumber id="quantity" formControlName="quantity" [minFractionDigits]="2" [maxFractionDigits]="6" mode="decimal"></p-inputNumber>
                 </div>
             </div>
 
-            <div class="formgrid grid">
-                <div class="field col-6">
-                    <label for="fees">Comisiones</label>
+            <div class="grid grid-cols-2 gap-4 mb-6">
+                <div class="form-group mb-0">
+                    <label for="fees" class="form-label">Comisiones Deduccion</label>
                     <p-inputNumber id="fees" formControlName="fees" mode="currency" currency="USD"></p-inputNumber>
                 </div>
-                <div class="field col-6">
-                    <label for="riskAmount">Riesgo ($)</label>
+                <div class="form-group mb-0">
+                    <label for="riskAmount" class="form-label">Riesgo Proyectado ($)</label>
                     <p-inputNumber id="riskAmount" formControlName="riskAmount" mode="currency" currency="USD"></p-inputNumber>
                 </div>
             </div>
 
-            <div class="formgrid grid">
-                <div class="field col-6">
-                    <label for="exitPrice">Precio de Salida</label>
-                    <p-inputNumber id="exitPrice" formControlName="exitPrice" [minFractionDigits]="2" [maxFractionDigits]="6" placeholder="Opcional"></p-inputNumber>
+            <div class="divider mb-6 mt-2 border-t border-slate-100"></div>
+
+            <div class="grid grid-cols-2 gap-4 mb-6">
+                <div class="form-group mb-0">
+                    <label for="exitPrice" class="form-label">Precio de Salida</label>
+                    <p-inputNumber id="exitPrice" formControlName="exitPrice" [minFractionDigits]="2" [maxFractionDigits]="6" placeholder="Puntos/Precio"></p-inputNumber>
                 </div>
-                <div class="field col-6">
-                    <label for="closeAt">Fecha de Cierre</label>
-                    <p-datepicker id="closeAt" formControlName="closeAt" [showTime]="true" [showIcon]="true" appendTo="body" placeholder="Opcional"></p-datepicker>
+                <div class="form-group mb-0">
+                    <label for="closeAt" class="form-label">Fecha de Cierre</label>
+                    <p-datepicker id="closeAt" formControlName="closeAt" [showTime]="true" [showIcon]="true" appendTo="body" placeholder="Finalizar operación"></p-datepicker>
                 </div>
             </div>
 
-            <div class="field">
-                <label for="notes">Notas</label>
-                <textarea id="notes" pTextarea formControlName="notes" rows="3"></textarea>
+            <div class="form-group">
+                <label for="notes" class="form-label">Notas de la Operación</label>
+                <textarea id="notes" pTextarea formControlName="notes" rows="3" placeholder="¿Qué sentiste al entrar? ¿Viste alguna anomalía?"></textarea>
             </div>
         </form>
     </ng-template>
 
     <ng-template pTemplate="footer">
-        <p-button label="Cancelar" icon="pi pi-times" [text]="true" (onClick)="hideDialog()"></p-button>
-        <p-button label="Guardar" icon="pi pi-check" [text]="true" (onClick)="saveTrade()" [loading]="loading" [disabled]="tradeForm.invalid"></p-button>
+        <div class="flex justify-end gap-4 p-4">
+            <p-button label="Descartar" icon="pi pi-times" severity="secondary" [text]="true" (onClick)="hideDialog()"></p-button>
+            <p-button label="Guardar Operación" icon="pi pi-check" (onClick)="saveTrade()" [loading]="loading" [disabled]="tradeForm.invalid" [rounded]="true"></p-button>
+        </div>
     </ng-template>
 </p-dialog>

@@ -1,36 +1,47 @@
 <p-dialog
-    [header]="account ? 'Edit Account' : 'New Account'"
+    [header]="account ? 'Editar Cuenta' : 'Nueva Cuenta'"
     [(visible)]="visible"
     [modal]="true"
     [style]="{ width: '450px' }"
-    styleClass="p-fluid"
+    styleClass="p-fluid bullish-dialog"
     (onHide)="hideDialog()"
 >
     <ng-template pTemplate="content">
-        <form [formGroup]="accountForm">
-            <div class="field">
-                <label for="name">Name</label>
-                <input type="text" pInputText id="name" formControlName="name" />
+        <form [formGroup]="accountForm" class="pt-4">
+            <div class="form-group">
+                <label for="name" class="form-label">Nombre de la Cuenta</label>
+                <input type="text" pInputText id="name" formControlName="name" placeholder="Ej: My Funded Account, Broker X" />
                 @if (accountForm.get('name')?.invalid && accountForm.get('name')?.touched) {
-                    <small class="p-error">Name is required.</small>
+                    <small class="p-error">El nombre es obligatorio.</small>
                 }
             </div>
-            <div class="field">
-                <label for="currency">Currency</label>
-                <input type="text" pInputText id="currency" formControlName="currency" />
+
+            <div class="form-group">
+                <label for="currency" class="form-label">Divisa Base</label>
+                <input type="text" pInputText id="currency" formControlName="currency" placeholder="USD, EUR, BTC" />
                 @if (accountForm.get('currency')?.invalid && accountForm.get('currency')?.touched) {
-                    <small class="p-error">Currency is required.</small>
+                    <small class="p-error">La divisa es obligatoria.</small>
                 }
             </div>
-            <div class="field">
-                <label for="initialBalance">Initial Balance</label>
-                <p-inputNumber id="initialBalance" formControlName="initialBalance" mode="currency" currency="USD" locale="en-US"></p-inputNumber>
+
+            <div class="form-group">
+                <label for="initialBalance" class="form-label">Balance Inicial</label>
+                <p-inputNumber
+                    id="initialBalance"
+                    formControlName="initialBalance"
+                    mode="currency"
+                    currency="USD"
+                    locale="es-ES"
+                    placeholder="0.00"
+                ></p-inputNumber>
             </div>
         </form>
     </ng-template>
 
     <ng-template pTemplate="footer">
-        <p-button label="Cancel" icon="pi pi-times" [text]="true" (onClick)="hideDialog()"></p-button>
-        <p-button label="Save" icon="pi pi-check" [text]="true" (onClick)="saveAccount()" [loading]="loading" [disabled]="accountForm.invalid"></p-button>
+        <div class="flex justify-end gap-4 p-4">
+            <p-button label="Cancelar" icon="pi pi-times" severity="secondary" [text]="true" (onClick)="hideDialog()"></p-button>
+            <p-button label="Guardar Cuenta" icon="pi pi-check" (onClick)="saveAccount()" [loading]="loading" [disabled]="accountForm.invalid" [rounded]="true"></p-button>
+        </div>
     </ng-template>
 </p-dialog>

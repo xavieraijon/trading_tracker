@@ -1,33 +1,40 @@
-<div class="card">
-    <p-toast></p-toast>
-    <p-confirmDialog></p-confirmDialog>
-
-    <p-toolbar styleClass="mb-4 gap-2">
-        <ng-template pTemplate="left">
+<div class="px-8 py-6">
+    <div class="header-section mb-10 flex justify-between items-end">
+        <div>
+            <h1 class="text-4xl font-bold mb-3">Registro de Operaciones</h1>
+            <p class="text-muted text-lg">Historial detallado de tu actividad en el mercado</p>
+        </div>
+        <div class="flex gap-3">
             <p-button
                 label="Nueva Operación"
                 icon="pi pi-plus"
-                class="mr-2"
+                [rounded]="true"
                 (onClick)="openNew()"
+                styleClass="primary-glow"
             ></p-button>
             <p-button
                 label="Exportar CSV"
                 icon="pi pi-download"
                 severity="secondary"
+                [rounded]="true"
                 (onClick)="exportTrades()"
             ></p-button>
-        </ng-template>
-    </p-toolbar>
+        </div>
+    </div>
 
-    <p-table
-        [value]="trades()"
-        [rows]="10"
-        [paginator]="true"
-        [loading]="loading"
-        [tableStyle]="{ 'min-width': '75rem' }"
-        dataKey="id"
-        styleClass="p-datatable-sm"
-    >
+    <p-toast></p-toast>
+    <p-confirmDialog></p-confirmDialog>
+
+    <div class="bullish-table-container">
+        <p-table
+            [value]="trades()"
+            [rows]="10"
+            [paginator]="true"
+            [loading]="loading"
+            dataKey="id"
+            styleClass="p-datatable-bullish p-datatable-sm"
+            [responsiveLayout]="'scroll'"
+        >
         <ng-template pTemplate="header">
             <tr>
                 <th pSortableColumn="openAt">Fecha <p-sortIcon field="openAt"></p-sortIcon></th>
@@ -64,21 +71,22 @@
                     {{ trade.pnlNet | currency:trade.account?.currency || 'USD' }}
                 </td>
                 <td>
-                    <p-button
-                        icon="pi pi-pencil"
-                        class="mr-2"
-                        [rounded]="true"
-                        [outlined]="true"
-                        severity="success"
-                        (onClick)="editTrade(trade)"
-                    ></p-button>
-                    <p-button
-                        icon="pi pi-trash"
-                        severity="danger"
-                        [rounded]="true"
-                        [outlined]="true"
-                        (onClick)="deleteTrade(trade)"
-                    ></p-button>
+                    <div class="flex gap-3">
+                        <p-button
+                            icon="pi pi-pencil"
+                            [rounded]="true"
+                            [text]="true"
+                            severity="secondary"
+                            (onClick)="editTrade(trade)"
+                        ></p-button>
+                        <p-button
+                            icon="pi pi-trash"
+                            severity="danger"
+                            [rounded]="true"
+                            [text]="true"
+                            (onClick)="deleteTrade(trade)"
+                        ></p-button>
+                    </div>
                 </td>
             </tr>
         </ng-template>

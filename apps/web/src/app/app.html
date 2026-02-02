@@ -1,10 +1,68 @@
-<nav class="main-nav">
-  <div class="nav-links">
-    <a routerLink="/dashboard" routerLinkActive="active">Dashboard</a>
-    <a routerLink="/accounts" routerLinkActive="active">Cuentas</a>
-    <a routerLink="/trades" routerLinkActive="active">Operaciones</a>
-  </div>
-</nav>
-<div class="content">
-  <router-outlet></router-outlet>
-</div>
+<header class="main-header glass-effect sticky top-0 z-50">
+    <div class="header-container mx-auto px-6 py-3 flex items-center justify-between">
+        <!-- Logo & Brand -->
+        <div class="brand flex items-center gap-2" routerLink="/">
+            <div class="logo-circle">
+                <span class="logo-emoji">🍌</span>
+            </div>
+            <div class="brand-text">
+                <span class="app-name">BullishBanana</span>
+                <span class="app-tagline">The Golden Bunch of Pips</span>
+            </div>
+        </div>
+
+        <!-- Navigation Links (Only if Logged In) -->
+        @if (authService.isAuthenticated()) {
+            <nav class="nav-links flex gap-8">
+                <a routerLink="/dashboard" routerLinkActive="active" class="nav-item">
+                    <i class="pi pi-chart-bar mr-1"></i> Dashboard
+                </a>
+                <a routerLink="/accounts" routerLinkActive="active" class="nav-item">
+                    <i class="pi pi-wallet mr-1"></i> Cuentas
+                </a>
+                <a routerLink="/trades" routerLinkActive="active" class="nav-item">
+                    <i class="pi pi-briefcase mr-1"></i> Operaciones
+                </a>
+            </nav>
+        }
+
+        <!-- User Zone -->
+        <div class="user-zone">
+            @if (authService.isAuthenticated()) {
+                <div class="flex items-center gap-4">
+                    <p-button
+                        icon="pi pi-user"
+                        [rounded]="true"
+                        [text]="true"
+                        severity="secondary"
+                        (onClick)="userMenu.toggle($event)"
+                    ></p-button>
+                    <p-menu #userMenu [model]="userMenuItems" [popup]="true"></p-menu>
+                </div>
+            } @else {
+                <p-button label="Empezar" icon="pi pi-rocket" routerLink="/auth/register" [rounded]="true"></p-button>
+            }
+        </div>
+    </div>
+</header>
+
+<main class="content-wrapper min-h-screen px-8">
+    <router-outlet></router-outlet>
+</main>
+
+<footer class="main-footer mt-12 py-12">
+    <div class="mx-auto px-6 text-center">
+        <div class="footer-logo mb-4">
+            <span class="logo-emoji grayscale">🍌</span>
+        </div>
+        <p class="text-muted mb-4">© 2026 BullishBanana. Gestión de riesgo con estilo.</p>
+        <div class="flex justify-center gap-6 text-sm text-muted">
+            <a href="#">Términos</a>
+            <a href="#">Privacidad</a>
+            <a href="#">Soporte</a>
+        </div>
+        <p class="mt-8 text-xs text-muted opacity-50 px-12 italic">
+            El trading implica riesgos. Opera solo con capital que puedas permitirte perder. Este plátano no es asesoría financiera.
+        </p>
+    </div>
+</footer>
