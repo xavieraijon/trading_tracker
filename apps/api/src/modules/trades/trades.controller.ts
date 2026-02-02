@@ -112,6 +112,8 @@ export class TradesController {
     @Query('side') side?: string,
     @Query('instrument') instrument?: string,
     @Query('daysRange') daysRange?: string,
+    @Query('startDate') startDate?: string,
+    @Query('endDate') endDate?: string,
     @Query('currency') currency?: string,
     @Query('accountMarket') accountMarket?: string
   ) {
@@ -120,6 +122,8 @@ export class TradesController {
       side,
       instrument,
       daysRange: daysRange ? parseInt(daysRange, 10) : undefined,
+      startDate,
+      endDate,
       currency,
       accountMarket
     });

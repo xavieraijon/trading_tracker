@@ -51,6 +51,8 @@ export class TradesService {
     side?: string;
     instrument?: string;
     daysRange?: number;
+    startDate?: string;
+    endDate?: string;
     currency?: string;
     accountMarket?: string;
   } = {}): Observable<Trade[]> {

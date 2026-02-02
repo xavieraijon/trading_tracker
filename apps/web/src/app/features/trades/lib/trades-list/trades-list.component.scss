@@ -61,7 +61,7 @@
         background: #f8fafc;
         border: 1px solid #e2e8f0;
         transition: all 0.2s ease;
-        width: 100%;
+        min-width: 180px;
 
         &:hover {
             border-color: var(--primary-color);
@@ -81,19 +81,38 @@
             font-weight: 600;
             color: #334155 !important;
             padding: 0 1rem;
-            font-size: 0.9rem;
+            font-size: 0.85rem;
             background: transparent;
-            border: none;
-            height: 100%;
+            border: none !important;
+            height: 100% !important;
             width: 100%;
+            outline: none;
         }
 
-        .p-select-dropdown,
-        .p-datepicker-button {
+        &.premium-datepicker {
+            min-width: 240px;
+
+            .p-datepicker-input {
+                padding-right: 2.5rem; // Space for the icon
+            }
+        }
+
+        .p-select-dropdown {
             width: 2.5rem;
             color: #94a3b8;
         }
+
+        .p-datepicker-button {
+            width: 2.5rem;
+            color: #94a3b8;
+            background: transparent;
+            border: none;
+        }
     }
+}
+
+.filter-actions {
+    padding-bottom: 4px; // Fine tune alignment
 }
 
 .hover-shake:hover i {
