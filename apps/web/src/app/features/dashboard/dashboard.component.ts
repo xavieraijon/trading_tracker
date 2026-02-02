@@ -18,13 +18,14 @@ import { FilterStore } from '../../core/filter.store';
 export class DashboardComponent {
   stats = signal<any>(null);
   chartData = signal<any>(null);
-  selectedTimeframe = signal<'trade' | 'day' | 'week' | 'month'>('trade');
+  selectedTimeframe = signal<'all' | 'day' | 'week' | 'month' | 'year'>('all');
 
   timeframeOptions = [
-    { label: 'Trades', value: 'trade', icon: 'pi pi-list' },
+    { label: 'Todos', value: 'all', icon: 'pi pi-list' },
     { label: 'Día', value: 'day', icon: 'pi pi-calendar' },
     { label: 'Semana', value: 'week', icon: 'pi pi-calendar-plus' },
-    { label: 'Mes', value: 'month', icon: 'pi pi-calendar-minus' }
+    { label: 'Mes', value: 'month', icon: 'pi pi-calendar-minus' },
+    { label: 'Año', value: 'year', icon: 'pi pi-calendar-clock' }
   ];
 
   // Sparkline state
@@ -68,7 +69,7 @@ export class DashboardComponent {
             const index = items[0].dataIndex;
             const stats = this.stats();
 
-            if (timeframe === 'trade') {
+            if (timeframe === 'all') {
                 const trade = stats.equityCurve[index];
                 return `${trade.side === 'LONG' ? '🟩 LONG' : '🟥 SHORT'} - ${trade.instrument}`;
             }
@@ -81,7 +82,7 @@ export class DashboardComponent {
             const stats = this.stats();
 
             let dataPoint;
-            if (timeframe === 'trade') {
+            if (timeframe === 'all') {
                 dataPoint = stats.equityCurve[index];
             } else {
                 dataPoint = this.aggregateData(stats.equityCurve, timeframe)[index];
@@ -96,7 +97,7 @@ export class DashboardComponent {
                 `Fecha: ${new Date(dataPoint.date).toLocaleDateString()}`
             ];
 
-            if (timeframe === 'trade') {
+            if (timeframe === 'all') {
                 lines.unshift(`Resultado: ${pnlStr}`);
                 lines.push(`Cuenta: ${dataPoint.accountName}`);
             }
@@ -216,17 +217,18 @@ export class DashboardComponent {
     let dataPoints = stats.equityCurve;
     const timeframe = this.selectedTimeframe();
 
-    if (timeframe !== 'trade') {
+    if (timeframe !== 'all') {
         dataPoints = this.aggregateData(stats.equityCurve, timeframe);
     }
 
     this.chartData.set({
       labels: dataPoints.map((p: any) => {
           const date = new Date(p.date);
-          if (timeframe === 'trade') return date.toLocaleDateString();
+          if (timeframe === 'all') return date.toLocaleDateString();
           if (timeframe === 'day') return date.toLocaleDateString(undefined, { day: '2-digit', month: 'short' });
           if (timeframe === 'week') return `S${this.getWeekNumber(date)}`;
           if (timeframe === 'month') return date.toLocaleDateString(undefined, { month: 'short', year: '2-digit' });
+          if (timeframe === 'year') return date.getFullYear().toString();
           return date.toLocaleDateString();
       }),
       datasets: [
@@ -249,14 +251,14 @@ export class DashboardComponent {
           pointBackgroundColor: '#ffffff',
           pointBorderColor: '#059669',
           pointBorderWidth: 2,
-          pointRadius: timeframe === 'trade' ? 4 : 6,
+          pointRadius: timeframe === 'all' ? 4 : 6,
           pointHoverRadius: 8
         }
       ]
     });
   }
 
-  private aggregateData(curve: any[], timeframe: 'day' | 'week' | 'month'): any[] {
+  private aggregateData(curve: any[], timeframe: 'day' | 'week' | 'month' | 'year'): any[] {
       const groups: { [key: string]: any } = {};
 
       curve.forEach(p => {
@@ -268,6 +270,7 @@ export class DashboardComponent {
               key = `${date.getFullYear()}-W${weekNo}`;
           }
           else if (timeframe === 'month') key = `${date.getFullYear()}-${date.getMonth() + 1}`;
+          else if (timeframe === 'year') key = `${date.getFullYear()}`;
 
           // Keep the last equity entry for the period to show progress
           groups[key] = p;
@@ -277,9 +280,9 @@ export class DashboardComponent {
   }
 
   private getWeekNumber(d: Date): number {
-    d = new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()));
-    d.setUTCDate(d.getUTCDate() + 4 - (d.getUTCDay() || 7));
-    const yearStart = new Date(Date.UTC(d.getUTCFullYear(),0,1));
-    return Math.ceil((((d.getTime() - yearStart.getTime()) / 86400000) + 1)/7);
+    const date = new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()));
+    date.setUTCDate(date.getUTCDate() + 4 - (date.getUTCDay() || 7));
+    const yearStart = new Date(Date.UTC(date.getUTCFullYear(),0,1));
+    return Math.ceil((((date.getTime() - yearStart.getTime()) / 86400000) + 1) / 7);
   }
 }
