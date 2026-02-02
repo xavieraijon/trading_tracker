@@ -34,8 +34,20 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 1rem;
+    font-size: 0.9rem;
     box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+
+    i {
+        color: white !important;
+        filter: drop-shadow(0 2px 2px rgba(0,0,0,0.1));
+    }
+
+    // Specific backgrounds
+    &.bg-emerald-50 { background: #10b981 !important; }
+    &.bg-blue-50 { background: #3b82f6 !important; }
+    &.bg-orange-50 { background: #f59e0b !important; }
+    &.bg-rose-50 { background: #ef4444 !important; }
+    &.bg-slate-50 { background: #64748b !important; }
 }
 
 .sparkline-container {
@@ -67,6 +79,20 @@
         padding: 0.5rem 0.75rem;
         border-radius: 8px;
         box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+    }
+}
+
+/* Help icons refinement */
+.pi-question-circle {
+    opacity: 0.25 !important;
+    color: #94a3b8 !important;
+    transition: all 0.2s ease;
+    cursor: help;
+
+    &:hover {
+        opacity: 0.8 !important;
+        color: #64748b !important;
+        transform: scale(1.1);
     }
 }
 

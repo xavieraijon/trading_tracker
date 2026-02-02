@@ -34,7 +34,11 @@ export class DashboardComponent {
     },
     elements: {
         point: { radius: 0 },
-        line: { tension: 0.4 }
+        line: {
+            tension: 0.6,
+            borderWidth: 1.2,
+            capStyle: 'round' as const
+        }
     }
   };
   chartOptions = {
