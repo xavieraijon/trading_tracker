@@ -29,4 +29,9 @@ export class CreateAccountDto {
   @IsEnum(MarketType)
   @IsOptional()
   market?: MarketType;
+
+  @IsNumber()
+  @IsOptional()
+  @Min(0)
+  defaultRisk?: number;
 }

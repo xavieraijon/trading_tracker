@@ -59,7 +59,8 @@ export class AccountDialogComponent implements OnChanges, OnInit {
       type: ['PERSONAL', Validators.required],
       market: ['CFD', Validators.required],
       broker: [''],
-      externalId: ['']
+      externalId: [''],
+      defaultRisk: [0, [Validators.min(0)]]
     });
   }
 
@@ -88,7 +89,8 @@ export class AccountDialogComponent implements OnChanges, OnInit {
         type: this.account.type || 'PERSONAL',
         market: this.account.market || 'CFD',
         broker: this.account.broker || '',
-        externalId: this.account.externalId || ''
+        externalId: this.account.externalId || '',
+        defaultRisk: this.account.defaultRisk || 0
       });
     } else if (changes['account'] && !this.account) {
         this.accountForm.reset({
@@ -98,7 +100,8 @@ export class AccountDialogComponent implements OnChanges, OnInit {
             type: 'PERSONAL',
             market: 'CFD',
             broker: '',
-            externalId: ''
+            externalId: '',
+            defaultRisk: 0
         });
     }
   }

@@ -70,16 +70,33 @@
                 </p-select>
             </div>
 
-            <div class="form-group">
-                <label for="initialBalance" class="form-label">Balance Inicial</label>
-                <p-inputNumber
-                    id="initialBalance"
-                    formControlName="initialBalance"
-                    mode="currency"
-                    [currency]="accountForm.get('currency')?.value || 'USD'"
-                    locale="es-ES"
-                    placeholder="0.00"
-                ></p-inputNumber>
+            <div class="grid grid-cols-2 gap-4">
+                <div class="form-group">
+                    <label for="initialBalance" class="form-label">Balance Inicial</label>
+                    <p-inputNumber
+                        id="initialBalance"
+                        formControlName="initialBalance"
+                        mode="currency"
+                        [currency]="accountForm.get('currency')?.value || 'USD'"
+                        locale="es-ES"
+                        placeholder="0.00"
+                        styleClass="w-full"
+                    ></p-inputNumber>
+                </div>
+                <div class="form-group">
+                    <label for="defaultRisk" class="form-label">Riesgo por Operación (Defecto)</label>
+                    <p-inputNumber
+                        id="defaultRisk"
+                        formControlName="defaultRisk"
+                        mode="currency"
+                        [currency]="accountForm.get('currency')?.value || 'USD'"
+                        locale="es-ES"
+                        placeholder="0.00"
+                        styleClass="w-full"
+                        pTooltip="Se usará para calcular R si no hay Stop Loss"
+                        tooltipPosition="top"
+                    ></p-inputNumber>
+                </div>
             </div>
         </form>
     </ng-template>

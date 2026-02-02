@@ -73,7 +73,7 @@ export class TradesService {
     });
   }
 
-  findAll(userId: string, filters: {
+  async findAll(userId: string, filters: {
     accountId?: string;
     side?: string;
     instrument?: string;
@@ -110,14 +110,22 @@ export class TradesService {
       };
     }
 
-    return this.prisma.trade.findMany({
+    const trades = await this.prisma.trade.findMany({
       where,
       include: {
         account: {
-          select: { name: true, currency: true, market: true }
+          select: { name: true, currency: true, market: true, defaultRisk: true }
         }
       },
       orderBy: { openAt: 'desc' },
+    });
+
+    return trades.map((t: any) => {
+      let resultR = t.resultR;
+      if (!resultR && t.account?.defaultRisk && Number(t.account.defaultRisk) > 0) {
+        resultR = new (require('@prisma/client').Prisma.Decimal)(Number(t.pnlNet) / Number(t.account.defaultRisk));
+      }
+      return { ...t, resultR };
     });
   }
 
@@ -160,7 +168,7 @@ export class TradesService {
         closeAt: { not: null }
       },
       include: {
-        account: { select: { name: true } }
+        account: { select: { name: true, defaultRisk: true } }
       },
       orderBy: { closeAt: 'asc' }
     });
@@ -202,7 +210,7 @@ export class TradesService {
     let peak = 0;
     let maxDrawdown = 0;
 
-    const equityCurve = trades.map(t => {
+    const equityCurve = trades.map((t: any) => {
       currentEquity += Number(t.pnlNet);
 
       // Update Peak for Drawdown
@@ -226,9 +234,20 @@ export class TradesService {
       };
     });
 
-    const totalR = trades.reduce((acc, t) => acc + Number(t.resultR || 0), 0);
-    const tradesWithR = trades.filter(t => t.resultR !== null && t.resultR !== undefined);
-    const avgRR = tradesWithR.length > 0 ? totalR / tradesWithR.length : 0;
+    const tradesWithCalculatedR = trades.map((t: any) => {
+        let r = t.resultR ? Number(t.resultR) : null;
+
+        // Fallback to Account's default risk if resultR is missing
+        if (r === null && t.account?.defaultRisk && Number(t.account.defaultRisk) > 0) {
+            r = Number(t.pnlNet) / Number(t.account.defaultRisk);
+        }
+
+        return r;
+    }).filter(r => r !== null) as number[];
+
+    const avgRR = tradesWithCalculatedR.length > 0
+        ? tradesWithCalculatedR.reduce((acc, r) => acc + r, 0) / tradesWithCalculatedR.length
+        : 0;
 
     return {
       totalTrades: trades.length,

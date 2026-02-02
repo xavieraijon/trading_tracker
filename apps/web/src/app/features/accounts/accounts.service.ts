@@ -12,6 +12,7 @@ export interface Account {
   market?: 'CFD' | 'FUTURES' | 'SPOT' | 'CRYPTO' | 'STOCKS';
   broker?: string;
   externalId?: string;
+  defaultRisk?: number;
   createdAt: string;
   updatedAt: string;
 }
@@ -24,6 +25,7 @@ export interface CreateAccountDto {
   market: string;
   broker?: string;
   externalId?: string;
+  defaultRisk?: number;
 }
 export type UpdateAccountDto = Partial<CreateAccountDto>;
 

@@ -33,6 +33,7 @@ model Account {
   dailyLossLimit Decimal? @db.Decimal(18,2)
   maxLossLimit   Decimal? @db.Decimal(18,2)
   profitTarget   Decimal? @db.Decimal(18,2)
+  defaultRisk    Decimal? @db.Decimal(18,2)
 
   startedAt      DateTime?
   status         String   @default("active") // active|archived
