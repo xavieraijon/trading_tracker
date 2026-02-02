@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, Output, OnChanges, inject, SimpleChanges } from '@angular/core';
+import { Component, EventEmitter, Input, Output, OnChanges, OnInit, inject, SimpleChanges } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { DialogModule } from 'primeng/dialog';
@@ -6,16 +6,18 @@ import { ButtonModule } from 'primeng/button';
 import { InputTextModule } from 'primeng/inputtext';
 import { InputNumberModule } from 'primeng/inputnumber';
 import { SelectModule } from 'primeng/select';
+import { AutoCompleteModule } from 'primeng/autocomplete';
 import { AccountsService, Account } from '../../accounts.service';
+import { TOP_PROP_FIRMS } from '../../../../core/constants/brokers.const';
 
 @Component({
   selector: 'app-account-dialog',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, DialogModule, ButtonModule, InputTextModule, InputNumberModule, SelectModule],
+  imports: [CommonModule, ReactiveFormsModule, DialogModule, ButtonModule, InputTextModule, InputNumberModule, SelectModule, AutoCompleteModule],
   templateUrl: './account-dialog.component.html',
   styleUrl: './account-dialog.component.scss'
 })
-export class AccountDialogComponent implements OnChanges {
+export class AccountDialogComponent implements OnChanges, OnInit {
   @Input() visible: boolean = false;
   @Input() account: Account | null = null;
   @Output() visibleChange = new EventEmitter<boolean>();
@@ -23,6 +25,9 @@ export class AccountDialogComponent implements OnChanges {
 
   accountForm: FormGroup;
   loading: boolean = false;
+
+  userBrokers: string[] = [];
+  filteredBrokers: string[] = [];
 
   private fb = inject(FormBuilder);
   private accountsService = inject(AccountsService);
@@ -52,8 +57,25 @@ export class AccountDialogComponent implements OnChanges {
       currency: ['USD', Validators.required],
       initialBalance: [0, [Validators.required, Validators.min(0)]],
       type: ['PERSONAL', Validators.required],
-      market: ['CFD', Validators.required]
+      market: ['CFD', Validators.required],
+      broker: ['']
     });
+  }
+
+  ngOnInit() {
+    this.loadUserBrokers();
+  }
+
+  loadUserBrokers() {
+    this.accountsService.getBrokers().subscribe(brokers => {
+      this.userBrokers = brokers;
+    });
+  }
+
+  searchBrokers(event: any) {
+      const query = event.query.toLowerCase();
+      const allBrokers = Array.from(new Set([...TOP_PROP_FIRMS, ...this.userBrokers]));
+      this.filteredBrokers = allBrokers.filter(b => b.toLowerCase().includes(query));
   }
 
   ngOnChanges(changes: SimpleChanges) {
@@ -63,7 +85,8 @@ export class AccountDialogComponent implements OnChanges {
         currency: this.account.currency,
         initialBalance: this.account.initialBalance,
         type: this.account.type || 'PERSONAL',
-        market: this.account.market || 'CFD'
+        market: this.account.market || 'CFD',
+        broker: this.account.broker || ''
       });
     } else if (changes['account'] && !this.account) {
         this.accountForm.reset({
@@ -71,7 +94,8 @@ export class AccountDialogComponent implements OnChanges {
             currency: 'USD',
             initialBalance: 0,
             type: 'PERSONAL',
-            market: 'CFD'
+            market: 'CFD',
+            broker: ''
         });
     }
   }
@@ -96,6 +120,7 @@ export class AccountDialogComponent implements OnChanges {
             this.loading = false;
             this.saved.emit();
             this.hideDialog();
+            this.loadUserBrokers(); // Reload brokers after save
         },
         error: () => {
             this.loading = false;

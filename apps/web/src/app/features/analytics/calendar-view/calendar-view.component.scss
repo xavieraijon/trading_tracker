@@ -1,0 +1,136 @@
+:host {
+    display: block;
+}
+
+.calendar-wrapper {
+    background-color: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+    border: 1px solid #f1f5f9;
+    overflow: hidden;
+}
+
+/* Header Row (Weekdays + Total) */
+.calendar-header {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr) 180px; /* 7 days + 1 summary column */
+    border-bottom: 1px solid #e2e8f0;
+    background-color: #ffffff;
+}
+
+.header-cell {
+    padding: 1rem;
+    color: #64748b;
+    font-size: 0.85rem;
+    font-weight: 600;
+    text-transform: capitalize;
+    text-align: left;
+}
+
+.header-cell.total {
+    border-left: 1px solid #e2e8f0;
+    background-color: #f8fafc;
+}
+
+/* Weeks Rows */
+.calendar-body {
+    display: flex;
+    flex-direction: column;
+}
+
+.calendar-week-row {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr) 180px;
+    border-bottom: 1px solid #e2e8f0;
+
+    &:last-child {
+        border-bottom: none;
+    }
+}
+
+/* Day Cell */
+.day-cell {
+    background-color: #ffffff;
+    min-height: 120px;
+    padding: 0.75rem;
+    position: relative;
+    border-right: 1px solid #f1f5f9;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    transition: all 0.2s ease;
+
+    &:nth-child(7) {
+        border-right: none;
+    }
+
+    /* Hover effect mimicking Tradervue's file icon reveal/highlight */
+    &:hover {
+        background-color: #f8fafc;
+        .day-actions {
+            opacity: 1;
+        }
+    }
+}
+
+.day-number {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: #334155;
+    line-height: 1;
+}
+
+.day-content {
+    margin-top: auto;
+}
+
+.pnl-value {
+    font-size: 0.95rem;
+    font-weight: 700;
+    margin-bottom: 0.25rem;
+    display: block;
+}
+
+.trade-count {
+    font-size: 0.75rem;
+    color: #94a3b8;
+    font-weight: 500;
+}
+
+/* State Modifiers */
+.is-profit { color: #10b981; } /* Emerald-500 */
+.is-loss { color: #ef4444; }   /* Red-500 */
+.is-neutral { color: #94a3b8; }
+
+.day-out-month {
+    .day-number { color: #cbd5e1; }
+    background-color: #fcfcfc;
+}
+
+/* Weekly Summary Column */
+.week-summary-cell {
+    background-color: #f8fafc;
+    border-left: 1px solid #e2e8f0;
+    padding: 1rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.summary-label {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #475569;
+    margin-bottom: 0.5rem;
+}
+
+.summary-pnl {
+    font-size: 1.1rem;
+    font-weight: 700;
+}
+
+.summary-stats {
+    font-size: 0.75rem;
+    color: #64748b;
+    margin-top: 0.25rem;
+}

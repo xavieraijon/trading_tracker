@@ -159,6 +159,48 @@ export class TradesService {
     };
   }
 
+  async getCalendarStats(userId: string, accountId?: string) {
+    const trades = await this.prisma.trade.findMany({
+      where: {
+        userId,
+        ...(accountId ? { accountId } : {}),
+        closeAt: { not: null }
+      },
+      select: {
+        closeAt: true,
+        pnlNet: true,
+        side: true
+      },
+      orderBy: { closeAt: 'asc' }
+    });
+
+    const dailyStats = new Map<string, { pnl: number; count: number; wins: number; losses: number }>();
+
+    trades.forEach(trade => {
+      // Use YYYY-MM-DD
+      const dateKey = trade.closeAt.toISOString().split('T')[0];
+      const pnl = Number(trade.pnlNet);
+
+      if (!dailyStats.has(dateKey)) {
+        dailyStats.set(dateKey, { pnl: 0, count: 0, wins: 0, losses: 0 });
+      }
+
+      const stats = dailyStats.get(dateKey);
+      stats.pnl += pnl;
+      stats.count += 1;
+      if (pnl > 0) stats.wins++;
+      if (pnl < 0) stats.losses++;
+    });
+
+    return Array.from(dailyStats.entries()).map(([date, stats]) => ({
+      date,
+      pnl: stats.pnl,
+      count: stats.count,
+      wins: stats.wins,
+      losses: stats.losses
+    }));
+  }
+
   async exportCsv(userId: string, accountId?: string) {
     const trades = await this.prisma.trade.findMany({
       where: {

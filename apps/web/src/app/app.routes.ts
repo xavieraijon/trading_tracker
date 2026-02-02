@@ -18,6 +18,10 @@ export const appRoutes: Route[] = [
     loadChildren: () => import('./features/trades/trades.routes').then(m => m.TRADES_ROUTES)
   },
   {
+    path: 'calendar',
+    loadComponent: () => import('./features/analytics/calendar-view/calendar-view.component').then(m => m.CalendarViewComponent)
+  },
+  {
     path: '',
     redirectTo: 'dashboard',
     pathMatch: 'full'

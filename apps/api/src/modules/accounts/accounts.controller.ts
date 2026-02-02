@@ -19,6 +19,11 @@ export class AccountsController {
     return this.accountsService.findAll(req.user.userId);
   }
 
+  @Get('brokers')
+  getBrokers(@Request() req) {
+    return this.accountsService.getDistinctBrokers(req.user.userId);
+  }
+
   @Get(':id')
   findOne(@Request() req, @Param('id') id: string) {
     return this.accountsService.findOne(id, req.user.userId);

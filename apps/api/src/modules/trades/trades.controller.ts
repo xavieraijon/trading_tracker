@@ -55,6 +55,11 @@ export class TradesController {
     return this.tradesService.getStats(req.user.userId, accountId);
   }
 
+  @Get('calendar-stats')
+  getCalendarStats(@Request() req, @Query('accountId') accountId?: string) {
+    return this.tradesService.getCalendarStats(req.user.userId, accountId);
+  }
+
   @Get()
   findAll(@Request() req, @Query('accountId') accountId?: string) {
     return this.tradesService.findAll(req.user.userId, accountId);

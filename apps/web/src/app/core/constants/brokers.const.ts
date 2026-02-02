@@ -1,0 +1,22 @@
+export const TOP_PROP_FIRMS = [
+    'FTMO',
+    'Apex Trader Funding',
+    'Topstep',
+    'MyFundedFX',
+    'The Funded Trader',
+    'FundedNext',
+    'True Forex Funds',
+    'E8 Funding',
+    'Blue Guardian',
+    'Alpha Capital Group',
+    'Funding Pips',
+    'Lark Funding',
+    'Breakout',
+    'FunderPro',
+    'Forex Prop Firm',
+    'SurgeTrader',
+    'City Traders Imperium',
+    'Audacity Capital',
+    'Fidelcrest',
+    '5%ers'
+];

@@ -6,11 +6,13 @@ export interface Account {
   id: string;
   name: string;
   currency: string;
-  initialBalance: number;
   balance: number;
-  userId: string;
-  type?: string;
-  market?: string;
+  initialBalance: number;
+  type?: 'PERSONAL' | 'PROP_FIRM';
+  market?: 'CFD' | 'FUTURES' | 'SPOT' | 'CRYPTO' | 'STOCKS';
+  broker?: string;
+  createdAt: string;
+  updatedAt: string;
 }
 
 export interface CreateAccountDto {
@@ -47,5 +49,9 @@ export class AccountsService {
 
   remove(id: string): Observable<void> {
     return this.http.delete<void>(`${this.apiUrl}/${id}`);
+  }
+
+  getBrokers(): Observable<string[]> {
+    return this.http.get<string[]>(`${this.apiUrl}/brokers`);
   }
 }

@@ -2,6 +2,14 @@ import { Injectable, inject } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
+export interface TradeStats {
+  totalTrades: number;
+  winRate: number;
+  profitFactor: number;
+  totalPnL: number;
+  equityCurve: { date: string, equity: number }[];
+}
+
 export interface Trade {
   id: string;
   accountId: string;
@@ -54,12 +62,16 @@ export class TradesService {
     return this.http.patch<Trade>(`${this.apiUrl}/${id}`, trade);
   }
 
-  getStats(accountId?: string): Observable<any> {
-    let params = new HttpParams();
-    if (accountId) {
-      params = params.set('accountId', accountId);
-    }
-    return this.http.get<any>(`${this.apiUrl}/stats`, { params });
+  getStats(accountId?: string): Observable<TradeStats> {
+    const params: any = {};
+    if (accountId) params.accountId = accountId;
+    return this.http.get<TradeStats>(`${this.apiUrl}/stats`, { params });
+  }
+
+  getCalendarStats(accountId?: string): Observable<any[]> {
+    const params: any = {};
+    if (accountId) params.accountId = accountId;
+    return this.http.get<any[]>(`${this.apiUrl}/calendar-stats`, { params });
   }
 
   exportCsv(accountId?: string): Observable<Blob> {

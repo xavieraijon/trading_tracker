@@ -11,6 +11,12 @@ import { providePrimeNG } from 'primeng/config';
 import Aura from '@primeuix/themes/aura';
 import { authInterceptor } from './core/auth/auth.interceptor';
 
+import { registerLocaleData } from '@angular/common';
+import localeEs from '@angular/common/locales/es';
+import { LOCALE_ID } from '@angular/core';
+
+registerLocaleData(localeEs, 'es-ES');
+
 export const appConfig: ApplicationConfig = {
   providers: [
     provideBrowserGlobalErrorListeners(),
@@ -22,6 +28,7 @@ export const appConfig: ApplicationConfig = {
         theme: {
             preset: Aura
         }
-    })
+    }),
+    { provide: LOCALE_ID, useValue: 'es-ES' }
   ],
 };

@@ -25,20 +25,37 @@
                         optionLabel="label"
                         optionValue="value"
                         placeholder="Seleccionar"
-                        appendTo="body">
+                        appendTo="body"
+                        styleClass="w-full">
                     </p-select>
                 </div>
                 <div class="form-group">
                     <label for="market" class="form-label">Mercado</label>
                     <p-select
-                        [options]="marketTypes"
+                        id="market"
                         formControlName="market"
+                        [options]="marketTypes"
                         optionLabel="label"
                         optionValue="value"
                         placeholder="Seleccionar"
-                        appendTo="body">
+                        appendTo="body"
+                        styleClass="w-full">
                     </p-select>
                 </div>
+            </div>
+
+            <div class="form-group">
+                <label for="broker" class="form-label">Broker / Prop Firm</label>
+                <p-autoComplete
+                    id="broker"
+                    formControlName="broker"
+                    [suggestions]="filteredBrokers"
+                    (completeMethod)="searchBrokers($event)"
+                    [dropdown]="true"
+                    placeholder="Seleccionar o escribir..."
+                    styleClass="w-full"
+                    inputStyleClass="w-full"
+                ></p-autoComplete>
             </div>
 
             <div class="form-group">

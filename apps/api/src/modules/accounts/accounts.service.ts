@@ -22,6 +22,15 @@ export class AccountsService {
     });
   }
 
+  async getDistinctBrokers(userId: string): Promise<string[]> {
+    const results = await this.prisma.account.findMany({
+      where: { userId, broker: { not: null } },
+      select: { broker: true },
+      distinct: ['broker'],
+    });
+    return results.map((r) => r.broker).filter(Boolean) as string[];
+  }
+
   findOne(id: string, userId: string) {
     return this.prisma.account.findFirst({
       where: { id, userId },
