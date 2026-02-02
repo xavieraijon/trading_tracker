@@ -1,4 +1,4 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { TableModule } from 'primeng/table';
 import { ButtonModule } from 'primeng/button';
@@ -18,7 +18,7 @@ import { AccountDialogComponent } from '../account-dialog/account-dialog.compone
   styleUrl: './accounts-list.component.scss'
 })
 export class AccountsListComponent implements OnInit {
-  accounts: Account[] = [];
+  accounts = signal<Account[]>([]);
   selectedAccounts: Account[] | null = null;
   accountDialog: boolean = false;
   account: Account | null = null;
@@ -33,7 +33,7 @@ export class AccountsListComponent implements OnInit {
 
   loadAccounts() {
     this.accountsService.findAll().subscribe({
-      next: (data) => this.accounts = data,
+      next: (data) => this.accounts.set(data),
       error: (err) => this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Could not load accounts' })
     });
   }
@@ -56,7 +56,7 @@ export class AccountsListComponent implements OnInit {
       accept: () => {
         this.accountsService.remove(account.id).subscribe({
             next: () => {
-                this.accounts = this.accounts.filter((val) => val.id !== account.id);
+                this.accounts.set(this.accounts().filter((val: Account) => val.id !== account.id));
                 this.messageService.add({ severity: 'success', summary: 'Successful', detail: 'Account Deleted', life: 3000 });
             },
             error: () => this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Could not delete account' })

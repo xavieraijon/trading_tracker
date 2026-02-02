@@ -11,12 +11,16 @@
             <div class="field">
                 <label for="name">Name</label>
                 <input type="text" pInputText id="name" formControlName="name" />
-                <small class="p-error" *ngIf="accountForm.get('name')?.invalid && accountForm.get('name')?.touched">Name is required.</small>
+                @if (accountForm.get('name')?.invalid && accountForm.get('name')?.touched) {
+                    <small class="p-error">Name is required.</small>
+                }
             </div>
             <div class="field">
                 <label for="currency">Currency</label>
                 <input type="text" pInputText id="currency" formControlName="currency" />
-                <small class="p-error" *ngIf="accountForm.get('currency')?.invalid && accountForm.get('currency')?.touched">Currency is required.</small>
+                @if (accountForm.get('currency')?.invalid && accountForm.get('currency')?.touched) {
+                    <small class="p-error">Currency is required.</small>
+                }
             </div>
             <div class="field">
                 <label for="initialBalance">Initial Balance</label>

@@ -1,0 +1,90 @@
+<p-dialog
+    [header]="trade ? 'Editar Operación' : 'Nueva Operación'"
+    [(visible)]="visible"
+    [modal]="true"
+    [style]="{ width: '500px' }"
+    styleClass="p-fluid"
+    (onHide)="hideDialog()"
+>
+    <ng-template pTemplate="content">
+        <form [formGroup]="tradeForm">
+            <div class="field mb-3">
+                <label for="accountId">Cuenta</label>
+                <p-select
+                    id="accountId"
+                    [options]="accounts"
+                    formControlName="accountId"
+                    optionLabel="name"
+                    optionValue="id"
+                    placeholder="Selecciona una cuenta"
+                    [appendTo]="'body'"
+                ></p-select>
+                @if (tradeForm.get('accountId')?.invalid && tradeForm.get('accountId')?.touched) {
+                    <small class="p-error">La cuenta es obligatoria.</small>
+                }
+            </div>
+
+            <div class="formgrid grid">
+                <div class="field col-8">
+                    <label for="instrument">Instrumento (Symbol)</label>
+                    <input type="text" pInputText id="instrument" formControlName="instrument" placeholder="Ej: EURUSD, BTC" />
+                    @if (tradeForm.get('instrument')?.invalid && tradeForm.get('instrument')?.touched) {
+                        <small class="p-error">El instrumento es obligatorio.</small>
+                    }
+                </div>
+                <div class="field col-4 text-center">
+                    <label>L/S</label>
+                    <p-selectButton [options]="sideOptions" formControlName="side" optionLabel="label" optionValue="value"></p-selectButton>
+                </div>
+            </div>
+
+            <div class="field mb-3">
+                <label for="openAt">Fecha de Apertura</label>
+                <p-datepicker id="openAt" formControlName="openAt" [showTime]="true" [showIcon]="true" appendTo="body"></p-datepicker>
+            </div>
+
+            <div class="formgrid grid">
+                <div class="field col-6">
+                    <label for="entryPrice">Precio de Entrada</label>
+                    <p-inputNumber id="entryPrice" formControlName="entryPrice" [minFractionDigits]="2" [maxFractionDigits]="6"></p-inputNumber>
+                </div>
+                <div class="field col-6">
+                    <label for="quantity">Cantidad (Lotes/Units)</label>
+                    <p-inputNumber id="quantity" formControlName="quantity" [minFractionDigits]="2" [maxFractionDigits]="6"></p-inputNumber>
+                </div>
+            </div>
+
+            <div class="formgrid grid">
+                <div class="field col-6">
+                    <label for="fees">Comisiones</label>
+                    <p-inputNumber id="fees" formControlName="fees" mode="currency" currency="USD"></p-inputNumber>
+                </div>
+                <div class="field col-6">
+                    <label for="riskAmount">Riesgo ($)</label>
+                    <p-inputNumber id="riskAmount" formControlName="riskAmount" mode="currency" currency="USD"></p-inputNumber>
+                </div>
+            </div>
+
+            <div class="formgrid grid">
+                <div class="field col-6">
+                    <label for="exitPrice">Precio de Salida</label>
+                    <p-inputNumber id="exitPrice" formControlName="exitPrice" [minFractionDigits]="2" [maxFractionDigits]="6" placeholder="Opcional"></p-inputNumber>
+                </div>
+                <div class="field col-6">
+                    <label for="closeAt">Fecha de Cierre</label>
+                    <p-datepicker id="closeAt" formControlName="closeAt" [showTime]="true" [showIcon]="true" appendTo="body" placeholder="Opcional"></p-datepicker>
+                </div>
+            </div>
+
+            <div class="field">
+                <label for="notes">Notas</label>
+                <textarea id="notes" pTextarea formControlName="notes" rows="3"></textarea>
+            </div>
+        </form>
+    </ng-template>
+
+    <ng-template pTemplate="footer">
+        <p-button label="Cancelar" icon="pi pi-times" [text]="true" (onClick)="hideDialog()"></p-button>
+        <p-button label="Guardar" icon="pi pi-check" [text]="true" (onClick)="saveTrade()" [loading]="loading" [disabled]="tradeForm.invalid"></p-button>
+    </ng-template>
+</p-dialog>

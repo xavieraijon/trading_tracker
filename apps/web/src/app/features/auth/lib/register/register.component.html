@@ -2,7 +2,9 @@
     <p-card header="Crear Cuenta" styleClass="register-card shadow-lg">
         <form [formGroup]="registerForm" (ngSubmit)="onSubmit()" class="register-form">
 
-            <p-message *ngIf="error" severity="error" [text]="error" styleClass="full-width"></p-message>
+            @if (error) {
+                <p-message severity="error" [text]="error" styleClass="full-width"></p-message>
+            }
 
             <div class="field">
                 <p-floatLabel>
