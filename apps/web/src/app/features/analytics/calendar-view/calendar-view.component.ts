@@ -194,17 +194,18 @@ export class CalendarViewComponent implements OnInit {
     if (!day.trades || day.trades.length === 0) return;
 
     const isDifferentDay = this.selectedDay() && this.selectedDay()?.date !== day.date;
+    const anchor = event.currentTarget; // Siempre la casilla (.day-cell)
 
     if (isDifferentDay) {
         op.hide();
         // Un pequeño delay asegura que PrimeNG limpie el estado anterior antes de reposicionar
         setTimeout(() => {
             this.selectedDay.set(day);
-            op.show(event);
+            op.show(anchor);
         }, 10);
     } else {
         this.selectedDay.set(day);
-        op.toggle(event);
+        op.toggle(anchor);
     }
   }
 
