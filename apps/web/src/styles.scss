@@ -1,8 +1,19 @@
 /* Global styles */
+:root {
+    --font-family: 'Inter', sans-serif;
+}
+
 body {
-    background-color: var(--surface-card);
+    background-color: var(--surface-ground);
     color: var(--text-color);
     font-family: var(--font-family);
     margin: 0;
     padding: 0;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+/* Reset for PrimeNG inputs to look better if theme vars missing */
+input, button, textarea, select {
+    font-family: inherit;
 }

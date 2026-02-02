@@ -1,8 +1,8 @@
-<div class="flex justify-center items-center min-h-screen bg-surface-ground px-4">
-    <p-card header="Crear Cuenta" class="w-full max-w-[400px]" styleClass="shadow-lg">
-        <form [formGroup]="registerForm" (ngSubmit)="onSubmit()" class="flex flex-col gap-4">
+<div class="register-layout">
+    <p-card header="Crear Cuenta" styleClass="register-card shadow-lg">
+        <form [formGroup]="registerForm" (ngSubmit)="onSubmit()" class="register-form">
 
-            <p-message *ngIf="error" severity="error" [text]="error" styleClass="w-full"></p-message>
+            <p-message *ngIf="error" severity="error" [text]="error" styleClass="full-width"></p-message>
 
             <div class="field">
                 <p-floatLabel>
@@ -10,7 +10,7 @@
                         pInputText
                         id="email"
                         formControlName="email"
-                        class="w-full"
+                        class="full-width"
                         [class.ng-dirty]="registerForm.get('email')?.touched"
                     />
                     <label for="email">Email</label>
@@ -24,8 +24,8 @@
                         formControlName="password"
                         [toggleMask]="true"
                         [feedback]="true"
-                        styleClass="w-full"
-                        inputStyleClass="w-full"
+                        styleClass="full-width"
+                        inputStyleClass="full-width"
                         promptLabel="Elige una contraseña"
                         weakLabel="Débil"
                         mediumLabel="Media"
@@ -41,11 +41,11 @@
                 type="submit"
                 [loading]="loading"
                 [disabled]="registerForm.invalid"
-                styleClass="w-full mt-2"
+                styleClass="full-width mt-2"
             ></p-button>
 
             <div class="text-center mt-3 text-sm">
-                ¿Ya tienes cuenta? <a routerLink="/auth/login" class="text-primary hover:underline">Inicia sesión</a>
+                ¿Ya tienes cuenta? <a routerLink="/auth/login" class="link">Inicia sesión</a>
             </div>
         </form>
     </p-card>

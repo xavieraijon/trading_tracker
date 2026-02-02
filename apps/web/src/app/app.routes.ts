@@ -6,6 +6,10 @@ export const appRoutes: Route[] = [
     loadChildren: () => import('./features/auth/lib/lib.routes').then(m => m.authRoutes)
   },
   {
+    path: 'accounts',
+    loadChildren: () => import('./features/accounts/accounts.routes').then(m => m.accountsRoutes)
+  },
+  {
     path: '',
     redirectTo: 'auth/login',
     pathMatch: 'full'

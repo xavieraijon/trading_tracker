@@ -1,0 +1,33 @@
+.main-nav {
+  background-color: var(--surface-card);
+  border-bottom: 1px solid var(--surface-border);
+  padding: 1rem 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  .nav-links {
+    display: flex;
+    gap: 1.5rem;
+
+    a {
+      color: var(--text-color-secondary);
+      text-decoration: none;
+      font-weight: 500;
+      transition: color 0.2s;
+
+      &:hover {
+        color: var(--primary-color);
+      }
+
+      &.active {
+        color: var(--primary-color);
+        border-bottom: 2px solid var(--primary-color);
+      }
+    }
+  }
+}
+
+.content {
+  padding: 0;
+}

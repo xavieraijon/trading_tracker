@@ -1,0 +1,32 @@
+<p-dialog
+    [header]="account ? 'Edit Account' : 'New Account'"
+    [(visible)]="visible"
+    [modal]="true"
+    [style]="{ width: '450px' }"
+    styleClass="p-fluid"
+    (onHide)="hideDialog()"
+>
+    <ng-template pTemplate="content">
+        <form [formGroup]="accountForm">
+            <div class="field">
+                <label for="name">Name</label>
+                <input type="text" pInputText id="name" formControlName="name" />
+                <small class="p-error" *ngIf="accountForm.get('name')?.invalid && accountForm.get('name')?.touched">Name is required.</small>
+            </div>
+            <div class="field">
+                <label for="currency">Currency</label>
+                <input type="text" pInputText id="currency" formControlName="currency" />
+                <small class="p-error" *ngIf="accountForm.get('currency')?.invalid && accountForm.get('currency')?.touched">Currency is required.</small>
+            </div>
+            <div class="field">
+                <label for="initialBalance">Initial Balance</label>
+                <p-inputNumber id="initialBalance" formControlName="initialBalance" mode="currency" currency="USD" locale="en-US"></p-inputNumber>
+            </div>
+        </form>
+    </ng-template>
+
+    <ng-template pTemplate="footer">
+        <p-button label="Cancel" icon="pi pi-times" [text]="true" (onClick)="hideDialog()"></p-button>
+        <p-button label="Save" icon="pi pi-check" [text]="true" (onClick)="saveAccount()" [loading]="loading" [disabled]="accountForm.invalid"></p-button>
+    </ng-template>
+</p-dialog>
