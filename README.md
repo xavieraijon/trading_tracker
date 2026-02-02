@@ -24,34 +24,18 @@ App web para registrar operaciones de trading y analizar métricas (cuentas de f
 2. **Levantar base de datos**
 
    ```bash
-   docker-compose -f docker/docker-compose.yml up -d postgres
+   npm run db:up
    ```
 
-3. **Configurar entorno**
-   Crea un archivo `.env` en la raíz (opcional, o usa el default):
+3. **Iniciar Aplicaciones**
+   - **Ambos (Recomendado)**: `npm run dev`
+   - **Backend solo**: `npm run api:serve`
+   - **Frontend solo**: `npm run web:serve`
 
-   ```
-   DATABASE_URL="postgresql://app:app@localhost:5432/trading_journal"
-   ```
-
-4. **Inicializar base de datos**
+4. **Inicializar base de datos (Primera vez)**
 
    ```bash
    npx prisma migrate dev --name init --schema apps/api/prisma/schema.prisma
-   ```
-
-5. **Iniciar Aplicaciones**
-
-   Backend (API):
-
-   ```bash
-   npx nx serve api
-   ```
-
-   Frontend (Web):
-
-   ```bash
-   npx nx serve web
    ```
 
 ## Estructura
