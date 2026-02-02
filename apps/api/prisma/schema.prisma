@@ -57,12 +57,16 @@ model Trade {
 
   quantity   Decimal  @db.Decimal(18,6)
   fees       Decimal  @default(0) @db.Decimal(18,2)
+  swap       Decimal  @default(0) @db.Decimal(18,2)
+  commission Decimal  @default(0) @db.Decimal(18,2)
 
   pnlGross   Decimal? @db.Decimal(18,2)
   pnlNet     Decimal  @db.Decimal(18,2)
 
   riskAmount Decimal? @db.Decimal(18,2)
   resultR    Decimal? @db.Decimal(18,4)
+
+  externalId String?  // ID de la operación en MT5/ext (Position Ticket)
 
   notes      String?
   tags       String[] // MVP, luego normalizar
@@ -72,4 +76,5 @@ model Trade {
 
   @@index([accountId, openAt])
   @@index([userId, openAt])
+  @@index([externalId])
 }

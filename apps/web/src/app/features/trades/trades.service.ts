@@ -76,4 +76,11 @@ export class TradesService {
   remove(id: string): Observable<void> {
     return this.http.delete<void>(`${this.apiUrl}/${id}`);
   }
+
+  importMt5(accountId: string, file: File): Observable<any> {
+    const formData = new FormData();
+    formData.append('file', file);
+    formData.append('accountId', accountId);
+    return this.http.post<any>(`${this.apiUrl}/import/mt5`, formData);
+  }
 }

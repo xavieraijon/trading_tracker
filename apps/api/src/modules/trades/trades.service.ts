@@ -2,19 +2,22 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../../prisma/prisma.service';
 import { CreateTradeDto } from './dto/create-trade.dto';
 import { UpdateTradeDto } from './dto/update-trade.dto';
+import { parseMT5Html } from './mt5-parser';
 
 @Injectable()
 export class TradesService {
   constructor(private prisma: PrismaService) {}
 
   private calculateTradeMetrics(data: any) {
-    const { side, quantity, entryPrice, exitPrice, fees, riskAmount } = data;
+    const { side, quantity, entryPrice, exitPrice, fees, swap, commission, riskAmount } = data;
 
     if (entryPrice && exitPrice && quantity) {
       const q = Number(quantity);
       const entry = Number(entryPrice);
       const exit = Number(exitPrice);
       const f = Number(fees || 0);
+      const s = Number(swap || 0);
+      const c = Number(commission || 0);
 
       let pnlGross = 0;
       if (side === 'LONG') {
@@ -23,7 +26,7 @@ export class TradesService {
         pnlGross = (entry - exit) * q;
       }
 
-      const pnlNet = pnlGross - f;
+      const pnlNet = pnlGross - f - s - c;
 
       let resultR = null;
       if (riskAmount && Number(riskAmount) > 0) {
@@ -203,6 +206,52 @@ export class TradesService {
     ].join(','));
 
     return [headers, ...rows].join('\n');
+  }
+
+  async importMt5(userId: string, accountId: string, html: string) {
+    const parsedTrades = parseMT5Html(html);
+    let importedCount = 0;
+    let skippedCount = 0;
+
+    for (const pt of parsedTrades) {
+      // Check if already exists or is invalid
+      if (!pt.externalId) continue;
+
+      const existing = await this.prisma.trade.findFirst({
+        where: {
+          accountId,
+          externalId: pt.externalId
+        }
+      });
+
+      if (existing) {
+        skippedCount++;
+        continue;
+      }
+
+      await this.prisma.trade.create({
+        data: {
+          userId,
+          accountId,
+          instrument: pt.instrument,
+          side: pt.side,
+          openAt: pt.openAt,
+          closeAt: pt.closeAt,
+          entryPrice: pt.entryPrice,
+          exitPrice: pt.exitPrice,
+          quantity: pt.quantity,
+          commission: pt.commission,
+          swap: pt.swap,
+          pnlGross: pt.pnlGross,
+          pnlNet: pt.pnlNet,
+          externalId: pt.externalId,
+          notes: 'Importado de MT5'
+        }
+      });
+      importedCount++;
+    }
+
+    return { imported: importedCount, skipped: skippedCount, total: parsedTrades.length };
   }
 
   async remove(id: string, userId: string) {
