@@ -192,8 +192,16 @@ export class CalendarViewComponent implements OnInit {
 
   toggleDetails(event: any, day: CalendarDay, op: Popover) {
     if (!day.trades || day.trades.length === 0) return;
-    this.selectedDay.set(day);
-    op.toggle(event);
+
+    // Si el panel ya está abierto pero en otro día, lo movemos instantáneamente
+    if (this.selectedDay() && this.selectedDay()?.date !== day.date) {
+        this.selectedDay.set(day);
+        op.show(event);
+    } else {
+        // Comportamiento normal (abrir/cerrar)
+        this.selectedDay.set(day);
+        op.toggle(event);
+    }
   }
 
   getTradeTooltip(day: CalendarDay): string {
