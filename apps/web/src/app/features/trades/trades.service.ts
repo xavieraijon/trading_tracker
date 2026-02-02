@@ -6,7 +6,10 @@ export interface TradeStats {
   totalTrades: number;
   winRate: number;
   profitFactor: number;
-  totalPnL: number;
+  avgLoss: number;
+  expectancy: number;
+  avgRR: number;
+  maxDrawdown: number;
   equityCurve: { date: string, equity: number }[];
 }
 

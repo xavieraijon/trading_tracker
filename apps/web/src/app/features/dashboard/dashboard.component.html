@@ -84,24 +84,24 @@
                 </div>
             </p-card>
 
-            <!-- Expectancy -->
+            <!-- Average RR -->
             <p-card styleClass="kpi-card stats-card relative overflow-hidden">
                 <div class="flex flex-col h-full justify-between gap-1">
                     <div class="flex items-center justify-between">
                         <div class="flex items-center gap-3">
-                            <span class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Expectancy</span>
+                            <span class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Average RR</span>
                             <i class="pi pi-question-circle text-[10px] text-slate-300/60 cursor-help hover:text-slate-400 transition-colors"
-                               pTooltip="Cantidad media esperada a ganar (o perder) por operación."
+                               pTooltip="Relación de Riesgo/Beneficio promedio por operación cerrada."
                                tooltipPosition="top"></i>
                         </div>
                         <div class="kpi-icon-container bg-emerald-50 text-emerald-500">
-                            <i class="pi pi-compass"></i>
+                            <i class="pi pi-chart-line"></i>
                         </div>
                     </div>
                     <div class="text-2xl font-black text-emerald-600 font-mono tracking-tighter">
-                        {{ stats().expectancy | currency:'USD':'symbol':'1.0-0' }}
+                        {{ stats().avgRR | number:'1.2-2' }}R
                     </div>
-                    <div class="text-[10px] text-slate-400 mt-auto pb-1">Per trade average</div>
+                    <div class="text-[10px] text-slate-400 mt-auto pb-1">Average performance</div>
                 </div>
             </p-card>
 

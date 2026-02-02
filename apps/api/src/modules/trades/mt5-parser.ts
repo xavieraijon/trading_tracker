@@ -13,6 +13,8 @@ export interface MT5ParsedTrade {
   swap: number;
   pnlGross: number;
   pnlNet: number;
+  stopLoss?: number;
+  riskAmount?: number;
 }
 
 export interface MT5ReportInfo {
@@ -172,24 +174,18 @@ export function parseMT5Html(html: string): MT5ParsedTrade[] {
 
       let volumeIdx = 5;
       let openPriceIdx = 6;
+      let slIdx = 7;
       let closeAtIdx = 9;
       let closePriceIdx = 10;
       let commissionIdx = 11;
       let swapIdx = 12;
       let profitIdx = 13;
 
-      // Check if price is at index 6 by parsing it. If index 5 looks like a price instead of volume, adjust.
-      const val5 = parseNumber($(cells[5]).text());
-      const val6 = parseNumber($(cells[6]).text());
-
-      // Volume is usually small (0.01 - 100), Price is usually large.
-      // But let's be smarter: check if we have 14 cells.
-      if (cells.length === 14) {
-        // Standard position report
-      } else if (cells.length === 13) {
+      if (cells.length === 13) {
         // Shifted report (likely no hidden magic column)
         volumeIdx = 4;
         openPriceIdx = 5;
+        slIdx = 6;
         closeAtIdx = 8;
         closePriceIdx = 9;
         commissionIdx = 10;
@@ -199,6 +195,7 @@ export function parseMT5Html(html: string): MT5ParsedTrade[] {
 
       const volumeVal = parseNumber($(cells[volumeIdx]).text());
       const openPrice = parseNumber($(cells[openPriceIdx]).text());
+      const stopLoss = parseNumber($(cells[slIdx]).text());
       const closeAtStr = $(cells[closeAtIdx]).text().trim();
       const closePrice = parseNumber($(cells[closePriceIdx]).text());
       const commission = parseNumber($(cells[commissionIdx]).text());
@@ -210,21 +207,29 @@ export function parseMT5Html(html: string): MT5ParsedTrade[] {
         return;
       }
 
-      // console.log(`Successfully parsed trade ${ticket}: ${symbol} ${type} ${volumeVal} @ ${openPrice}`);
+      const side = (type.includes('buy') || type.includes('long')) ? 'LONG' : 'SHORT';
+
+      // Calculate Risk Amount if S/L is present
+      let riskAmount = undefined;
+      if (stopLoss && stopLoss > 0) {
+          riskAmount = Math.abs(openPrice - stopLoss) * volumeVal;
+      }
 
       trades.push({
         openAt: parseMT5Date(openAtStr),
         closeAt: parseMT5Date(closeAtStr),
         externalId: ticket,
         instrument: symbol,
-        side: (type.includes('buy') || type.includes('long')) ? 'LONG' : 'SHORT',
+        side,
         quantity: volumeVal,
         entryPrice: openPrice,
         exitPrice: closePrice,
         commission: commission,
         swap: swap,
         pnlGross: profit,
-        pnlNet: profit + commission + swap
+        pnlNet: profit + commission + swap,
+        stopLoss: stopLoss > 0 ? stopLoss : undefined,
+        riskAmount
       });
     }
   });

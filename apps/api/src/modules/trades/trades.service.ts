@@ -226,6 +226,10 @@ export class TradesService {
       };
     });
 
+    const totalR = trades.reduce((acc, t) => acc + Number(t.resultR || 0), 0);
+    const tradesWithR = trades.filter(t => t.resultR !== null && t.resultR !== undefined);
+    const avgRR = tradesWithR.length > 0 ? totalR / tradesWithR.length : 0;
+
     return {
       totalTrades: trades.length,
       winRate,
@@ -234,6 +238,7 @@ export class TradesService {
       avgWin,
       avgLoss,
       expectancy,
+      avgRR,
       maxDrawdown,
       equityCurve
     };
@@ -366,6 +371,8 @@ export class TradesService {
           swap: pt.swap,
           pnlGross: pt.pnlGross,
           pnlNet: pt.pnlNet,
+          riskAmount: pt.riskAmount,
+          resultR: (pt.riskAmount && pt.riskAmount > 0) ? (pt.pnlNet / pt.riskAmount) : null,
           externalId: pt.externalId,
           notes: 'Importado de MT5'
         }
