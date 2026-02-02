@@ -73,15 +73,41 @@ export class TradesService {
     });
   }
 
-  findAll(userId: string, accountId?: string) {
+  findAll(userId: string, filters: {
+    accountId?: string;
+    side?: string;
+    instrument?: string;
+    daysRange?: number;
+    currency?: string;
+    accountMarket?: string;
+  } = {}) {
+    const { accountId, side, instrument, daysRange, currency, accountMarket } = filters;
+
+    const where: any = {
+      userId,
+      ...(accountId ? { accountId } : {}),
+      ...(side ? { side } : {}),
+      ...(instrument ? { instrument: { contains: instrument, mode: 'insensitive' } } : {}),
+    };
+
+    if (daysRange) {
+      const date = new Date();
+      date.setDate(date.getDate() - daysRange);
+      where.openAt = { gte: date };
+    }
+
+    if (currency || accountMarket) {
+      where.account = {
+        ...(currency ? { currency } : {}),
+        ...(accountMarket ? { market: accountMarket } : {}),
+      };
+    }
+
     return this.prisma.trade.findMany({
-      where: {
-        userId,
-        ...(accountId ? { accountId } : {}),
-      },
+      where,
       include: {
         account: {
-          select: { name: true, currency: true }
+          select: { name: true, currency: true, market: true }
         }
       },
       orderBy: { openAt: 'desc' },

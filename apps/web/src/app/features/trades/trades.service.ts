@@ -46,11 +46,20 @@ export class TradesService {
     return this.http.post<Trade>(this.apiUrl, trade);
   }
 
-  findAll(accountId?: string): Observable<Trade[]> {
+  findAll(filters: {
+    accountId?: string;
+    side?: string;
+    instrument?: string;
+    daysRange?: number;
+    currency?: string;
+    accountMarket?: string;
+  } = {}): Observable<Trade[]> {
     let params = new HttpParams();
-    if (accountId) {
-      params = params.set('accountId', accountId);
-    }
+    Object.entries(filters).forEach(([key, value]) => {
+      if (value !== null && value !== undefined && value !== '') {
+        params = params.set(key, value.toString());
+      }
+    });
     return this.http.get<Trade[]>(this.apiUrl, { params });
   }
 

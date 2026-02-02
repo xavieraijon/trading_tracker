@@ -96,8 +96,23 @@ export class TradesController {
   }
 
   @Get()
-  findAll(@Request() req, @Query('accountId') accountId?: string) {
-    return this.tradesService.findAll(req.user.userId, accountId);
+  findAll(
+    @Request() req,
+    @Query('accountId') accountId?: string,
+    @Query('side') side?: string,
+    @Query('instrument') instrument?: string,
+    @Query('daysRange') daysRange?: string,
+    @Query('currency') currency?: string,
+    @Query('accountMarket') accountMarket?: string
+  ) {
+    return this.tradesService.findAll(req.user.userId, {
+      accountId,
+      side,
+      instrument,
+      daysRange: daysRange ? parseInt(daysRange, 10) : undefined,
+      currency,
+      accountMarket
+    });
   }
 
   @Get('export')

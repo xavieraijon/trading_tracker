@@ -10,6 +10,11 @@ import { ConfirmationService, MessageService } from 'primeng/api';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { DialogModule } from 'primeng/dialog';
 import { SelectModule } from 'primeng/select';
+import { SelectButtonModule } from 'primeng/selectbutton';
+import { MultiSelectModule } from 'primeng/multiselect';
+import { InputTextModule } from 'primeng/inputtext';
+import { IconFieldModule } from 'primeng/iconfield';
+import { InputIconModule } from 'primeng/inputicon';
 import { TradesService, Trade } from '../../trades.service';
 import { TradeFormDialogComponent } from '../trade-form/trade-form.component';
 import { AccountDialogComponent } from '../../../accounts/lib/account-dialog/account-dialog.component';
@@ -30,6 +35,11 @@ import { FilterStore } from '../../../../core/filter.store';
     TagModule,
     DialogModule,
     SelectModule,
+    SelectButtonModule,
+    MultiSelectModule,
+    InputTextModule,
+    IconFieldModule,
+    InputIconModule,
     TradeFormDialogComponent,
     AccountDialogComponent
   ],
@@ -53,13 +63,50 @@ export class TradesListComponent implements OnInit {
   private accountsService = inject(AccountsService);
   private messageService = inject(MessageService);
   private confirmationService = inject(ConfirmationService);
-  private filterStore = inject(FilterStore);
+  public filterStore = inject(FilterStore);
 
   constructor() {
       effect(() => {
-          const accountId = this.filterStore.selectedAccountId();
-          this.loadTrades(accountId);
+          const filters = {
+              accountId: this.filterStore.selectedAccountId() || undefined,
+              daysRange: this.filterStore.daysRange() || undefined,
+              side: this.filterStore.side() || undefined,
+              instrument: this.filterStore.instrument() || undefined,
+              accountMarket: this.filterStore.accountMarket() || undefined,
+              currency: this.filterStore.currency() || undefined
+          };
+          this.loadTrades(filters);
       });
+  }
+
+  daysOptions = [
+      { label: '30d', value: 30 },
+      { label: '60d', value: 60 },
+      { label: '90d', value: 90 },
+      { label: 'Todo', value: null }
+  ];
+
+  sideOptions = [
+      { label: 'Todos', value: null },
+      { label: 'Long', value: 'LONG' },
+      { label: 'Short', value: 'SHORT' }
+  ];
+
+  marketOptions = [
+      { label: 'Todos', value: null },
+      { label: 'CFD', value: 'CFD' },
+      { label: 'Futuros', value: 'FUTURES' },
+      { label: 'Spot', value: 'SPOT' },
+      { label: 'Crypto', value: 'CRYPTO' },
+      { label: 'Stocks', value: 'STOCKS' }
+  ];
+
+  onFilterChange(type: string, value: any) {
+      this.filterStore.setFilters({ [type]: value });
+  }
+
+  clearFilters() {
+      this.filterStore.resetFilters();
   }
 
   ngOnInit() {
@@ -159,11 +206,10 @@ export class TradesListComponent implements OnInit {
       this.confirmImport();
   }
 
-  loadTrades(accountId: string | null = null) {
+  loadTrades(filters: any = {}) {
     this.loading = true;
-    const id = accountId || undefined;
 
-    this.tradesService.findAll(id).subscribe({
+    this.tradesService.findAll(filters).subscribe({
       next: (data) => {
         this.trades.set(data);
         this.loading = false;
@@ -186,8 +232,16 @@ export class TradesListComponent implements OnInit {
   }
 
   onSave() {
-    // Reload with current filter
-    this.loadTrades(this.filterStore.selectedAccountId());
+    // Reload with current filters
+    const filters = {
+        accountId: this.filterStore.selectedAccountId() || undefined,
+        daysRange: this.filterStore.daysRange() || undefined,
+        side: this.filterStore.side() || undefined,
+        instrument: this.filterStore.instrument() || undefined,
+        accountMarket: this.filterStore.accountMarket() || undefined,
+        currency: this.filterStore.currency() || undefined
+    };
+    this.loadTrades(filters);
     this.messageService.add({ severity: 'success', summary: 'Éxito', detail: 'Operación guardada' });
   }
 

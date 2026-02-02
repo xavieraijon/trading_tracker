@@ -75,7 +75,7 @@ export class CalendarViewComponent implements OnInit {
     // Fetch both aggregated stats and individual trades to show details
     this.tradesService.getCalendarStats(id).subscribe({
       next: (stats) => {
-        this.tradesService.findAll(id).subscribe({
+        this.tradesService.findAll({ accountId: id }).subscribe({
             next: (trades) => {
                 this.generateCalendar(stats, trades);
                 this.calculateMonthlyStats(stats);
