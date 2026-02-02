@@ -108,18 +108,29 @@ export class DashboardComponent {
   prepareSparklines(curve: any[]) {
     if (!curve || curve.length === 0) return;
 
-    // 1. PnL Sparkline (Equity movement)
+    // Helper for gradients
+    const getGradient = (color: string) => (context: any) => {
+        const chart = context.chart;
+        const {ctx, chartArea} = chart;
+        if (!chartArea) return null;
+        const gradient = ctx.createLinearGradient(0, chartArea.top, 0, chartArea.bottom);
+        gradient.addColorStop(0, `${color}33`); // 20% opacity
+        gradient.addColorStop(1, `${color}00`); // 0% opacity
+        return gradient;
+    };
+
+    // 1. PnL Sparkline
     this.pnlSparkline.set({
         labels: curve.map((_, i) => i),
         datasets: [{
             data: curve.map(p => p.equity),
             borderColor: '#10b981',
-            borderWidth: 2,
-            fill: false
+            fill: true,
+            backgroundColor: getGradient('#10b981')
         }]
     });
 
-    // 2. Win Rate Sparkline (Running win rate)
+    // 2. Win Rate Sparkline
     let wins = 0;
     const winRateTrend = curve.map((p, i) => {
         if (p.pnl > 0) wins++;
@@ -131,12 +142,12 @@ export class DashboardComponent {
         datasets: [{
             data: winRateTrend,
             borderColor: '#3b82f6',
-            borderWidth: 2,
-            fill: false
+            fill: true,
+            backgroundColor: getGradient('#3b82f6')
         }]
     });
 
-    // 3. Profit Factor Sparkline (Simplified trend)
+    // 3. Profit Factor Sparkline
     let grossProfits = 0;
     let grossLosses = 0;
     const pfTrend = curve.map(p => {
@@ -150,8 +161,8 @@ export class DashboardComponent {
         datasets: [{
             data: pfTrend,
             borderColor: '#f59e0b',
-            borderWidth: 2,
-            fill: false
+            fill: true,
+            backgroundColor: getGradient('#f59e0b')
         }]
     });
   }

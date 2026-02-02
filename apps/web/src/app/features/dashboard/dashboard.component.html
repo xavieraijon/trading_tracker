@@ -10,13 +10,15 @@
             <p-card styleClass="kpi-card stats-card border-left-pnl relative overflow-hidden">
                 <div class="flex flex-col h-full justify-between gap-1">
                     <div class="flex items-center justify-between">
-                        <div class="flex items-center gap-1.5">
+                        <div class="flex items-center gap-3">
                             <span class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Net Profit</span>
-                            <i class="pi pi-question-circle text-[10px] text-slate-300 cursor-help"
+                            <i class="pi pi-question-circle text-[10px] text-slate-300/60 cursor-help hover:text-slate-400 transition-colors"
                                pTooltip="Beneficio total neto después de todas las operaciones cerradas."
                                tooltipPosition="top"></i>
                         </div>
-                        <i class="pi pi-dollar text-slate-200"></i>
+                        <div class="kpi-icon-container bg-emerald-50 text-emerald-500">
+                            <i class="pi pi-dollar"></i>
+                        </div>
                     </div>
                     <div class="text-2xl font-black font-mono tracking-tighter" [class.pnl-positive]="stats().totalPnL > 0" [class.pnl-negative]="stats().totalPnL < 0">
                         {{ stats().totalPnL | currency:'USD':'symbol':'1.0-0' }}
@@ -34,13 +36,15 @@
             <p-card styleClass="kpi-card stats-card relative overflow-hidden">
                 <div class="flex flex-col h-full justify-between gap-1">
                     <div class="flex items-center justify-between">
-                        <div class="flex items-center gap-1.5">
+                        <div class="flex items-center gap-3">
                             <span class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Win Rate</span>
-                             <i class="pi pi-question-circle text-[10px] text-slate-300 cursor-help"
+                             <i class="pi pi-question-circle text-[10px] text-slate-300/60 cursor-help hover:text-slate-400 transition-colors"
                                pTooltip="Porcentaje de operaciones ganadoras sobre el total."
                                tooltipPosition="top"></i>
                         </div>
-                        <i class="pi pi-percentage text-slate-200"></i>
+                        <div class="kpi-icon-container bg-blue-50 text-blue-500">
+                            <i class="pi pi-percentage"></i>
+                        </div>
                     </div>
                     <div class="text-2xl font-black text-blue-600 font-mono tracking-tighter">
                         {{ stats().winRate | number:'1.0-1' }}%
@@ -58,13 +62,15 @@
             <p-card styleClass="kpi-card stats-card relative overflow-hidden">
                 <div class="flex flex-col h-full justify-between gap-1">
                     <div class="flex items-center justify-between">
-                        <div class="flex items-center gap-1.5">
+                        <div class="flex items-center gap-3">
                             <span class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Profit Factor</span>
-                             <i class="pi pi-question-circle text-[10px] text-slate-300 cursor-help"
+                             <i class="pi pi-question-circle text-[10px] text-slate-300/60 cursor-help hover:text-slate-400 transition-colors"
                                pTooltip="Relación entre el beneficio bruto y las pérdidas brutas. > 1.0 es rentable."
                                tooltipPosition="top"></i>
                         </div>
-                        <i class="pi pi-bolt text-slate-200"></i>
+                        <div class="kpi-icon-container bg-orange-50 text-orange-500">
+                            <i class="pi pi-bolt"></i>
+                        </div>
                     </div>
                     <div class="text-2xl font-black text-orange-600 font-mono tracking-tighter">
                         {{ stats().profitFactor | number:'1.2-2' }}
@@ -82,13 +88,15 @@
             <p-card styleClass="kpi-card stats-card relative overflow-hidden">
                 <div class="flex flex-col h-full justify-between gap-1">
                     <div class="flex items-center justify-between">
-                        <div class="flex items-center gap-1.5">
+                        <div class="flex items-center gap-3">
                             <span class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Expectancy</span>
-                            <i class="pi pi-question-circle text-[10px] text-slate-300 cursor-help"
+                            <i class="pi pi-question-circle text-[10px] text-slate-300/60 cursor-help hover:text-slate-400 transition-colors"
                                pTooltip="Cantidad media esperada a ganar (o perder) por operación."
                                tooltipPosition="top"></i>
                         </div>
-                        <i class="pi pi-compass text-slate-200"></i>
+                        <div class="kpi-icon-container bg-emerald-50 text-emerald-500">
+                            <i class="pi pi-compass"></i>
+                        </div>
                     </div>
                     <div class="text-2xl font-black text-emerald-600 font-mono tracking-tighter">
                         {{ stats().expectancy | currency:'USD':'symbol':'1.0-0' }}
@@ -101,13 +109,15 @@
             <p-card styleClass="kpi-card stats-card relative overflow-hidden">
                 <div class="flex flex-col h-full justify-between gap-1">
                     <div class="flex items-center justify-between">
-                        <div class="flex items-center gap-1.5">
+                        <div class="flex items-center gap-3">
                             <span class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Avg W/L</span>
-                             <i class="pi pi-question-circle text-[10px] text-slate-300 cursor-help"
+                             <i class="pi pi-question-circle text-[10px] text-slate-300/60 cursor-help hover:text-slate-400 transition-colors"
                                pTooltip="Promedio ganado en trades ganadores vs promedio perdido en perdedores."
                                tooltipPosition="top"></i>
                         </div>
-                        <i class="pi pi-arrows-h text-slate-200"></i>
+                        <div class="kpi-icon-container bg-slate-50 text-slate-500">
+                            <i class="pi pi-arrows-h"></i>
+                        </div>
                     </div>
                     <div class="text-md font-black font-mono flex gap-1 items-baseline tracking-tighter">
                         <span class="text-success text-lg">{{ stats().avgWin | number:'1.0-0' }}</span>
@@ -122,13 +132,15 @@
             <p-card styleClass="kpi-card stats-card border-left-danger relative overflow-hidden">
                 <div class="flex flex-col h-full justify-between gap-1">
                     <div class="flex items-center justify-between">
-                        <div class="flex items-center gap-1.5">
+                        <div class="flex items-center gap-3">
                             <span class="text-[10px] font-bold text-slate-400 uppercase tracking-widest text-danger">Max DD</span>
-                             <i class="pi pi-question-circle text-[10px] text-slate-300 cursor-help"
+                             <i class="pi pi-question-circle text-[10px] text-slate-300/60 cursor-help hover:text-slate-400 transition-colors"
                                pTooltip="La mayor caída desde un pico en la curva de capital. Mide el riesgo máximo."
                                tooltipPosition="top"></i>
                         </div>
-                        <i class="pi pi-exclamation-triangle text-rose-200"></i>
+                        <div class="kpi-icon-container bg-rose-50 text-rose-500">
+                            <i class="pi pi-exclamation-triangle"></i>
+                        </div>
                     </div>
                     <div class="text-2xl font-black text-danger font-mono tracking-tighter">
                         {{ stats().maxDrawdown | currency:'USD':'symbol':'1.0-0' }}
