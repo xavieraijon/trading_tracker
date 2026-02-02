@@ -79,7 +79,7 @@
 </div>
 
 <!-- Popover for Day Details -->
-<p-popover #op styleClass="calendar-details-popover">
+<p-popover #op styleClass="calendar-details-popover" [appendTo]="'body'">
     @if (selectedDay()) {
         <div class="popover-container">
             <div class="popover-header">

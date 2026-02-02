@@ -209,9 +209,12 @@ export class CalendarViewComponent implements OnInit {
         const popover = op as any;
         popover.show(event, anchor);
 
-        // Si ya estaba visible, forzamos el reposicionamiento inmediato al nuevo día
+        // Si ya estaba visible, forzamos el reposicionamiento inmediato al nuevo día.
+        // Hacemos un segundo align en el siguiente macrotask para asegurar que,
+        // una vez el P-Table ha renderizado su contenido, el cálculo de altura sea real.
         if (popover.overlayVisible) {
             popover.align();
+            setTimeout(() => popover.align(), 0);
         }
     } else {
         // Mismo día: cerrar si está abierto, abrir si está cerrado
