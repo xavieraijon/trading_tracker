@@ -234,11 +234,27 @@ export function parseMT5Html(html: string): MT5ParsedTrade[] {
               // R-Multiple based purely on price distance
               const technicalR = priceReward / priceRisk;
 
-              // 2. Derive Monetary Risk from PnL Gross
-              // R = PnL / Risk  =>  Risk = PnL / R
-              // If R is very close to 0 (Break Even), we can't calculate Risk this way safely.
-              if (Math.abs(technicalR) > 0.01) {
-                   riskAmount = Math.abs(profit / technicalR);
+              // HEURISTICS TO DETECT TRAILING/BE STOPS:
+              // 1. Logic Check: Initial Entry vs Initial SL.
+              //    If Long, SL must be < Entry. If SL >= Entry, it's a trailed stop/locked profit.
+              //    If Short, SL must be > Entry. If SL <= Entry, it's a trailed stop/locked profit.
+              const isTrailedStop =
+                  (side === 'LONG' && stopLoss >= openPrice) ||
+                  (side === 'SHORT' && stopLoss <= openPrice);
+
+              // 2. Magnitude Check: If R is enormous (> 30), it implies risk was tiny relative to move.
+              //    This usually means SL was trailed very close to entry (Break Even).
+              const isSuspiciousR = Math.abs(technicalR) > 30;
+
+              if (!isTrailedStop && !isSuspiciousR) {
+                  // 2. Derive Monetary Risk from PnL Gross
+                  // R = PnL / Risk  =>  Risk = PnL / R
+                  // If R is very close to 0 (Break Even), we can't calculate Risk this way safely.
+                  if (Math.abs(technicalR) > 0.01) {
+                       riskAmount = Math.abs(profit / technicalR);
+                  }
+              } else {
+                  console.log(`Ignoring S/L for Trade ${ticket} (Trailed/BE detected). R: ${technicalR.toFixed(2)}, SL: ${stopLoss}, Entry: ${openPrice}`);
               }
 
               // We store the technical R to be used if PnL based R fails or for reference
