@@ -78,19 +78,23 @@
     <p-confirmDialog></p-confirmDialog>
 
     <div class="filters-container bullish-card mb-8">
-        <div class="filters-body p-8">
+        <div class="filters-body p-4">
             <div class="filters-grid">
-                <!-- Rango de Días -->
+                <!-- Periodo de Tiempo (Rango de Fechas) -->
                 <div class="filter-field">
                     <label>Periodo de Tiempo</label>
-                    <p-selectButton
-                        [options]="daysOptions"
-                        [ngModel]="filterStore.daysRange()"
-                        (ngModelChange)="onFilterChange('daysRange', $event)"
-                        optionLabel="label"
-                        optionValue="value"
-                        styleClass="compact-select-button"
-                    ></p-selectButton>
+                    <p-datepicker
+                        [ngModel]="filterStore.dateRange()"
+                        (ngModelChange)="onFilterChange('dateRange', $event)"
+                        selectionMode="range"
+                        [readonlyInput]="true"
+                        placeholder="Seleccionar rango"
+                        [showIcon]="true"
+                        iconDisplay="input"
+                        [showButtonBar]="true"
+                        appendTo="body"
+                        class="w-full premium-datepicker"
+                    ></p-datepicker>
                 </div>
 
                 <!-- Instrumento Dropdown -->
@@ -167,7 +171,6 @@
                 <!-- Acciones -->
                 <div class="filter-actions h-[48px] flex items-center">
                     <p-button
-                        label="Limpiar Filtros"
                         icon="pi pi-filter-slash"
                         [text]="true"
                         severity="secondary"

@@ -78,10 +78,12 @@ export class TradesService {
     side?: string;
     instrument?: string;
     daysRange?: number;
+    startDate?: string;
+    endDate?: string;
     currency?: string;
     accountMarket?: string;
   } = {}) {
-    const { accountId, side, instrument, daysRange, currency, accountMarket } = filters;
+    const { accountId, side, instrument, daysRange, startDate, endDate, currency, accountMarket } = filters;
 
     const where: any = {
       userId,
@@ -90,7 +92,12 @@ export class TradesService {
       ...(instrument ? { instrument: { contains: instrument, mode: 'insensitive' } } : {}),
     };
 
-    if (daysRange) {
+    if (startDate || endDate) {
+      where.openAt = {
+        ...(startDate ? { gte: new Date(startDate) } : {}),
+        ...(endDate ? { lte: new Date(endDate) } : {}),
+      };
+    } else if (daysRange) {
       const date = new Date();
       date.setDate(date.getDate() - daysRange);
       where.openAt = { gte: date };

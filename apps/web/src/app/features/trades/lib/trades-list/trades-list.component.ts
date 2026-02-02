@@ -15,10 +15,11 @@ import { MultiSelectModule } from 'primeng/multiselect';
 import { InputTextModule } from 'primeng/inputtext';
 import { IconFieldModule } from 'primeng/iconfield';
 import { InputIconModule } from 'primeng/inputicon';
+import { DatePickerModule } from 'primeng/datepicker';
 import { TradesService, Trade } from '../../trades.service';
 import { TradeFormDialogComponent } from '../trade-form/trade-form.component';
 import { AccountDialogComponent } from '../../../accounts/lib/account-dialog/account-dialog.component';
-import { AccountsService, Account } from '../../../accounts/accounts.service';
+import { AccountsService } from '../../../accounts/accounts.service';
 import { FilterStore } from '../../../../core/filter.store';
 
 @Component({
@@ -40,6 +41,7 @@ import { FilterStore } from '../../../../core/filter.store';
     InputTextModule,
     IconFieldModule,
     InputIconModule,
+    DatePickerModule,
     TradeFormDialogComponent,
     AccountDialogComponent
   ],
@@ -72,8 +74,14 @@ export class TradesListComponent implements OnInit {
 
   constructor() {
       effect(() => {
+          const range = this.filterStore.dateRange();
+          const startDate = range && range[0] ? range[0].toISOString() : undefined;
+          const endDate = range && range[1] ? range[1].toISOString() : undefined;
+
           const filters = {
               accountId: this.filterStore.selectedAccountId() || undefined,
+              startDate,
+              endDate,
               daysRange: this.filterStore.daysRange() || undefined,
               side: this.filterStore.side() || undefined,
               instrument: this.filterStore.instrument() || undefined,
@@ -83,13 +91,6 @@ export class TradesListComponent implements OnInit {
           this.loadTrades(filters);
       });
   }
-
-  daysOptions = [
-      { label: '30 Días', value: 30 },
-      { label: '60 Días', value: 60 },
-      { label: '90 Días', value: 90 },
-      { label: 'Todo', value: null }
-  ];
 
   sideOptions = [
       { label: 'Cualquiera', value: null },
