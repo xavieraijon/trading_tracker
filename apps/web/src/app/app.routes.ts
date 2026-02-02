@@ -1,4 +1,5 @@
 import { Route } from '@angular/router';
+import { authGuard } from './core/auth/auth.guard';
 
 export const appRoutes: Route[] = [
   {
@@ -7,18 +8,22 @@ export const appRoutes: Route[] = [
   },
   {
     path: 'dashboard',
+    canActivate: [authGuard],
     loadComponent: () => import('./features/dashboard/dashboard.component').then(m => m.DashboardComponent)
   },
   {
     path: 'accounts',
+    canActivate: [authGuard],
     loadChildren: () => import('./features/accounts/accounts.routes').then(m => m.ACCOUNTS_ROUTES)
   },
   {
     path: 'trades',
+    canActivate: [authGuard],
     loadChildren: () => import('./features/trades/trades.routes').then(m => m.TRADES_ROUTES)
   },
   {
     path: 'calendar',
+    canActivate: [authGuard],
     loadComponent: () => import('./features/analytics/calendar-view/calendar-view.component').then(m => m.CalendarViewComponent)
   },
   {
