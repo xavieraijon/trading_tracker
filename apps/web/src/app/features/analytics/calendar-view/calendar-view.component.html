@@ -79,49 +79,60 @@
 </div>
 
 <!-- Popover for Day Details -->
-<p-popover #op [styleClass]="'calendar-details-overlay'">
+<p-popover #op styleClass="calendar-details-popover">
     @if (selectedDay()) {
-        <div class="p-4 min-w-[320px]">
-            <div class="flex justify-between items-center mb-4 border-b pb-2">
-                <h3 class="text-lg font-bold text-slate-800">
-                    {{ selectedDay()?.date | date:'fullDate':'':'es-ES' }}
-                </h3>
+        <div class="popover-container">
+            <div class="popover-header">
+                <span class="popover-date">{{ selectedDay()?.date | date:'EEEE, d MMMM yyyy':'':'es-ES' }}</span>
+                <div class="popover-summary-pill" [ngClass]="(selectedDay()?.pnl || 0) >= 0 ? 'is-profit' : 'is-loss'">
+                    {{ (selectedDay()?.pnl || 0) >= 0 ? '+' : '' }}{{ selectedDay()?.pnl | currency:'USD':'symbol':'1.2-2' }}
+                </div>
             </div>
 
-            <p-table [value]="selectedDay()?.trades || []" styleClass="p-datatable-sm">
-                <ng-template pTemplate="header">
-                    <tr>
-                        <th>Instrumento</th>
-                        <th>Tipo</th>
-                        <th class="text-right">PnL</th>
-                    </tr>
-                </ng-template>
-                <ng-template pTemplate="body" let-trade>
-                    <tr>
-                        <td class="font-bold text-slate-700">{{ trade.instrument }}</td>
-                        <td>
-                            <span class="text-[10px] font-bold px-2 py-0.5 rounded"
-                                  [ngClass]="trade.side === 'LONG' ? 'bg-emerald-100 text-emerald-700' : 'bg-rose-100 text-rose-700'">
-                                {{ trade.side }}
-                            </span>
-                        </td>
-                        <td class="text-right font-mono font-bold" [ngClass]="trade.pnlNet >= 0 ? 'text-emerald-600' : 'text-rose-600'">
-                            {{ trade.pnlNet >= 0 ? '+' : '' }}{{ trade.pnlNet | currency:'USD':'symbol':'1.2-2' }}
-                        </td>
-                    </tr>
-                </ng-template>
-                <ng-template pTemplate="emptymessage">
-                    <tr>
-                        <td colspan="3" class="text-center py-4 text-slate-400">Sin operaciones este día</td>
-                    </tr>
-                </ng-template>
-            </p-table>
+            <div class="popover-content">
+                <p-table [value]="selectedDay()?.trades || []" styleClass="p-datatable-sm">
+                    <ng-template pTemplate="header">
+                        <tr>
+                            <th>Instrumento</th>
+                            <th>Tipo</th>
+                            <th class="text-right">PnL</th>
+                        </tr>
+                    </ng-template>
+                    <ng-template pTemplate="body" let-trade>
+                        <tr>
+                            <td class="font-bold text-slate-700">{{ trade.instrument }}</td>
+                            <td>
+                                <span class="trade-side-pill"
+                                      [ngClass]="trade.side === 'LONG' ? 'is-long' : 'is-short'">
+                                    {{ trade.side }}
+                                </span>
+                            </td>
+                            <td class="text-right font-mono font-bold" [ngClass]="trade.pnlNet >= 0 ? 'text-emerald-600' : 'text-rose-600'">
+                                {{ trade.pnlNet >= 0 ? '+' : '' }}{{ trade.pnlNet | currency:'USD':'symbol':'1.2-2' }}
+                            </td>
+                        </tr>
+                    </ng-template>
+                    <ng-template pTemplate="emptymessage">
+                        <tr>
+                            <td colspan="3" class="text-center py-8 text-slate-400 font-medium">
+                                <i class="pi pi-info-circle mr-2"></i> No hubo operaciones
+                            </td>
+                        </tr>
+                    </ng-template>
+                </p-table>
+            </div>
 
-            <div class="mt-4 pt-3 border-t flex justify-between items-center">
-                <span class="text-sm font-bold text-slate-500">TOTAL DÍA:</span>
-                <span class="text-lg font-black" [ngClass]="(selectedDay()?.pnl || 0) >= 0 ? 'text-emerald-600' : 'text-rose-600'">
-                    {{ (selectedDay()?.pnl || 0) >= 0 ? '+' : '' }}{{ selectedDay()?.pnl | currency:'USD':'symbol':'1.2-2' }}
-                </span>
+            <div class="popover-footer">
+                <div class="footer-stat">
+                    <span class="label">Operaciones</span>
+                    <span class="value">{{ selectedDay()?.tradesCount || 0 }}</span>
+                </div>
+                <div class="footer-stat">
+                    <span class="label">Balance Día</span>
+                    <span class="value pnl" [ngClass]="(selectedDay()?.pnl || 0) >= 0 ? 'text-emerald-600' : 'text-rose-600'">
+                        {{ (selectedDay()?.pnl || 0) >= 0 ? '+' : '' }}{{ selectedDay()?.pnl | currency:'USD':'symbol':'1.2-2' }}
+                    </span>
+                </div>
             </div>
         </div>
     }
