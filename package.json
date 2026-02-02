@@ -2,7 +2,12 @@
   "name": "@trading-tracker-temp/source",
   "version": "0.0.0",
   "license": "MIT",
-  "scripts": {},
+  "scripts": {
+    "db:up": "docker-compose -f docker/docker-compose.yml up -d postgres",
+    "api:serve": "nx serve api",
+    "web:serve": "nx serve web",
+    "dev": "nx run-many -t serve -p api web"
+  },
   "private": true,
   "devDependencies": {
     "@angular-devkit/core": "~21.1.0",
