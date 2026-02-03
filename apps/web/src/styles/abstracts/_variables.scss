@@ -1,0 +1,28 @@
+:root {
+    /* BullishBanana Palette */
+    --primary-color: #059669; /* Emerald 600 */
+    --primary-dark: #064e3b;  /* Emerald 900 */
+    --accent-color: #fbbf24;   /* Banana Gold */
+    --accent-glow: rgba(251, 191, 36, 0.4);
+
+    --bg-color: #f8fafc;       /* Slate 50 */
+    --surface-card: #ffffff;
+    --text-main: #1e293b;      /* Slate 800 */
+    --text-muted: #64748b;    /* Slate 500 */
+
+    --success: #10b981;
+    --error: #ef4444;
+    --warning: #f59e0b;
+
+    /* Effects */
+    --radius-lg: 16px;
+    --radius-md: 12px;
+    --shadow-sm: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+    --shadow-md: 0 10px 15px -3px rgb(0 0 0 / 0.1);
+    --glass-bg: rgba(255, 255, 255, 0.8);
+    --glass-blur: blur(12px);
+
+    /* Fonts */
+    --font-family: 'Outfit', sans-serif;
+    --font-mono: 'JetBrains Mono', monospace;
+}

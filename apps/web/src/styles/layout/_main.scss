@@ -1,0 +1,99 @@
+.main-header {
+    background: rgba(255, 255, 255, 0.7);
+    border-bottom: 1px solid rgba(226, 232, 240, 0.5);
+    transition: all 0.3s ease;
+}
+
+.header-container {
+    max-width: 1400px;
+}
+
+.content-wrapper {
+    min-height: calc(100vh - 300px);
+    padding: 1rem 0;
+    max-width: 1440px;
+    margin: 0 auto;
+}
+
+/* Brand Styles */
+.brand {
+    cursor: pointer;
+
+    .logo-circle {
+        width: 40px;
+        height: 40px;
+        background: var(--accent-color);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.5rem;
+        box-shadow: 0 0 15px var(--accent-glow);
+    }
+
+    .brand-text {
+        display: flex;
+        flex-direction: column;
+        line-height: 1;
+
+        .app-name {
+            display: block;
+            font-size: 1.25rem;
+            font-weight: 800;
+            color: var(--primary-dark);
+        }
+
+        .app-tagline {
+            display: block;
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--text-muted);
+            margin-top: 2px;
+        }
+    }
+}
+
+/* Navigation */
+.nav-item {
+    color: var(--text-muted);
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 0.95rem;
+    padding: 0.5rem 0.25rem;
+    transition: all 0.2s ease;
+    border-bottom: 2px solid transparent;
+
+    &:hover {
+        color: var(--primary-color);
+    }
+
+    &.active {
+        color: var(--primary-color);
+        border-bottom-color: var(--primary-color);
+    }
+}
+
+/* Main Footer */
+.main-footer {
+    border-top: 1px solid #e2e8f0;
+    background: #ffffff;
+
+    .logo-emoji.grayscale {
+        filter: grayscale(1);
+        font-size: 2rem;
+        opacity: 0.3;
+    }
+
+    a {
+        text-decoration: none;
+        color: var(--text-muted);
+        &:hover { color: var(--primary-color); }
+    }
+}
+
+/* Utility Classes used in HTML */
+.sticky { position: sticky; }
+.top-0 { top: 0; }
+.z-50 { z-index: 50; }
+.mx-auto { margin-left: auto; margin-right: auto; }
