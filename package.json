@@ -6,7 +6,8 @@
     "db:up": "docker-compose -f docker/docker-compose.yml up -d postgres",
     "api:serve": "npx nx serve api",
     "web:serve": "npx nx serve web",
-    "dev": "concurrently -n \"API,WEB\" -c \"magenta,cyan\" \"npx nx serve api\" \"npx nx serve web\""
+    "watch:css": "npx @tailwindcss/cli -i apps/web/src/tailwind.css -o apps/web/src/tailwind-output.css --watch",
+    "dev": "concurrently -n \"API,WEB,CSS\" -c \"magenta,cyan,yellow\" \"npx nx serve api\" \"npx nx serve web\" \"npm run watch:css\""
   },
   "private": true,
   "devDependencies": {
