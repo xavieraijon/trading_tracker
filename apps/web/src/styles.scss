@@ -1,5 +1,4 @@
 /* Abstracts */
-@use 'styles/abstracts/tailwind';
 @use 'styles/abstracts/variables';
 @use 'styles/abstracts/mixins';
 
@@ -10,6 +9,7 @@
 /* Layout */
 @use 'styles/layout/structure';
 @use 'styles/layout/main';
+@use 'styles/layout/auth';
 
 /* Components */
 @use 'styles/components/primeng';
