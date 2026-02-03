@@ -1,5 +1,5 @@
 @import "tailwindcss";
-@source "./app/**/*.{html,ts}";
+@source "./app";
 
 @theme {
   /* Colors */

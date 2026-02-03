@@ -21,7 +21,7 @@
           }
         ],
         "styles": [
-            "apps/web/src/tailwind-output.css",
+            "apps/web/src/tailwind.css",
             "apps/web/src/styles.scss",
             "node_modules/primeicons/primeicons.css"
           ],
