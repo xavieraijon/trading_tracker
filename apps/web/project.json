@@ -23,7 +23,12 @@
         "styles": [
             "apps/web/src/styles.scss",
             "node_modules/primeicons/primeicons.css"
-          ]
+          ],
+          "stylePreprocessorOptions": {
+            "includePaths": [
+              "apps/web/src"
+            ]
+          }
       },
       "configurations": {
         "production": {

@@ -1,18 +1,19 @@
 /* Abstracts */
-@import 'styles/abstracts/variables';
+@use 'styles/abstracts/variables';
+@use 'styles/abstracts/mixins';
 
 /* Base */
-@import 'styles/base/reset';
-@import 'styles/base/typography';
+@use 'styles/base/reset';
+@use 'styles/base/typography';
 
 /* Layout */
-@import 'styles/layout/structure';
-@import 'styles/layout/main';
+@use 'styles/layout/structure';
+@use 'styles/layout/main';
 
 /* Components */
-@import 'styles/components/primeng';
-@import 'styles/components/tables';
-@import 'styles/components/badges';
+@use 'styles/components/primeng';
+@use 'styles/components/tables';
+@use 'styles/components/badges';
 
 /* Utilities */
-@import 'styles/utilities/utilities';
+@use 'styles/utilities/utilities';
