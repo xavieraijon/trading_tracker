@@ -18,3 +18,9 @@
 
 /* Utilities */
 @use 'styles/utilities/utilities';
+
+/* Test Autoprefixer */
+.test-autoprefix {
+    user-select: none;
+    transform: rotate(45deg);
+}
