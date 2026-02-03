@@ -1,0 +1,19 @@
+@use 'styles/abstracts/mixins' as m;
+
+/* Glassmorphism helpers */
+.glass-effect {
+    background: var(--glass-bg);
+    backdrop-filter: var(--glass-blur);
+    -webkit-backdrop-filter: var(--glass-blur);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.primary-glow {
+    box-shadow: 0 4px 14px 0 rgba(5, 150, 105, 0.39) !important;
+}
+
+/*
+ * Removed custom grid/flex utilities in favor of Tailwind CSS.
+ * Previous classes like .grid, .flex, .grid-cols-*, .gap-* etc
+ * are now handled by Tailwind directly.
+ */

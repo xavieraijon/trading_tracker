@@ -1,0 +1,42 @@
+/* Standard Form Group */
+.form-group {
+    margin-bottom: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.form-label {
+    display: block;
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--text-main);
+    margin-bottom: 0.25rem;
+}
+
+.full-width { width: 100% !important; }
+
+.pnl-positive { color: var(--success) !important; font-weight: 600; }
+.pnl-negative { color: var(--error) !important; font-weight: 600; }
+
+.text-success { color: var(--success) !important; }
+.text-danger { color: var(--error) !important; }
+.font-bold { font-weight: 700 !important; }
+.font-semibold { font-weight: 600 !important; }
+.text-muted { color: var(--text-muted) !important; }
+
+/*
+ * Removed generic spacing/text utilities (.mb-*, .text-lg, etc.)
+ * in favor of Tailwind CSS.
+ */
+
+.p-error, .small.p-error {
+    font-size: 0.75rem;
+    font-weight: 500;
+    margin-top: 0.25rem;
+    display: block;
+    color: var(--error);
+}
+
+/* Dashboard refinements */
+.kpi-card .p-card-body { padding: 1.5rem !important; }
