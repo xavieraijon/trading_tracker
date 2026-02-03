@@ -113,7 +113,7 @@ export class DashboardComponent {
       x: {
         grid: { display: false },
         ticks: {
-          color: '#64748b',
+          color: '#94a3b8',
           font: { family: 'Outfit', size: 11 },
           autoSkip: true,
           maxRotation: 45,
@@ -121,10 +121,10 @@ export class DashboardComponent {
         }
       },
       y: {
-        grid: { borderDash: [5, 5], color: 'rgba(226, 232, 240, 0.6)', drawTicks: false },
+        grid: { borderDash: [5, 5], color: 'rgba(148, 163, 184, 0.2)', drawTicks: false },
         border: { display: false },
         ticks: {
-          color: '#64748b',
+          color: '#94a3b8',
           font: { family: 'Outfit', size: 11 },
           padding: 10,
           callback: (value: any) => '$' + value

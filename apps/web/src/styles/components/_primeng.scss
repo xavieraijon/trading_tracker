@@ -1,5 +1,7 @@
-/* PrimeNG Overrides for Bulletproof Aesthetics */
+/* PrimeNG Overrides – themed via CSS custom properties */
 .p-card {
+    background: var(--bg-card) !important;
+    color: var(--text-primary) !important;
     border-radius: var(--radius-lg) !important;
     box-shadow: var(--shadow-md) !important;
     border: none !important;
@@ -19,17 +21,19 @@
 }
 
 .p-button-secondary {
-    background: #ffffff !important;
-    color: var(--text-main) !important;
-    border: 1px solid #e2e8f0 !important;
-    &:hover { background: #f8fafc !important; }
+    background: var(--bg-card) !important;
+    color: var(--text-primary) !important;
+    border: 1px solid var(--border-default) !important;
+    &:hover { background: var(--bg-card-hover) !important; }
 }
 
 .p-inputtext, .p-inputnumber-input, .p-password-input, .p-dropdown, .p-select {
-    border-radius: var(--radius-md);
-    padding: 0.75rem 1rem;
-    border: 1px solid #e2e8f0;
-    width: 100%;
+    border-radius: var(--radius-md) !important;
+    padding: 0.75rem 1rem !important;
+    border: 1px solid var(--input-border) !important;
+    background: var(--input-bg) !important;
+    color: var(--text-primary) !important;
+    width: 100% !important;
     transition: all 0.2s ease;
 }
 
@@ -62,9 +66,9 @@
         border-bottom-right-radius: var(--radius-md) !important;
         border-top-left-radius: 0 !important;
         border-bottom-left-radius: 0 !important;
-        background: #f8fafc !important;
+        background: var(--bg-muted) !important;
         color: var(--text-muted) !important;
-        border: 1px solid #e2e8f0 !important;
+        border: 1px solid var(--input-border) !important;
         border-left: none !important;
         padding: 0 !important;
         display: flex !important;
@@ -73,9 +77,9 @@
         transition: all 0.2s ease;
 
         &:hover {
-            background: #f1f5f9 !important;
+            background: var(--bg-card-hover) !important;
             color: var(--primary-color) !important;
-            border-color: #e2e8f0 !important;
+            border-color: var(--input-border) !important;
         }
 
         i, .p-icon {
@@ -84,16 +88,27 @@
     }
 }
 
+/* Dialogs */
 .bullish-dialog .p-dialog-header {
-    border-bottom: 1px solid #f1f5f9;
+    border-bottom: 1px solid var(--border-subtle);
     padding: 1.5rem;
+    background: var(--bg-card);
+    color: var(--text-primary);
 }
 
 .bullish-dialog .p-dialog-content {
     padding: 0 1.5rem 1.5rem 1.5rem;
+    background: var(--bg-card);
+    color: var(--text-primary);
 }
 
-/* Ensure PrimeNG TAG matches our badges */
+.bullish-dialog .p-dialog-footer {
+    background: var(--bg-card);
+    border-top: 1px solid var(--border-subtle);
+    color: var(--text-primary);
+}
+
+/* Tags */
 .p-tag {
     font-size: 0.7rem !important;
     font-weight: 700 !important;
@@ -102,11 +117,18 @@
 }
 
 .p-tag-success { background: #d1fae5 !important; color: #065f46 !important; }
-.p-tag-danger { background: #fee2e2 !important; color: #991b1b !important; }
+.p-tag-danger  { background: #fee2e2 !important; color: #991b1b !important; }
 
+html.dark {
+    .p-tag-success { background: rgba(16, 185, 129, 0.15) !important; color: #34d399 !important; }
+    .p-tag-danger  { background: rgba(239, 68, 68, 0.15)  !important; color: #fca5a5 !important; }
+}
+
+/* Paginator */
 .p-paginator {
-    background: #ffffff !important;
+    background: var(--bg-card) !important;
     border: none !important;
-    border-top: 1px solid #f1f5f9 !important;
+    border-top: 1px solid var(--border-subtle) !important;
     padding: 1.5rem !important;
+    color: var(--text-primary) !important;
 }

@@ -3,24 +3,24 @@
 }
 
 .calendar-wrapper {
-    background-color: #ffffff;
+    background-color: var(--bg-card);
     border-radius: 12px;
-    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
-    border: 1px solid #f1f5f9;
+    box-shadow: var(--shadow-sm);
+    border: 1px solid var(--border-subtle);
     overflow: hidden;
 }
 
 /* Header Row (Weekdays + Total) */
 .calendar-header {
     display: grid;
-    grid-template-columns: repeat(7, 1fr) 180px; /* 7 days + 1 summary column */
-    border-bottom: 1px solid #e2e8f0;
-    background-color: #ffffff;
+    grid-template-columns: repeat(7, 1fr) 180px;
+    border-bottom: 1px solid var(--border-default);
+    background-color: var(--bg-card);
 }
 
 .header-cell {
     padding: 1rem;
-    color: #64748b;
+    color: var(--text-muted);
     font-size: 0.85rem;
     font-weight: 600;
     text-transform: capitalize;
@@ -28,8 +28,8 @@
 }
 
 .header-cell.total {
-    border-left: 1px solid #e2e8f0;
-    background-color: #f8fafc;
+    border-left: 1px solid var(--border-default);
+    background-color: var(--bg-muted);
 }
 
 /* Weeks Rows */
@@ -41,7 +41,7 @@
 .calendar-week-row {
     display: grid;
     grid-template-columns: repeat(7, 1fr) 180px;
-    border-bottom: 1px solid #e2e8f0;
+    border-bottom: 1px solid var(--border-default);
 
     &:last-child {
         border-bottom: none;
@@ -71,7 +71,7 @@
     .card-value {
         font-size: 1.5rem;
         font-weight: 900;
-        font-family: 'Outfit', sans-serif;
+        font-family: var(--font-family);
         display: flex;
         align-items: center;
         gap: 0.5rem;
@@ -96,13 +96,19 @@
     }
 }
 
+/* Dark: texto más claro en la tarjeta mensual */
+:host-context(.dark) .monthly-pnl-card {
+    &.is-profit { color: #34d399; }
+    &.is-loss   { color: #fca5a5; }
+}
+
 /* Day Cell */
 .day-cell {
-    background-color: #ffffff;
+    background-color: var(--bg-card);
     min-height: 120px;
     padding: 0.75rem;
     position: relative;
-    border-right: 1px solid #f1f5f9;
+    border-right: 1px solid var(--border-subtle);
     display: flex;
     flex-direction: column;
     justify-content: space-between;
@@ -112,17 +118,16 @@
         border-right: none;
     }
 
-    /* Hover effect mimicking Tradervue's file icon reveal/highlight */
     &:hover {
-        background-color: #f8fafc;
+        background-color: var(--bg-card-hover);
     }
 
     &.has-trades {
         cursor: pointer;
 
         &:hover {
-            background-color: #f1f5f9;
-            box-shadow: inset 0 0 0 2px #3b82f6; /* Accent color on hover */
+            background-color: var(--bg-muted);
+            box-shadow: inset 0 0 0 2px #3b82f6;
             transform: translateY(-2px);
             z-index: 10;
         }
@@ -132,8 +137,8 @@
 .day-number {
     font-size: 1.1rem;
     font-weight: 700;
-    color: #1e293b;
-    font-family: 'Outfit', sans-serif;
+    color: var(--text-primary);
+    font-family: var(--font-family);
 }
 
 .day-content {
@@ -149,24 +154,24 @@
 
 .trade-count {
     font-size: 0.75rem;
-    color: #94a3b8;
+    color: var(--text-placeholder);
     font-weight: 500;
 }
 
 /* State Modifiers */
-.is-profit { color: #10b981; } /* Emerald-500 */
-.is-loss { color: #ef4444; }   /* Red-500 */
-.is-neutral { color: #94a3b8; }
+.is-profit { color: #10b981; }
+.is-loss   { color: #ef4444; }
+.is-neutral { color: var(--text-placeholder); }
 
 .day-out-month {
-    .day-number { color: #cbd5e1; }
-    background-color: #fcfcfc;
+    .day-number { color: var(--text-disabled); }
+    background-color: var(--bg-muted);
 }
 
 /* Weekly Summary Column */
 .week-summary-cell {
-    background-color: #f8fafc;
-    border-left: 1px solid #e2e8f0;
+    background-color: var(--bg-muted);
+    border-left: 1px solid var(--border-default);
     padding: 1rem;
     display: flex;
     flex-direction: column;
@@ -176,7 +181,7 @@
 .summary-label {
     font-size: 0.85rem;
     font-weight: 600;
-    color: #475569;
+    color: var(--text-secondary);
     margin-bottom: 0.5rem;
 }
 
@@ -187,36 +192,36 @@
 
 .summary-stats {
     font-size: 0.75rem;
-    color: #64748b;
+    color: var(--text-muted);
     margin-top: 0.25rem;
 }
 
 /* Popover Styling */
 ::ng-deep .calendar-details-popover {
-    background: #ffffff !important;
+    background: var(--bg-card) !important;
     border: none !important;
     border-radius: 20px !important;
-    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.15) !important;
+    box-shadow: var(--shadow-md) !important;
     padding: 0 !important;
     overflow: hidden;
     width: 400px;
 
     .popover-container {
-        font-family: 'Outfit', sans-serif;
+        font-family: var(--font-family);
     }
 
     .popover-header {
-        background: #f8fafc;
+        background: var(--bg-muted);
         padding: 1.5rem;
         display: flex;
         flex-direction: column;
         gap: 0.75rem;
-        border-bottom: 1px solid #f1f5f9;
+        border-bottom: 1px solid var(--border-subtle);
 
         .popover-date {
             font-size: 1rem;
             font-weight: 700;
-            color: #1e293b;
+            color: var(--text-primary);
             text-transform: capitalize;
         }
 
@@ -228,7 +233,7 @@
             font-weight: 800;
 
             &.is-profit { background: #d1fae5; color: #065f46; }
-            &.is-loss { background: #fee2e2; color: #991b1b; }
+            &.is-loss   { background: #fee2e2; color: #991b1b; }
         }
     }
 
@@ -238,7 +243,7 @@
         .p-datatable {
             .p-datatable-thead > tr > th {
                 background: transparent;
-                color: #94a3b8;
+                color: var(--text-placeholder);
                 font-size: 0.7rem;
                 font-weight: 700;
                 text-transform: uppercase;
@@ -250,9 +255,10 @@
             .p-datatable-tbody > tr {
                 background: transparent;
                 transition: background 0.15s ease;
+                color: var(--text-primary);
 
                 &:hover {
-                    background: #f8fafc;
+                    background: var(--bg-card-hover);
                 }
 
                 > td {
@@ -271,14 +277,14 @@
         border-radius: 4px;
         text-transform: uppercase;
 
-        &.is-long { background: #f0fdf4; color: #166534; border: 1px solid #dcfce7; }
+        &.is-long  { background: #f0fdf4; color: #166534; border: 1px solid #dcfce7; }
         &.is-short { background: #fff1f2; color: #9f1239; border: 1px solid #ffe4e6; }
     }
 
     .popover-footer {
         padding: 1.25rem 1.5rem;
-        background: #f8fafc;
-        border-top: 1px solid #f1f5f9;
+        background: var(--bg-muted);
+        border-top: 1px solid var(--border-subtle);
         display: flex;
         justify-content: space-between;
 
@@ -290,14 +296,14 @@
             .label {
                 font-size: 0.65rem;
                 font-weight: 700;
-                color: #94a3b8;
+                color: var(--text-placeholder);
                 text-transform: uppercase;
             }
 
             .value {
                 font-size: 1rem;
                 font-weight: 700;
-                color: #1e293b;
+                color: var(--text-primary);
 
                 &.pnl { font-weight: 800; }
             }
@@ -307,5 +313,17 @@
     /* Arrow refinement */
     .p-popover-arrow {
         display: none !important;
+    }
+}
+
+/* Dark: pills semánticos dentro del popover (::ng-deep → global) */
+::ng-deep html.dark .calendar-details-popover {
+    .popover-summary-pill {
+        &.is-profit { background: rgba(16, 185, 129, 0.15); color: #34d399; }
+        &.is-loss   { background: rgba(239, 68, 68, 0.15);  color: #fca5a5; }
+    }
+    .trade-side-pill {
+        &.is-long  { background: rgba(22, 101, 52, 0.2);  color: #86efac; border-color: rgba(22, 101, 52, 0.3); }
+        &.is-short { background: rgba(159, 18, 57, 0.2);  color: #fda4af; border-color: rgba(159, 18, 57, 0.3); }
     }
 }

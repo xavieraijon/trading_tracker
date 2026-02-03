@@ -10,26 +10,47 @@
     display: block;
     font-size: 0.875rem;
     font-weight: 600;
-    color: var(--text-main);
+    color: var(--text-primary);
     margin-bottom: 0.25rem;
 }
 
 .full-width { width: 100% !important; }
 
+/* PnL & Status */
 .pnl-positive { color: var(--success) !important; font-weight: 600; }
 .pnl-negative { color: var(--error) !important; font-weight: 600; }
 
 .text-success { color: var(--success) !important; }
-.text-danger { color: var(--error) !important; }
-.font-bold { font-weight: 700 !important; }
+.text-danger  { color: var(--error)   !important; }
+
+/* Typography */
+.font-bold     { font-weight: 700 !important; }
 .font-semibold { font-weight: 600 !important; }
-.text-muted { color: var(--text-muted) !important; }
 
-/*
- * Removed generic spacing/text utilities (.mb-*, .text-lg, etc.)
- * in favor of Tailwind CSS.
- */
+/* ─── Semantic text / surface utilities ─── */
+.text-muted       { color: var(--text-muted)       !important; }
+.text-secondary   { color: var(--text-secondary)   !important; }
+.text-placeholder { color: var(--text-placeholder) !important; }
+.text-disabled    { color: var(--text-disabled)    !important; }
 
+.bg-surface       { background-color: var(--bg-card)  !important; }
+.bg-surface-muted { background-color: var(--bg-muted) !important; }
+
+.border-default   { border-color: var(--border-default) !important; }
+.border-subtle    { border-color: var(--border-subtle)  !important; }
+.shadow-surface   { box-shadow: var(--shadow-sm)        !important; }
+
+/* Error toast (auth pages) */
+.error-toast {
+    background: rgba(239, 68, 68, 0.08);
+    color: var(--error);
+    border: 1px solid rgba(239, 68, 68, 0.2);
+}
+html.dark .error-toast {
+    color: #fca5a5;
+}
+
+/* Validation */
 .p-error, .small.p-error {
     font-size: 0.75rem;
     font-weight: 500;

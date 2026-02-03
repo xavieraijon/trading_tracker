@@ -1,7 +1,8 @@
 .main-header {
-    background: rgba(255, 255, 255, 0.7);
-    border-bottom: 1px solid rgba(226, 232, 240, 0.5);
-    transition: all 0.3s ease;
+    background: var(--glass-bg);
+    border: none;
+    border-bottom: 1px solid var(--border-subtle);
+    transition: background 0.3s ease;
 }
 
 .header-container {
@@ -40,7 +41,7 @@
             display: block;
             font-size: 1.25rem;
             font-weight: 800;
-            color: var(--primary-dark);
+            color: var(--heading-color);
         }
 
         .app-tagline {
@@ -76,8 +77,8 @@
 
 /* Main Footer */
 .main-footer {
-    border-top: 1px solid #e2e8f0;
-    background: #ffffff;
+    border-top: 1px solid var(--border-default);
+    background: var(--bg-card);
 
     .logo-emoji.grayscale {
         filter: grayscale(1);

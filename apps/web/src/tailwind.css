@@ -2,19 +2,10 @@
 @source "./apps/web/src/app";
 
 @theme {
-  /* Colors */
-  --color-primary: #059669; /* Emerald 600 */
-  --color-primary-dark: #064e3b; /* Emerald 900 */
-
-  --color-accent: #fbbf24; /* Banana Gold */
-  --color-accent-glow: rgba(251, 191, 36, 0.4);
-
-  --color-surface-card: #ffffff;
-  --color-surface-ground: #f8fafc; /* Slate 50 */
-
-  --color-text-main: #1e293b; /* Slate 800 */
-  --color-text-muted: #64748b; /* Slate 500 */
-
+  /* Brand – se usan como utilidades de Tailwind (text-primary, text-accent …).
+     Los colores de surface / text viven en CSS custom properties (_variables.scss). */
+  --color-primary: #059669;
+  --color-accent: #fbbf24;
   --color-success: #10b981;
   --color-error: #ef4444;
   --color-warning: #f59e0b;
@@ -26,8 +17,4 @@
   /* Radius */
   --radius-lg: 16px;
   --radius-md: 12px;
-
-  /* Shadows */
-  --shadow-sm: 0 4px 6px -1px rgb(0 0 0 / 0.1);
-  --shadow-md: 0 10px 15px -3px rgb(0 0 0 / 0.1);
 }
