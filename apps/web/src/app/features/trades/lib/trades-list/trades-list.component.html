@@ -201,7 +201,7 @@
                 <th pSortableColumn="quantity">Size <p-sortIcon field="quantity"></p-sortIcon></th>
                 <th pSortableColumn="entryPrice">Entrada <p-sortIcon field="entryPrice"></p-sortIcon></th>
                 <th pSortableColumn="exitPrice">Salida <p-sortIcon field="exitPrice"></p-sortIcon></th>
-                <th pSortableColumn="resultR">R <p-sortIcon field="resultR"></p-sortIcon></th>
+
                 <th pSortableColumn="pnlNet">PnL Net <p-sortIcon field="pnlNet"></p-sortIcon></th>
                 <th>Acciones</th>
             </tr>
@@ -217,13 +217,7 @@
                 <td>{{ trade.quantity }}</td>
                 <td>{{ trade.entryPrice | number:'1.2-6' }}</td>
                 <td>{{ trade.exitPrice | number:'1.2-6' }}</td>
-                <td>
-                    @if (trade.resultR) {
-                        <span [class.pnl-positive]="trade.resultR > 0" [class.pnl-negative]="trade.resultR < 0">
-                            {{ trade.resultR | number:'1.2-2' }}R
-                        </span>
-                    }
-                </td>
+
                 <td [class.pnl-positive]="trade.pnlNet > 0" [class.pnl-negative]="trade.pnlNet < 0">
                     {{ trade.pnlNet | currency:trade.account?.currency || 'USD' }}
                 </td>
@@ -249,7 +243,7 @@
         </ng-template>
         <ng-template pTemplate="emptymessage">
             <tr>
-                <td colspan="7" class="text-center p-4">No se han encontrado operaciones.</td>
+                <td colspan="6" class="text-center p-4">No se han encontrado operaciones.</td>
             </tr>
         </ng-template>
     </p-table>
