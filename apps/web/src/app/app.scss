@@ -1,4 +1,116 @@
-/*
- * App specific styles
- * Global layout styles have been moved to styles/layout/_main.scss
- */
+/* Main App Styles */
+.content-wrapper {
+    padding-top: 2rem;
+    padding-bottom: 5rem;
+}
+
+/* Mobile Drawer Styles */
+.mobile-drawer {
+    width: 280px !important;
+    background: var(--bg-card) !important;
+
+    .p-drawer-content {
+        padding: 0 !important;
+    }
+}
+
+.header-container {
+    max-width: 1400px;
+}
+
+.brand {
+    cursor: pointer;
+    transition: opacity 0.2s ease;
+    &:hover { opacity: 0.8; }
+}
+
+.drawer-item {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.75rem 1.5rem;
+    color: var(--text-muted);
+    font-weight: 600;
+    transition: all 0.2s ease;
+    border-radius: 0 50px 50px 0;
+    margin-right: 1.5rem;
+    text-decoration: none;
+
+    i {
+        font-size: 1.1rem;
+    }
+
+    &:hover {
+        background: var(--bg-muted);
+        color: var(--text-primary);
+    }
+
+    &.active {
+        background: rgba(16, 185, 129, 0.1);
+        color: var(--primary-color);
+
+        &::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            height: 24px;
+            width: 4px;
+            background: var(--primary-color);
+            border-radius: 0 4px 4px 0;
+        }
+    }
+}
+
+/* Header Adjustments */
+.header-container {
+    width: 100%;
+}
+
+.account-selector {
+    ::ng-deep {
+        .p-select {
+            background: var(--bg-muted) !important;
+            border: 1px solid var(--border-subtle) !important;
+            border-radius: 12px !important;
+            height: 36px !important;
+            transition: all 0.2s ease;
+
+            &:hover {
+                border-color: var(--primary-color) !important;
+                background: var(--bg-card) !important;
+            }
+
+            .p-select-label {
+                padding: 0 0.75rem !important;
+                font-size: 0.8rem !important;
+                font-weight: 600 !important;
+                display: flex !important;
+                align-items: center !important;
+                height: 100% !important;
+                color: var(--text-secondary) !important;
+            }
+
+            .p-select-placeholder {
+                color: var(--text-placeholder) !important;
+                font-size: 0.75rem !important;
+            }
+
+            .p-select-dropdown {
+                width: 2.5rem !important;
+
+                .pi {
+                    font-size: 0.7rem !important;
+                }
+            }
+
+            &.p-focus {
+                box-shadow: 0 0 0 3px rgba(5, 150, 105, 0.1) !important;
+                border-color: var(--primary-color) !important;
+            }
+        }
+    }
+}
+
+.content-wrapper {
+    max-width: 100% !important;
+}

@@ -11,9 +11,13 @@
 
 .content-wrapper {
     min-height: calc(100vh - 300px);
-    padding: 1rem 0;
+    padding: 1rem;
     max-width: 1440px;
     margin: 0 auto;
+
+    @media (min-width: 1024px) {
+        padding: 2rem 2.5rem;
+    }
 }
 
 /* Brand Styles */
@@ -60,10 +64,15 @@
     color: var(--text-muted);
     text-decoration: none;
     font-weight: 600;
-    font-size: 0.95rem;
-    padding: 0.5rem 0.25rem;
+    font-size: 0.85rem;
+    padding: 0.5rem 0.15rem;
     transition: all 0.2s ease;
     border-bottom: 2px solid transparent;
+
+    @media (min-width: 1280px) {
+        font-size: 0.95rem;
+        padding: 0.5rem 0.25rem;
+    }
 
     &:hover {
         color: var(--primary-color);

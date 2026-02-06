@@ -7,29 +7,53 @@
     border-radius: 12px;
     box-shadow: var(--shadow-sm);
     border: 1px solid var(--border-subtle);
-    overflow: hidden;
+    overflow-x: auto; /* Allow horizontal scroll */
+
+    .calendar-body, .calendar-header {
+        min-width: 900px; /* Force minimum width to prevent collapse */
+    }
 }
 
 /* Header Row (Weekdays + Total) */
 .calendar-header {
     display: grid;
-    grid-template-columns: repeat(7, 1fr) 180px;
+    grid-template-columns: repeat(7, 1fr) 140px;
     border-bottom: 1px solid var(--border-default);
     background-color: var(--bg-card);
+    position: sticky;
+    top: 0;
+    z-index: 20;
+
+    @media (min-width: 1024px) {
+        grid-template-columns: repeat(7, 1fr) 180px;
+    }
 }
 
 .header-cell {
-    padding: 1rem;
+    padding: 0.75rem;
     color: var(--text-muted);
-    font-size: 0.85rem;
+    font-size: 0.7rem;
     font-weight: 600;
     text-transform: capitalize;
-    text-align: left;
+    text-align: center;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+
+    @media (min-width: 768px) {
+        padding: 1rem;
+        font-size: 0.85rem;
+        text-align: left;
+    }
 }
 
 .header-cell.total {
     border-left: 1px solid var(--border-default);
     background-color: var(--bg-muted);
+    position: sticky;
+    right: 0;
+    z-index: 21;
+    box-shadow: -4px 0 10px rgba(0, 0, 0, 0.05);
 }
 
 /* Weeks Rows */
@@ -40,8 +64,12 @@
 
 .calendar-week-row {
     display: grid;
-    grid-template-columns: repeat(7, 1fr) 180px;
+    grid-template-columns: repeat(7, 1fr) 140px;
     border-bottom: 1px solid var(--border-default);
+
+    @media (min-width: 1024px) {
+        grid-template-columns: repeat(7, 1fr) 180px;
+    }
 
     &:last-child {
         border-bottom: none;
@@ -105,14 +133,19 @@
 /* Day Cell */
 .day-cell {
     background-color: var(--bg-card);
-    min-height: 120px;
-    padding: 0.75rem;
+    min-height: 80px;
+    padding: 0.5rem;
     position: relative;
     border-right: 1px solid var(--border-subtle);
     display: flex;
     flex-direction: column;
     justify-content: space-between;
     transition: all 0.2s ease;
+
+    @media (min-width: 768px) {
+        min-height: 120px;
+        padding: 0.75rem;
+    }
 
     &:nth-child(7) {
         border-right: none;
@@ -135,10 +168,14 @@
 }
 
 .day-number {
-    font-size: 1.1rem;
+    font-size: 0.85rem;
     font-weight: 700;
     color: var(--text-primary);
     font-family: var(--font-family);
+
+    @media (min-width: 768px) {
+        font-size: 1.1rem;
+    }
 }
 
 .day-content {
@@ -146,16 +183,25 @@
 }
 
 .pnl-value {
-    font-size: 0.95rem;
+    font-size: 0.75rem;
     font-weight: 700;
-    margin-bottom: 0.25rem;
+    margin-bottom: 0.15rem;
     display: block;
+
+    @media (min-width: 768px) {
+        font-size: 0.95rem;
+        margin-bottom: 0.25rem;
+    }
 }
 
 .trade-count {
-    font-size: 0.75rem;
+    font-size: 0.65rem;
     color: var(--text-placeholder);
     font-weight: 500;
+
+    @media (min-width: 768px) {
+        font-size: 0.75rem;
+    }
 }
 
 /* State Modifiers */
@@ -172,28 +218,50 @@
 .week-summary-cell {
     background-color: var(--bg-muted);
     border-left: 1px solid var(--border-default);
-    padding: 1rem;
+    padding: 0.5rem;
     display: flex;
     flex-direction: column;
     justify-content: center;
+    position: sticky;
+    right: 0;
+    z-index: 15;
+    box-shadow: -4px 0 10px rgba(0, 0, 0, 0.05);
+
+    @media (min-width: 768px) {
+        padding: 1rem;
+    }
 }
 
 .summary-label {
-    font-size: 0.85rem;
+    font-size: 0.65rem;
     font-weight: 600;
     color: var(--text-secondary);
-    margin-bottom: 0.5rem;
+    margin-bottom: 0.25rem;
+
+    @media (min-width: 768px) {
+        font-size: 0.85rem;
+        margin-bottom: 0.5rem;
+    }
 }
 
 .summary-pnl {
-    font-size: 1.1rem;
+    font-size: 0.85rem;
     font-weight: 700;
+
+    @media (min-width: 768px) {
+        font-size: 1.1rem;
+    }
 }
 
 .summary-stats {
-    font-size: 0.75rem;
+    font-size: 0.65rem;
     color: var(--text-muted);
-    margin-top: 0.25rem;
+    margin-top: 0.15rem;
+
+    @media (min-width: 768px) {
+        font-size: 0.75rem;
+        margin-top: 0.25rem;
+    }
 }
 
 /* Popover Styling */

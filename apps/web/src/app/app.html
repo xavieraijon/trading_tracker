@@ -1,47 +1,61 @@
 <header class="main-header glass-effect sticky top-0 z-50">
     <div class="header-container mx-auto px-6 py-3 flex items-center justify-between">
-        <!-- Logo & Brand -->
-        <div class="brand flex items-center gap-2" routerLink="/">
-            <div class="logo-circle">
-                <span class="logo-emoji">🍌</span>
+        <!-- Left Group: Hamburger + Logo (Always Left) -->
+        <div class="header-left flex-1 flex items-center justify-start gap-4">
+            <div class="lg:hidden">
+                <p-button
+                    icon="pi pi-bars"
+                    [text]="true"
+                    [rounded]="true"
+                    severity="secondary"
+                    (onClick)="mobileMenuVisible.set(true)"
+                ></p-button>
             </div>
-            <div class="brand-text">
-                <span class="app-name">BullishBanana</span>
-                <span class="app-tagline">The Golden Bunch of Pips</span>
+
+            <div class="brand flex items-center gap-2" routerLink="/">
+                <div class="logo-circle">
+                    <span class="logo-emoji">🍌</span>
+                </div>
+                <div class="brand-text">
+                    <span class="app-name text-xl md:text-2xl font-black text-secondary uppercase tracking-tighter">BullishBanana</span>
+                    <span class="app-tagline text-[0.6rem] hidden sm:block">The Golden Bunch of Pips</span>
+                </div>
             </div>
         </div>
 
-        <!-- Navigation Links (Only if Logged In) -->
-        @if (authService.isAuthenticated()) {
-            <nav class="nav-links flex gap-8">
-                <a routerLink="/dashboard" routerLinkActive="active" class="nav-item">
-                    <i class="pi pi-chart-bar mr-1"></i> Dashboard
-                </a>
-                <a routerLink="/accounts" routerLinkActive="active" class="nav-item">
-                    <i class="pi pi-wallet mr-1"></i> Cuentas
-                </a>
-                <a routerLink="/trades" routerLinkActive="active" class="nav-item">
-                    <i class="pi pi-briefcase mr-1"></i> Operaciones
-                </a>
-                <a routerLink="/calendar" routerLinkActive="active" class="nav-item">
-                    <i class="pi pi-calendar mr-1"></i> Calendario
-                </a>
-            </nav>
-        }
-
-        <!-- User Zone -->
-        <div class="user-zone flex items-center gap-4">
+        <!-- Center Group: Desktop Navigation Only -->
+        <div class="header-center flex-none hidden lg:flex justify-center">
             @if (authService.isAuthenticated()) {
-                <div class="account-selector hidden md:block">
+                <nav class="nav-links flex gap-3 xl:gap-6 whitespace-nowrap">
+                    <a routerLink="/dashboard" routerLinkActive="active" class="nav-item">
+                        <i class="pi pi-chart-bar mr-1"></i> Dashboard
+                    </a>
+                    <a routerLink="/accounts" routerLinkActive="active" class="nav-item">
+                        <i class="pi pi-wallet mr-1"></i> Cuentas
+                    </a>
+                    <a routerLink="/trades" routerLinkActive="active" class="nav-item">
+                        <i class="pi pi-briefcase mr-1"></i> Operaciones
+                    </a>
+                    <a routerLink="/calendar" routerLinkActive="active" class="nav-item">
+                        <i class="pi pi-calendar mr-1"></i> Calendario
+                    </a>
+                </nav>
+            }
+        </div>
+
+        <!-- Right: Selector (desktop) / User Button (always right) -->
+        <div class="header-right flex-1 flex items-center justify-end gap-2 sm:gap-4">
+            @if (authService.isAuthenticated()) {
+                <div class="account-selector flex items-center">
                      <p-select
                         [options]="accounts()"
                         optionLabel="name"
                         optionValue="id"
                         [(ngModel)]="selectedAccountValue"
                         (onChange)="onAccountChange()"
-                        placeholder="Todas las Cuentas"
+                        placeholder="Cuenta"
                         [showClear]="true"
-                        class="w-56"
+                        class="w-24 sm:w-48 lg:w-56"
                         variant="filled">
                         <ng-template pTemplate="selectedItem" let-selectedOption>
                             <div class="flex items-center gap-2" *ngIf="selectedOption">
@@ -63,7 +77,7 @@
                     </p-select>
                 </div>
 
-                <div class="flex items-center gap-4">
+                <div class="flex items-center">
                     <p-button
                         icon="pi pi-user"
                         [rounded]="true"
@@ -80,7 +94,54 @@
     </div>
 </header>
 
-<main class="content-wrapper min-h-screen px-8">
+<p-drawer [(visible)]="mobileMenuVisible" position="left" styleClass="mobile-drawer">
+    <ng-template pTemplate="header">
+        <div class="flex items-center gap-2 px-2">
+            <span class="text-xl">🍌</span>
+            <span class="font-black text-secondary uppercase tracking-tighter">BullishBanana</span>
+        </div>
+    </ng-template>
+
+    <div class="flex flex-col gap-2 pt-6">
+        @if (authService.isAuthenticated()) {
+            <a routerLink="/dashboard" routerLinkActive="active" class="drawer-item" (click)="mobileMenuVisible.set(false)">
+                <i class="pi pi-chart-bar px-3 py-4"></i> Dashboard
+            </a>
+            <a routerLink="/accounts" routerLinkActive="active" class="drawer-item" (click)="mobileMenuVisible.set(false)">
+                <i class="pi pi-wallet px-3 py-4"></i> Cuentas
+            </a>
+            <a routerLink="/trades" routerLinkActive="active" class="drawer-item" (click)="mobileMenuVisible.set(false)">
+                <i class="pi pi-briefcase px-3 py-4"></i> Operaciones
+            </a>
+            <a routerLink="/calendar" routerLinkActive="active" class="drawer-item" (click)="mobileMenuVisible.set(false)">
+                <i class="pi pi-calendar px-3 py-4"></i> Calendario
+            </a>
+
+            <div class="drawer-divider my-4 border-t border-slate-100"></div>
+
+            <div class="px-4 py-2">
+                <p class="text-[10px] font-bold text-placeholder uppercase tracking-widest mb-3">Cambiar Cuenta</p>
+                <p-select
+                    [options]="accounts()"
+                    optionLabel="name"
+                    optionValue="id"
+                    [(ngModel)]="selectedAccountValue"
+                    (onChange)="onAccountChange(); mobileMenuVisible.set(false)"
+                    placeholder="Todas las Cuentas"
+                    [showClear]="true"
+                    class="w-full"
+                    variant="filled"
+                    appendTo="body">
+                </p-select>
+            </div>
+        } @else {
+            <p-button label="Iniciar Sesión" routerLink="/auth/login" styleClass="w-full mb-2" (onClick)="mobileMenuVisible.set(false)"></p-button>
+            <p-button label="Registrarse" severity="secondary" routerLink="/auth/register" styleClass="w-full" (onClick)="mobileMenuVisible.set(false)"></p-button>
+        }
+    </div>
+</p-drawer>
+
+<main class="content-wrapper min-h-screen">
     <router-outlet></router-outlet>
 </main>
 

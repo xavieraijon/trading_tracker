@@ -1,16 +1,17 @@
-<div class="px-8 py-6">
-    <div class="header-section mb-10 flex justify-between items-end">
+<div class="py-6">
+    <div class="header-section mb-10 flex flex-col sm:flex-row justify-between items-start sm:items-end gap-6 sm:gap-0">
         <div>
             <h1 class="text-4xl font-bold mb-3">Gestión de Cuentas</h1>
             <p class="text-muted text-lg">Control centralizado de tus portafolios y capital disponible</p>
         </div>
-        <div class="flex gap-3">
+        <div class="flex gap-3 w-full sm:w-auto">
             <p-button
                 label="Nueva Cuenta"
                 icon="pi pi-plus"
                 [rounded]="true"
                 (onClick)="openNew()"
                 styleClass="primary-glow"
+                class="w-full sm:w-auto"
             ></p-button>
         </div>
     </div>
@@ -34,7 +35,7 @@
                     <th pSortableColumn="market">Mercado <p-sortIcon field="market"></p-sortIcon></th>
                     <th pSortableColumn="currency">Divisa <p-sortIcon field="currency"></p-sortIcon></th>
                     <th pSortableColumn="balance">Balance Actual <p-sortIcon field="balance"></p-sortIcon></th>
-                    <th class="text-center">Acciones</th>
+                    <th class="sticky-actions text-center">Acciones</th>
                 </tr>
             </ng-template>
             <ng-template pTemplate="body" let-account>
@@ -46,7 +47,7 @@
                     <td class="font-mono text-xl" [ngClass]="getBalanceClass(account)">
                         {{ account.balance | currency:account.currency }}
                     </td>
-                    <td class="text-center">
+                    <td class="sticky-actions text-center">
                         <div class="flex justify-center gap-3">
                             <p-button
                                 icon="pi pi-pencil"

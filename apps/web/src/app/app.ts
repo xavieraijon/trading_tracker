@@ -6,12 +6,13 @@ import { ButtonModule } from 'primeng/button';
 import { MenuModule } from 'primeng/menu';
 import { AvatarModule } from 'primeng/avatar';
 import { SelectModule } from 'primeng/select';
+import { DrawerModule } from 'primeng/drawer';
 import { AuthService } from './core/auth/auth.service';
-import { AccountsService, Account } from './features/accounts/accounts.service';
+import { AccountsService } from './features/accounts/accounts.service';
 import { FilterStore } from './core/filter.store';
 
 @Component({
-  imports: [RouterModule, CommonModule, ButtonModule, MenuModule, AvatarModule, SelectModule, FormsModule],
+  imports: [RouterModule, CommonModule, ButtonModule, MenuModule, AvatarModule, SelectModule, FormsModule, DrawerModule],
   selector: 'app-root',
   templateUrl: './app.html',
   styleUrl: './app.scss',
@@ -23,6 +24,7 @@ export class App implements OnInit {
 
   accounts = this.accountsService.accounts;
   selectedAccountValue: string | null = null;
+  mobileMenuVisible = signal(false);
 
   userMenuItems = [
     { label: 'Mi Perfil', icon: 'pi pi-user' },

@@ -1,10 +1,10 @@
-<div class="px-8 py-6">
-    <div class="header-section mb-10 flex justify-between items-end">
+<div class="py-6">
+    <div class="header-section mb-10 flex flex-col sm:flex-row justify-between items-start sm:items-end gap-6 sm:gap-0">
         <div>
             <h1 class="text-4xl font-bold mb-3">Registro de Operaciones</h1>
             <p class="text-muted text-lg">Historial detallado de tu actividad en el mercado</p>
         </div>
-        <div class="flex gap-3">
+        <div class="flex flex-wrap gap-3 w-full sm:w-auto">
             <p-button
                 label="Nueva Operación"
                 icon="pi pi-plus"
@@ -15,8 +15,8 @@
             <p-button
                 label="Importar MT5"
                 icon="pi pi-upload"
-                severity="info"
                 [rounded]="true"
+                [outlined]="true"
                 (onClick)="mt5Input.click()"
             ></p-button>
             <input
@@ -29,8 +29,9 @@
             <p-button
                 label="Exportar CSV"
                 icon="pi pi-download"
-                severity="secondary"
                 [rounded]="true"
+                [outlined]="true"
+                severity="secondary"
                 (onClick)="exportTrades()"
             ></p-button>
         </div>
@@ -203,7 +204,7 @@
                 <th pSortableColumn="exitPrice">Salida <p-sortIcon field="exitPrice"></p-sortIcon></th>
 
                 <th pSortableColumn="pnlNet">PnL Net <p-sortIcon field="pnlNet"></p-sortIcon></th>
-                <th>Acciones</th>
+                <th class="sticky-actions">Acciones</th>
             </tr>
         </ng-template>
         <ng-template pTemplate="body" let-trade>
@@ -221,8 +222,8 @@
                 <td [class.pnl-positive]="trade.pnlNet > 0" [class.pnl-negative]="trade.pnlNet < 0">
                     {{ trade.pnlNet | currency:trade.account?.currency || 'USD' }}
                 </td>
-                <td>
-                    <div class="flex gap-3">
+                <td class="sticky-actions">
+                    <div class="flex gap-3 justify-center">
                         <p-button
                             icon="pi pi-pencil"
                             [rounded]="true"
