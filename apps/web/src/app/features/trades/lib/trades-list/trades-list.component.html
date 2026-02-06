@@ -1,43 +1,40 @@
-<div class="py-6">
-    <div class="header-section mb-10 flex flex-col sm:flex-row justify-between items-start sm:items-end gap-6 sm:gap-0">
-        <div>
-            <h1 class="text-4xl font-bold mb-3">Registro de Operaciones</h1>
-            <p class="text-muted text-lg">Historial detallado de tu actividad en el mercado</p>
-        </div>
-        <div class="flex flex-wrap gap-3 w-full sm:w-auto">
-            <p-button
-                label="Nueva Operación"
-                icon="pi pi-plus"
-                [rounded]="true"
-                (onClick)="openNew()"
-                styleClass="primary-glow"
-            ></p-button>
-            <p-button
-                label="Importar MT5"
-                icon="pi pi-upload"
-                [rounded]="true"
-                [outlined]="true"
-                (onClick)="mt5Input.click()"
-            ></p-button>
-            <input
-                #mt5Input
-                type="file"
-                style="display: none"
-                accept=".html"
-                (change)="onMt5Upload($event)"
-            />
-            <p-button
-                label="Exportar CSV"
-                icon="pi pi-download"
-                [rounded]="true"
-                [outlined]="true"
-                severity="secondary"
-                (onClick)="exportTrades()"
-            ></p-button>
-        </div>
+<app-page-layout
+    title="Registro de Operaciones"
+    subtitle="Historial detallado de tu actividad en el mercado"
+    [loading]="loading">
+
+    <div actions class="flex flex-wrap gap-3">
+        <p-button
+            label="Nueva Operación"
+            icon="pi pi-plus"
+            [rounded]="true"
+            (onClick)="openNew()"
+            styleClass="primary-glow"
+        ></p-button>
+        <p-button
+            label="Importar MT5"
+            icon="pi pi-upload"
+            [rounded]="true"
+            [outlined]="true"
+            (onClick)="mt5Input.click()"
+        ></p-button>
+        <input
+            #mt5Input
+            type="file"
+            style="display: none"
+            accept=".html"
+            (change)="onMt5Upload($event)"
+        />
+        <p-button
+            label="Exportar CSV"
+            icon="pi pi-download"
+            [rounded]="true"
+            [outlined]="true"
+            severity="secondary"
+            (onClick)="exportTrades()"
+        ></p-button>
     </div>
 
-    <!-- Dialogo de Selección de Cuenta para Importación -->
     <p-dialog
         header="Importar Operaciones MT5"
         [(visible)]="importDialog"
@@ -248,6 +245,7 @@
             </tr>
         </ng-template>
     </p-table>
+    </div>
 
     <app-trade-form
         [visible]="tradeDialog"
@@ -261,4 +259,4 @@
         [account]="selectedAccountForCreation"
         (saved)="onAccountSaved($event)"
     ></app-account-dialog>
-</div>
+</app-page-layout>

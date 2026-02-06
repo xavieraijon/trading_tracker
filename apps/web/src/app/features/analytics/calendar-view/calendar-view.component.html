@@ -1,22 +1,14 @@
-<div class="py-6">
-    <div class="flex justify-between items-center mb-6">
-        <h2 class="text-3xl font-bold">Calendar</h2>
+<app-page-layout
+    title="Calendario"
+    subtitle="Distribución temporal de tu rendimiento"
+    [loading]="loading()">
 
-        <div class="flex items-center gap-4 bg-surface p-2 rounded-xl shadow-surface border border-default">
-            <p-button icon="pi pi-chevron-left" [rounded]="true" [text]="true" (onClick)="changeMonth(-1)"></p-button>
-            <span class="text-xl font-bold min-w-[180px] text-center capitalize text-secondary">
-                {{ currentDate() | date:'MMMM yyyy':'':'es-ES' }}
-            </span>
-            <p-button icon="pi pi-chevron-right" [rounded]="true" [text]="true" (onClick)="changeMonth(1)"></p-button>
-        </div>
-
-        <div class="monthly-pnl-card" [ngClass]="monthlyStats().pnl >= 0 ? 'is-profit' : 'is-loss'">
-            <div class="card-label">Monthly P&L</div>
-            <div class="card-value">
-                <i class="pi" [ngClass]="monthlyStats().pnl >= 0 ? 'pi-arrow-up-right' : 'pi-arrow-down-right'"></i>
-                {{ monthlyStats().pnl >= 0 ? '+' : ''}}{{ monthlyStats().pnl | currency:'USD':'symbol':'1.0-1' }}
-            </div>
-        </div>
+    <div actions class="flex items-center gap-4 bg-surface p-2 rounded-xl shadow-surface border border-default">
+        <p-button icon="pi pi-chevron-left" [rounded]="true" [text]="true" (onClick)="changeMonth(-1)"></p-button>
+        <span class="text-xl font-bold min-w-[180px] text-center capitalize text-secondary">
+            {{ currentDate() | date:'MMMM yyyy':'':'es-ES' }}
+        </span>
+        <p-button icon="pi pi-chevron-right" [rounded]="true" [text]="true" (onClick)="changeMonth(1)"></p-button>
     </div>
 
     <!-- Calendar Container -->
@@ -75,7 +67,7 @@
             }
         </div>
     </div>
-</div>
+</app-page-layout>
 
 <!-- Popover for Day Details -->
 <p-popover #op styleClass="calendar-details-popover" [appendTo]="'body'">

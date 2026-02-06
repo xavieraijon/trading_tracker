@@ -20,6 +20,7 @@ import { TradesService, Trade } from '../../trades.service';
 import { TradeFormDialogComponent } from '../trade-form/trade-form.component';
 import { AccountDialogComponent } from '../../../accounts/lib/account-dialog/account-dialog.component';
 import { AccountsService } from '../../../accounts/accounts.service';
+import { PageLayoutComponent } from '../../../../shared/components/page-layout/page-layout.component';
 import { FilterStore } from '../../../../core/filter.store';
 
 @Component({
@@ -43,7 +44,8 @@ import { FilterStore } from '../../../../core/filter.store';
     InputIconModule,
     DatePickerModule,
     TradeFormDialogComponent,
-    AccountDialogComponent
+    AccountDialogComponent,
+    PageLayoutComponent
   ],
   providers: [MessageService, ConfirmationService],
   templateUrl: './trades-list.component.html',

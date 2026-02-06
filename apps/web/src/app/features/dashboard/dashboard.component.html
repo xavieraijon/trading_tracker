@@ -1,52 +1,28 @@
-<div class="py-6">
-  <div class="header-section mb-10">
-    <h1 class="text-4xl font-bold mb-2">Panel de Rendimiento</h1>
-    <p class="text-muted text-lg">
-      Análisis de resultados y métricas de BullishBanana
-    </p>
-  </div>
+<app-page-layout
+  title="Panel de Rendimiento"
+  subtitle="Análisis de resultados y métricas de BullishBanana">
 
   @if (stats()) {
-    <div
-      class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-6 mb-10"
-    >
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-6 mb-10">
       <!-- Beneficio Neto -->
-      <p-card
-        styleClass="kpi-card stats-card border-left-pnl relative overflow-hidden"
-      >
+      <p-card styleClass="kpi-card stats-card border-left-pnl relative overflow-hidden">
+        <!-- ... content ... -->
         <div class="flex flex-col h-full justify-between gap-1">
           <div class="flex items-center justify-between">
             <div class="flex items-center gap-3">
-              <span
-                class="text-[10px] font-bold text-placeholder uppercase tracking-widest"
-                >Net Profit</span
-              >
-              <i
-                class="pi pi-question-circle text-[10px] cursor-help"
-                pTooltip="Beneficio total neto después de todas las operaciones cerradas."
-                tooltipPosition="top"
-              ></i>
+              <span class="text-[10px] font-bold text-placeholder uppercase tracking-widest">Net Profit</span>
+              <i class="pi pi-question-circle text-[10px] cursor-help" pTooltip="Beneficio total neto después de todas las operaciones cerradas." tooltipPosition="top"></i>
             </div>
             <div class="kpi-icon-container bg-emerald-50 text-emerald-500">
               <i class="pi pi-dollar"></i>
             </div>
           </div>
-          <div
-            class="text-2xl font-black font-mono tracking-tighter"
-            [class.pnl-positive]="stats().totalPnL > 0"
-            [class.pnl-negative]="stats().totalPnL < 0"
-          >
+          <div class="text-2xl font-black font-mono tracking-tighter" [class.pnl-positive]="stats().totalPnL > 0" [class.pnl-negative]="stats().totalPnL < 0">
             {{ stats().totalPnL | currency: 'USD' : 'symbol' : '1.0-0' }}
           </div>
-          <!-- Sparkline -->
           <div class="sparkline-container h-10 mt-2">
             @if (pnlSparkline()) {
-              <p-chart
-                type="line"
-                [data]="pnlSparkline()"
-                [options]="sparklineOptions"
-                height="100%"
-              ></p-chart>
+              <p-chart type="line" [data]="pnlSparkline()" [options]="sparklineOptions" height="100%"></p-chart>
             }
           </div>
         </div>
@@ -57,34 +33,19 @@
         <div class="flex flex-col h-full justify-between gap-1">
           <div class="flex items-center justify-between">
             <div class="flex items-center gap-3">
-              <span
-                class="text-[10px] font-bold text-placeholder uppercase tracking-widest"
-                >Win Rate</span
-              >
-              <i
-                class="pi pi-question-circle text-[10px] cursor-help"
-                pTooltip="Porcentaje de operaciones ganadoras sobre el total."
-                tooltipPosition="top"
-              ></i>
+              <span class="text-[10px] font-bold text-placeholder uppercase tracking-widest">Win Rate</span>
+              <i class="pi pi-question-circle text-[10px] cursor-help" pTooltip="Porcentaje de operaciones ganadoras sobre el total." tooltipPosition="top"></i>
             </div>
             <div class="kpi-icon-container bg-blue-50 text-blue-500">
               <i class="pi pi-percentage"></i>
             </div>
           </div>
-          <div
-            class="text-2xl font-black text-blue-600 font-mono tracking-tighter"
-          >
+          <div class="text-2xl font-black text-blue-600 font-mono tracking-tighter">
             {{ stats().winRate | number: '1.0-1' }}%
           </div>
-          <!-- Sparkline -->
           <div class="sparkline-container h-10 mt-2">
             @if (winRateSparkline()) {
-              <p-chart
-                type="line"
-                [data]="winRateSparkline()"
-                [options]="sparklineOptions"
-                height="100%"
-              ></p-chart>
+              <p-chart type="line" [data]="winRateSparkline()" [options]="sparklineOptions" height="100%"></p-chart>
             }
           </div>
         </div>
@@ -95,34 +56,19 @@
         <div class="flex flex-col h-full justify-between gap-1">
           <div class="flex items-center justify-between">
             <div class="flex items-center gap-3">
-              <span
-                class="text-[10px] font-bold text-placeholder uppercase tracking-widest"
-                >Profit Factor</span
-              >
-              <i
-                class="pi pi-question-circle text-[10px] cursor-help"
-                pTooltip="Relación entre el beneficio bruto y las pérdidas brutas. > 1.0 es rentable."
-                tooltipPosition="top"
-              ></i>
+              <span class="text-[10px] font-bold text-placeholder uppercase tracking-widest">Profit Factor</span>
+              <i class="pi pi-question-circle text-[10px] cursor-help" pTooltip="Relación entre el beneficio bruto y las pérdidas brutas. > 1.0 es rentable." tooltipPosition="top"></i>
             </div>
             <div class="kpi-icon-container bg-orange-50 text-orange-500">
               <i class="pi pi-bolt"></i>
             </div>
           </div>
-          <div
-            class="text-2xl font-black text-orange-600 font-mono tracking-tighter"
-          >
+          <div class="text-2xl font-black text-orange-600 font-mono tracking-tighter">
             {{ stats().profitFactor | number: '1.2-2' }}
           </div>
-          <!-- Sparkline -->
           <div class="sparkline-container h-10 mt-2">
             @if (profitFactorSparkline()) {
-              <p-chart
-                type="line"
-                [data]="profitFactorSparkline()"
-                [options]="sparklineOptions"
-                height="100%"
-              ></p-chart>
+              <p-chart type="line" [data]="profitFactorSparkline()" [options]="sparklineOptions" height="100%"></p-chart>
             }
           </div>
         </div>
@@ -133,66 +79,38 @@
         <div class="flex flex-col h-full justify-between gap-1">
           <div class="flex items-center justify-between">
             <div class="flex items-center gap-3">
-              <span
-                class="text-[10px] font-bold text-placeholder uppercase tracking-widest"
-                >Avg W/L</span
-              >
-              <i
-                class="pi pi-question-circle text-[10px] cursor-help"
-                pTooltip="Promedio ganado en trades ganadores vs promedio perdido en perdedores."
-                tooltipPosition="top"
-              ></i>
+              <span class="text-[10px] font-bold text-placeholder uppercase tracking-widest">Avg W/L</span>
+              <i class="pi pi-question-circle text-[10px] cursor-help" pTooltip="Promedio ganado en trades ganadores vs promedio perdido en perdedores." tooltipPosition="top"></i>
             </div>
             <div class="kpi-icon-container bg-slate-50 text-slate-500">
               <i class="pi pi-arrows-h"></i>
             </div>
           </div>
-          <div
-            class="text-md font-black font-mono flex gap-1 items-baseline tracking-tighter"
-          >
-            <span class="text-success text-lg">{{
-              stats().avgWin | number: '1.0-0'
-            }}</span>
+          <div class="text-md font-black font-mono flex gap-1 items-baseline tracking-tighter">
+            <span class="text-success text-lg">{{ stats().avgWin | number: '1.0-0' }}</span>
             <span class="text-disabled">/</span>
-            <span class="text-danger text-lg">{{
-              stats().avgLoss | number: '1.0-0'
-            }}</span>
+            <span class="text-danger text-lg">{{ stats().avgLoss | number: '1.0-0' }}</span>
           </div>
-          <div class="text-[10px] text-placeholder mt-auto pb-1">
-            Risk/Reward profile
-          </div>
+          <div class="text-[10px] text-placeholder mt-auto pb-1">Risk/Reward profile</div>
         </div>
       </p-card>
 
       <!-- Max Drawdown -->
-      <p-card
-        styleClass="kpi-card stats-card border-left-danger relative overflow-hidden"
-      >
+      <p-card styleClass="kpi-card stats-card border-left-danger relative overflow-hidden">
         <div class="flex flex-col h-full justify-between gap-1">
           <div class="flex items-center justify-between">
             <div class="flex items-center gap-3">
-              <span
-                class="text-[10px] font-bold text-placeholder uppercase tracking-widest text-danger"
-                >Max DD</span
-              >
-              <i
-                class="pi pi-question-circle text-[10px] cursor-help"
-                pTooltip="La mayor caída desde un pico en la curva de capital. Mide el riesgo máximo."
-                tooltipPosition="top"
-              ></i>
+              <span class="text-[10px] font-bold text-placeholder uppercase tracking-widest text-danger">Max DD</span>
+              <i class="pi pi-question-circle text-[10px] cursor-help" pTooltip="La mayor caída desde un pico en la curva de capital. Mide el riesgo máximo." tooltipPosition="top"></i>
             </div>
             <div class="kpi-icon-container bg-rose-50 text-rose-500">
               <i class="pi pi-exclamation-triangle"></i>
             </div>
           </div>
-          <div
-            class="text-2xl font-black text-danger font-mono tracking-tighter"
-          >
+          <div class="text-2xl font-black text-danger font-mono tracking-tighter">
             {{ stats().maxDrawdown | currency: 'USD' : 'symbol' : '1.0-0' }}
           </div>
-          <div class="text-[10px] text-placeholder mt-auto pb-1 font-medium">
-            Historical peak-to-trough
-          </div>
+          <div class="text-[10px] text-placeholder mt-auto pb-1 font-medium">Historical peak-to-trough</div>
         </div>
       </p-card>
     </div>
@@ -200,33 +118,17 @@
     <div class="grid grid-cols-1">
       <p-card styleClass="bullish-table-container overflow-hidden">
         <div class="p-6">
-          <div
-            class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8"
-          >
+          <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
             <div>
-              <h2 class="text-2xl font-black tracking-tight m-0">
-                Curva de Capital
-              </h2>
-              <p class="text-xs text-placeholder mt-1">
-                Visión general del rendimiento acumulado de tu cuenta
-              </p>
+              <h2 class="text-2xl font-black tracking-tight m-0">Curva de Capital</h2>
+              <p class="text-xs text-placeholder mt-1">Visión general del rendimiento acumulado de tu cuenta</p>
             </div>
             <div class="timeframe-selector">
-              <p-selectButton
-                [options]="timeframeOptions"
-                [(ngModel)]="selectedTimeframe"
-                optionLabel="label"
-                optionValue="value"
-                (onChange)="onTimeframeChange()"
-                styleClass="timeframe-buttons"
-              >
+              <p-selectButton [options]="timeframeOptions" [(ngModel)]="selectedTimeframe" optionLabel="label" optionValue="value" (onChange)="onTimeframeChange()" styleClass="timeframe-buttons">
                 <ng-template pTemplate="item" let-item>
                   <div class="flex items-center gap-2 px-1">
                     <i [class]="item.icon" class="text-[10px]"></i>
-                    <span
-                      class="text-[10px] font-bold uppercase tracking-wider"
-                      >{{ item.label }}</span
-                    >
+                    <span class="text-[10px] font-bold uppercase tracking-wider">{{ item.label }}</span>
                   </div>
                 </ng-template>
               </p-selectButton>
@@ -235,20 +137,11 @@
 
           <div class="chart-area">
             @if (chartData()) {
-              <p-chart
-                type="line"
-                [data]="chartData()"
-                [options]="chartOptions"
-                height="100%"
-              ></p-chart>
+              <p-chart type="line" [data]="chartData()" [options]="chartOptions" height="100%"></p-chart>
             } @else {
-              <div
-                class="flex flex-col justify-center items-center h-full bg-surface-muted rounded-2xl border border-dashed border-default"
-              >
+              <div class="flex flex-col justify-center items-center h-full bg-surface-muted rounded-2xl border border-dashed border-default">
                 <i class="pi pi-chart-line text-4xl text-disabled mb-3"></i>
-                <p class="text-muted font-medium">
-                  No hay datos suficientes para mostrar la curva.
-                </p>
+                <p class="text-muted font-medium">No hay datos suficientes para mostrar la curva.</p>
               </div>
             }
           </div>
@@ -256,16 +149,11 @@
       </p-card>
     </div>
   } @else {
-    <div
-      class="flex flex-col items-center justify-center p-12 border-2 border-dashed border-default rounded-xl bg-surface-muted"
-    >
+    <div class="flex flex-col items-center justify-center p-12 border-2 border-dashed border-default rounded-xl bg-surface-muted">
       <i class="pi pi-chart-bar text-5xl text-disabled mb-4"></i>
-      <h3 class="text-xl font-medium text-secondary">
-        Aún no hay estadísticas disponibles
-      </h3>
-      <p class="text-muted">
-        Registra y cierra algunas operaciones para ver tu rendimiento aquí.
-      </p>
+      <h3 class="text-xl font-medium text-secondary">Aún no hay estadísticas disponibles</h3>
+      <p class="text-muted">Registra y cierra algunas operaciones para ver tu rendimiento aquí.</p>
     </div>
   }
-</div>
+</app-page-layout>
+

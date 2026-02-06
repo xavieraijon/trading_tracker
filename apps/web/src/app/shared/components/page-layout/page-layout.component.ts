@@ -11,4 +11,5 @@ import { CommonModule } from '@angular/common';
 export class PageLayoutComponent {
   @Input({ required: true }) title: string = '';
   @Input() subtitle?: string;
+  @Input() loading: boolean = false;
 }

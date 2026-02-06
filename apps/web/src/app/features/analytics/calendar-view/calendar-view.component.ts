@@ -7,6 +7,7 @@ import { TooltipModule } from 'primeng/tooltip';
 import { PopoverModule, Popover } from 'primeng/popover';
 import { TableModule } from 'primeng/table';
 import { TradesService, Trade } from '../../trades/trades.service';
+import { PageLayoutComponent } from '../../../shared/components/page-layout/page-layout.component';
 import { FilterStore } from '../../../core/filter.store';
 
 interface CalendarDay {
@@ -35,7 +36,7 @@ interface CalendarWeek {
 @Component({
   selector: 'app-calendar-view',
   standalone: true,
-  imports: [CommonModule, FormsModule, ButtonModule, CardModule, TooltipModule, PopoverModule, TableModule],
+  imports: [CommonModule, FormsModule, ButtonModule, CardModule, TooltipModule, PopoverModule, TableModule, PageLayoutComponent],
   templateUrl: './calendar-view.component.html',
   styleUrl: './calendar-view.component.scss'
 })

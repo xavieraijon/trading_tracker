@@ -1,6 +1,7 @@
 import { Component, inject, OnInit, signal, effect } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { PageLayoutComponent } from '../../shared/components/page-layout/page-layout.component';
 import { CardModule } from 'primeng/card';
 import { ChartModule } from 'primeng/chart';
 import { TooltipModule } from 'primeng/tooltip';
@@ -11,7 +12,7 @@ import { FilterStore } from '../../core/filter.store';
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [CommonModule, CardModule, ChartModule, TooltipModule, SelectButtonModule, FormsModule],
+  imports: [CommonModule, CardModule, ChartModule, TooltipModule, SelectButtonModule, FormsModule, PageLayoutComponent],
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.scss'
 })

@@ -1,25 +1,22 @@
-<div class="py-6">
-    <div class="header-section mb-10 flex flex-col sm:flex-row justify-between items-start sm:items-end gap-6 sm:gap-0">
-        <div>
-            <h1 class="text-4xl font-bold mb-3">Gestión de Cuentas</h1>
-            <p class="text-muted text-lg">Control centralizado de tus portafolios y capital disponible</p>
-        </div>
-        <div class="flex gap-3 w-full sm:w-auto">
-            <p-button
-                label="Nueva Cuenta"
-                icon="pi pi-plus"
-                [rounded]="true"
-                (onClick)="openNew()"
-                styleClass="primary-glow"
-                class="w-full sm:w-auto"
-            ></p-button>
-        </div>
-    </div>
+<app-page-layout
+    title="Gestión de Cuentas"
+    subtitle="Control centralizado de tus portafolios y capital disponible">
+
+    <p-button
+        actions
+        label="Nueva Cuenta"
+        icon="pi pi-plus"
+        [rounded]="true"
+        (onClick)="openNew()"
+        styleClass="primary-glow"
+        class="w-full sm:w-auto"
+    ></p-button>
 
     <p-toast></p-toast>
     <p-confirmDialog></p-confirmDialog>
 
     <div class="bullish-table-container">
+        <!-- ... existing table ... -->
         <p-table
             [value]="accounts()"
             [rows]="10"
@@ -76,4 +73,4 @@
         (visibleChange)="hideDialog()"
         (saved)="onSave()"
     ></app-account-dialog>
-</div>
+</app-page-layout>

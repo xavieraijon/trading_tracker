@@ -7,12 +7,13 @@ import { ToastModule } from 'primeng/toast';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { AccountsService, Account } from '../../accounts.service';
+import { PageLayoutComponent } from '../../../../shared/components/page-layout/page-layout.component';
 import { AccountDialogComponent } from '../account-dialog/account-dialog.component';
 
 @Component({
   selector: 'app-accounts-list',
   standalone: true,
-  imports: [CommonModule, TableModule, ButtonModule, ToolbarModule, ToastModule, ConfirmDialogModule, AccountDialogComponent],
+  imports: [CommonModule, TableModule, ButtonModule, ToolbarModule, ToastModule, ConfirmDialogModule, AccountDialogComponent, PageLayoutComponent],
   providers: [MessageService, ConfirmationService],
   templateUrl: './accounts-list.component.html',
   styleUrl: './accounts-list.component.scss'
