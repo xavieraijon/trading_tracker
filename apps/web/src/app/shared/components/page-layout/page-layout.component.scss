@@ -1,0 +1,33 @@
+:host {
+    display: block;
+}
+
+.header-section {
+    animation: fadeInSlideDown 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.page-content {
+    animation: fadeInSlideUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes fadeInSlideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes fadeInSlideUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
