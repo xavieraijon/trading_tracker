@@ -56,13 +56,13 @@ export class TradesListComponent implements OnInit {
   accounts = signal<any[]>([]);
   instruments = signal<{label: string, value: string | null}[]>([]);
   markets = signal<{label: string, value: string | null}[]>([]);
-  loading = false;
+  loading = signal(false);
 
   // Dialogs
-  importDialog = false;
+  importDialog = signal(false);
   importAccountId: string | null = null;
-  tradeDialog = false;
-  accountDialog = false;
+  tradeDialog = signal(false);
+  accountDialog = signal(false);
   selectedAccountForCreation: any = null;
   selectedTrade: Trade | null = null;
 
@@ -161,12 +161,12 @@ export class TradesListComponent implements OnInit {
   confirmImport() {
     if (!this.importFile) return;
 
-    this.loading = true;
+    this.loading.set(true);
     this.tradesService.importMt5(this.importAccountId || '', this.importFile).subscribe({
       next: (res) => {
         if (res.action === 'REQUIRE_ACCOUNT_CREATION') {
-            this.loading = false;
-            this.importDialog = false;
+            this.loading.set(false);
+            this.importDialog.set(false);
 
             this.confirmationService.confirm({
                 message: `Hemos detectado operaciones de una cuenta nueva: <b>${res.meta.company} (${res.meta.login})</b>. <br><br>¿Quieres crear esta cuenta ahora mismo?`,
@@ -182,7 +182,7 @@ export class TradesListComponent implements OnInit {
                         currency: res.meta.currency,
                         initialBalance: res.meta.balance
                     };
-                    this.accountDialog = true;
+                    this.accountDialog.set(true);
                 }
             });
             return;
@@ -193,17 +193,17 @@ export class TradesListComponent implements OnInit {
           summary: 'Importación Completada',
           detail: `Se han importado ${res.imported} operaciones (${res.skipped} duplicadas)`
         });
-        this.importDialog = false;
+        this.importDialog.set(false);
         this.importAccountId = '';
         this.loadTrades(this.currentFilters);
       },
       error: (err) => {
-        this.loading = false;
+        this.loading.set(false);
         const detail = err.error?.message || 'Error al importar archivo';
 
         if (detail.includes('No se ha podido detectar')) {
             // Failure to auto-detect -> show manual dialog
-            this.importDialog = true;
+            this.importDialog.set(true);
         } else {
             this.messageService.add({ severity: 'error', summary: 'Error', detail });
         }
@@ -217,7 +217,7 @@ export class TradesListComponent implements OnInit {
       this.messageService.add({ severity: 'success', summary: 'Cuenta Creada', detail: 'Cuenta asociada correctamente. Importando operaciones...' });
 
       this.selectedAccountForCreation = null;
-      this.accountDialog = false;
+      this.accountDialog.set(false);
 
       // If we got the new account, use its ID directly to be sure
       if (newAccount && newAccount.id) {
@@ -230,28 +230,28 @@ export class TradesListComponent implements OnInit {
   }
 
   loadTrades(filters: any = {}) {
-    this.loading = true;
+    this.loading.set(true);
 
     this.tradesService.findAll(filters).subscribe({
       next: (data) => {
         this.trades.set(data);
-        this.loading = false;
+        this.loading.set(false);
       },
       error: (err) => {
         this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Could not load trades' });
-        this.loading = false;
+        this.loading.set(false);
       }
     });
   }
 
   openNew() {
     this.selectedTrade = null;
-    this.tradeDialog = true;
+    this.tradeDialog.set(true);
   }
 
   editTrade(trade: Trade) {
     this.selectedTrade = { ...trade };
-    this.tradeDialog = true;
+    this.tradeDialog.set(true);
   }
 
   onSave() {
@@ -283,7 +283,7 @@ export class TradesListComponent implements OnInit {
   }
 
   hideDialog() {
-    this.tradeDialog = false;
+    this.tradeDialog.set(false);
   }
 
   getSideSeverity(side: string) {

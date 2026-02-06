@@ -19,8 +19,8 @@ import { AccountDialogComponent } from '../account-dialog/account-dialog.compone
   styleUrl: './accounts-list.component.scss'
 })
 export class AccountsListComponent implements OnInit {
-  selectedAccounts: Account[] | null = null;
-  accountDialog: boolean = false;
+  selectedAccounts = signal<Account[] | null>(null);
+  accountDialog = signal(false);
   account: Account | null = null;
 
   private accountsService = inject(AccountsService);
@@ -39,12 +39,12 @@ export class AccountsListComponent implements OnInit {
 
   openNew() {
     this.account = null;
-    this.accountDialog = true;
+    this.accountDialog.set(true);
   }
 
   editAccount(account: Account) {
     this.account = { ...account };
-    this.accountDialog = true;
+    this.accountDialog.set(true);
   }
 
   deleteAccount(account: Account) {
@@ -65,11 +65,11 @@ export class AccountsListComponent implements OnInit {
   }
 
   hideDialog() {
-    this.accountDialog = false;
+    this.accountDialog.set(false);
   }
 
   onSave() {
-    this.accountDialog = false;
+    this.accountDialog.set(false);
     this.loadAccounts();
     this.messageService.add({ severity: 'success', summary: 'Éxito', detail: 'Cuenta guardada', life: 3000 });
   }

@@ -23,7 +23,7 @@ export class App implements OnInit {
   filterStore = inject(FilterStore);
 
   accounts = this.accountsService.accounts;
-  selectedAccountValue: string | null = null;
+  selectedAccountValue = signal<string | null>(null);
   mobileMenuVisible = signal(false);
 
   userMenuItems = [
@@ -35,7 +35,7 @@ export class App implements OnInit {
 
   ngOnInit() {
     // Sync with global filter state
-    this.selectedAccountValue = this.filterStore.selectedAccountId();
+    this.selectedAccountValue.set(this.filterStore.selectedAccountId());
 
     if (this.authService.isAuthenticated()) {
       this.accountsService.load();
@@ -43,7 +43,7 @@ export class App implements OnInit {
   }
 
   onAccountChange() {
-    this.filterStore.setAccount(this.selectedAccountValue);
+    this.filterStore.setAccount(this.selectedAccountValue());
   }
 
   logout() {

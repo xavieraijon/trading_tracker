@@ -13,7 +13,7 @@
     ></p-button>
 
     <p-toast></p-toast>
-    <p-confirmDialog></p-confirmDialog>
+    <p-confirmDialog [appendTo]="'body'"></p-confirmDialog>
 
     <div class="bullish-table-container">
         <!-- ... existing table ... -->
@@ -68,9 +68,9 @@
     </div>
 
     <app-account-dialog
-        [visible]="accountDialog"
+        [visible]="accountDialog()"
         [account]="account"
-        (visibleChange)="hideDialog()"
+        (visibleChange)="accountDialog.set($event)"
         (saved)="onSave()"
     ></app-account-dialog>
 </app-page-layout>

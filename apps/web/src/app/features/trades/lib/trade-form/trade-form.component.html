@@ -5,6 +5,7 @@
     [style]="{ width: '550px' }"
     styleClass="p-fluid bullish-dialog"
     (onHide)="hideDialog()"
+    [appendTo]="'body'"
 >
     <ng-template pTemplate="content">
         <form [formGroup]="tradeForm" class="pt-4">

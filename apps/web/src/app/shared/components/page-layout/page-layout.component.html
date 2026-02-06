@@ -1,8 +1,10 @@
 <div class="py-6">
     <div class="header-section mb-10 flex flex-col sm:flex-row justify-between items-start sm:items-end gap-6 sm:gap-0">
         <div class="header-content">
-            <h1 class="text-4xl font-bold mb-3 tracking-tight">{{ title }}</h1>
-            <p *ngIf="subtitle" class="text-muted text-lg leading-relaxed">{{ subtitle }}</p>
+            <h1 class="text-4xl font-bold tracking-tight">{{ title }}</h1>
+        @if (subtitle) {
+            <p class="text-muted text-lg leading-relaxed">{{ subtitle }}</p>
+        }
         </div>
 
         <div class="header-actions flex flex-wrap gap-3 w-full sm:w-auto">

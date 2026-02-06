@@ -51,21 +51,25 @@
                         [options]="accounts()"
                         optionLabel="name"
                         optionValue="id"
-                        [(ngModel)]="selectedAccountValue"
-                        (onChange)="onAccountChange()"
+                        [ngModel]="selectedAccountValue()"
+                        (ngModelChange)="selectedAccountValue.set($event); onAccountChange()"
                         placeholder="Cuenta"
                         [showClear]="true"
                         class="w-24 sm:w-48 lg:w-56"
                         variant="filled">
                         <ng-template pTemplate="selectedItem" let-selectedOption>
-                            <div class="flex items-center gap-2" *ngIf="selectedOption">
-                                <i class="pi pi-wallet text-muted"></i>
-                                <span>{{ selectedOption.name }}</span>
-                            </div>
-                            <div class="flex items-center gap-2" *ngIf="!selectedOption">
-                                <i class="pi pi-globe text-primary"></i>
-                                <span>Todas las Cuentas</span>
-                            </div>
+                            @if (selectedOption) {
+                                <div class="flex items-center gap-2">
+                                    <i class="pi pi-wallet text-muted"></i>
+                                    <span>{{ selectedOption.name }}</span>
+                                </div>
+                            }
+                            @if (!selectedOption) {
+                                <div class="flex items-center gap-2">
+                                    <i class="pi pi-globe text-primary"></i>
+                                    <span>Todas las Cuentas</span>
+                                </div>
+                            }
                         </ng-template>
                         <ng-template let-account pTemplate="item">
                             <div class="flex items-center gap-2">

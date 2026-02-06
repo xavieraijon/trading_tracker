@@ -1,7 +1,7 @@
 <app-page-layout
     title="Registro de Operaciones"
     subtitle="Historial detallado de tu actividad en el mercado"
-    [loading]="loading">
+    [loading]="loading()">
 
     <div actions class="flex flex-wrap gap-3">
         <p-button
@@ -41,6 +41,7 @@
         [modal]="true"
         [style]="{ width: '400px' }"
         styleClass="bullish-dialog"
+        [appendTo]="'body'"
     >
         <div class="flex flex-col gap-4 pt-4">
             <p class="text-muted">Selecciona la cuenta donde se importarán las operaciones:</p>
@@ -61,7 +62,7 @@
                 label="Cancelar"
                 severity="secondary"
                 [text]="true"
-                (onClick)="importDialog = false"
+                (onClick)="importDialog.set(false)"
             ></p-button>
             <p-button
                 label="Confirmar Importación"
@@ -73,7 +74,7 @@
     </p-dialog>
 
     <p-toast></p-toast>
-    <p-confirmDialog></p-confirmDialog>
+    <p-confirmDialog [appendTo]="'body'"></p-confirmDialog>
 
     <div class="filters-container bullish-card mb-8">
         <div class="filters-body p-4">
@@ -185,7 +186,7 @@
             [value]="trades()"
             [rows]="10"
             [paginator]="true"
-            [loading]="loading"
+            [loading]="loading()"
             dataKey="id"
             styleClass="p-datatable-bullish p-datatable-sm"
             [responsiveLayout]="'scroll'"
@@ -248,15 +249,16 @@
     </div>
 
     <app-trade-form
-        [visible]="tradeDialog"
+        [visible]="tradeDialog()"
         [trade]="selectedTrade"
-        (visibleChange)="hideDialog()"
+        (visibleChange)="tradeDialog.set($event)"
         (saved)="onSave()"
     ></app-trade-form>
 
     <app-account-dialog
-        [(visible)]="accountDialog"
+        [visible]="accountDialog()"
         [account]="selectedAccountForCreation"
+        (visibleChange)="accountDialog.set($event)"
         (saved)="onAccountSaved($event)"
     ></app-account-dialog>
 </app-page-layout>
