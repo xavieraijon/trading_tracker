@@ -96,19 +96,19 @@ export class TradesController {
   }
 
   @Get('stats')
-  getStats(@Request() req, @Query('accountId') accountId?: string) {
+  getStats(@Request() req, @Query('accountId') accountId?: string | string[]) {
     return this.tradesService.getStats(req.user.userId, accountId);
   }
 
   @Get('calendar-stats')
-  getCalendarStats(@Request() req, @Query('accountId') accountId?: string) {
+  getCalendarStats(@Request() req, @Query('accountId') accountId?: string | string[]) {
     return this.tradesService.getCalendarStats(req.user.userId, accountId);
   }
 
   @Get()
   findAll(
     @Request() req,
-    @Query('accountId') accountId?: string,
+    @Query('accountId') accountId?: string | string[],
     @Query('side') side?: string,
     @Query('instrument') instrument?: string,
     @Query('daysRange') daysRange?: string,
@@ -130,7 +130,7 @@ export class TradesController {
   }
 
   @Get('export')
-  async export(@Request() req, @Query('accountId') accountId?: string) {
+  async export(@Request() req, @Query('accountId') accountId?: string | string[]) {
     return this.tradesService.exportCsv(req.user.userId, accountId);
   }
 

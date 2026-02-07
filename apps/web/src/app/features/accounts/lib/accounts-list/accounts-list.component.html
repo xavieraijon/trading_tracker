@@ -29,6 +29,7 @@
                 <tr>
                     <th pSortableColumn="name">Nombre <p-sortIcon field="name"></p-sortIcon></th>
                     <th pSortableColumn="type">Tipo <p-sortIcon field="type"></p-sortIcon></th>
+                    <th pSortableColumn="propFirmStatus">Categoría <p-sortIcon field="propFirmStatus"></p-sortIcon></th>
                     <th pSortableColumn="market">Mercado <p-sortIcon field="market"></p-sortIcon></th>
                     <th pSortableColumn="currency">Divisa <p-sortIcon field="currency"></p-sortIcon></th>
                     <th pSortableColumn="balance">Balance Actual <p-sortIcon field="balance"></p-sortIcon></th>
@@ -38,7 +39,18 @@
             <ng-template pTemplate="body" let-account>
                 <tr>
                     <td class="font-bold text-lg">{{ account.name }}</td>
-                    <td><span class="text-muted">{{ getAccountTypeLabel(account.type) }}</span></td>
+                    <td class="text-muted">{{ getAccountTypeLabel(account.type) }}</td>
+                    <td>
+                        @if (account.type === 'PROP_FIRM' && account.propFirmStatus) {
+                            <span class="badge w-fit" [ngClass]="getPropFirmStatusBadgeClass(account.propFirmStatus)">
+                                {{ getPropFirmStatusLabel(account.propFirmStatus) }}
+                            </span>
+                        } @else if (account.type === 'PERSONAL') {
+                            <span class="badge badge-neutral w-fit">Real</span>
+                        } @else {
+                            <span class="text-muted italic text-xs">Sin asignar</span>
+                        }
+                    </td>
                     <td><span class="badge" [ngClass]="getMarketBadgeClass(account.market)">{{ account.market }}</span></td>
                     <td><span class="badge badge-neutral">{{ account.currency }}</span></td>
                     <td class="font-mono text-xl" [ngClass]="getBalanceClass(account)">

@@ -84,9 +84,10 @@ export class TradesListComponent implements OnInit {
       const range = this.filterStore.dateRange();
       const startDate = range && range[0] ? range[0].toISOString() : undefined;
       const endDate = range && range[1] ? range[1].toISOString() : undefined;
+      const accountId = this.filterStore.selectedAccountId();
 
       return {
-          accountId: this.filterStore.selectedAccountId() || undefined,
+          accountId: accountId || this.accountsService.filteredAccountIds(),
           startDate,
           endDate,
           daysRange: this.filterStore.daysRange() || undefined,
@@ -104,7 +105,16 @@ export class TradesListComponent implements OnInit {
       { label: 'Short', value: 'SHORT' }
   ];
 
+  categoryOptions = [
+      { label: 'Cuentas Reales', value: 'FUNDED', icon: 'pi pi-briefcase' },
+      { label: 'Challenges', value: 'CHALLENGE', icon: 'pi pi-verified' }
+  ];
+
   onFilterChange(type: string, value: any) {
+      if (type === 'accountCategory') {
+          this.filterStore.setAccountCategory(value);
+          return;
+      }
       this.filterStore.setFilters({ [type]: value });
   }
 
@@ -255,22 +265,15 @@ export class TradesListComponent implements OnInit {
   }
 
   onSave() {
-    // Reload with current filters
-    const filters = {
-        accountId: this.filterStore.selectedAccountId() || undefined,
-        daysRange: this.filterStore.daysRange() || undefined,
-        side: this.filterStore.side() || undefined,
-        instrument: this.filterStore.instrument() || undefined,
-        accountMarket: this.filterStore.accountMarket() || undefined,
-        currency: this.filterStore.currency() || undefined
-    };
-    this.loadTrades(filters);
+    this.loadTrades(this.currentFilters);
     this.messageService.add({ severity: 'success', summary: 'Éxito', detail: 'Operación guardada' });
   }
 
   exportTrades() {
-    const accountId = this.filterStore.selectedAccountId() || undefined;
-    this.tradesService.exportCsv(accountId).subscribe({
+    const accountId = this.filterStore.selectedAccountId();
+    const idsToExport = accountId || this.accountsService.filteredAccountIds();
+
+    this.tradesService.exportCsv(idsToExport).subscribe({
       next: (blob) => {
         const url = window.URL.createObjectURL(blob);
         const a = document.createElement('a');
@@ -288,6 +291,18 @@ export class TradesListComponent implements OnInit {
 
   getSideSeverity(side: string) {
     return side === 'LONG' ? 'success' : 'danger';
+  }
+
+  getPropFirmStatusLabel(status: string): string {
+    const labels: Record<string, string> = {
+      'CHALLENGE': 'Challenge',
+      'FUNDED': 'Fondeada'
+    };
+    return labels[status] || status;
+  }
+
+  getPropFirmStatusBadgeClass(status: string): string {
+    return status === 'CHALLENGE' ? 'badge-challenge' : 'badge-funded';
   }
 
   deleteTrade(trade: Trade) {

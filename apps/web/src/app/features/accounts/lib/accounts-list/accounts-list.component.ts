@@ -82,6 +82,18 @@ export class AccountsListComponent implements OnInit {
     return labels[type] || type;
   }
 
+  getPropFirmStatusLabel(status: string): string {
+    const labels: Record<string, string> = {
+      'CHALLENGE': 'Challenge',
+      'FUNDED': 'Fondeada'
+    };
+    return labels[status] || status;
+  }
+
+  getPropFirmStatusBadgeClass(status: string): string {
+    return status === 'CHALLENGE' ? 'badge-challenge' : 'badge-funded';
+  }
+
   getMarketBadgeClass(market: string): string {
     const classes: Record<string, string> = {
       'CFD': 'badge-cfd',

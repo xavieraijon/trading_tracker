@@ -7,6 +7,7 @@ import { ChartModule } from 'primeng/chart';
 import { TooltipModule } from 'primeng/tooltip';
 import { SelectButtonModule } from 'primeng/selectbutton';
 import { TradesService } from '../trades/trades.service';
+import { AccountsService } from '../accounts/accounts.service';
 import { FilterStore } from '../../core/filter.store';
 
 @Component({
@@ -20,6 +21,7 @@ export class DashboardComponent {
   stats = signal<any>(null);
   chartData = signal<any>(null);
   selectedTimeframe = signal<'all' | 'day' | 'week' | 'month' | 'year'>('all');
+  private accountsService = inject(AccountsService);
 
   timeframeOptions = [
     { label: 'Todos', value: 'all', icon: 'pi pi-list' },
@@ -139,20 +141,46 @@ export class DashboardComponent {
 
   constructor() {
     effect(() => {
-        const accountId = this.filterStore.selectedAccountId();
-        this.loadStats(accountId);
+        // Dependencies are tracked automatically when called inside loadStats
+        // which calls filteredAccountIds() which depends on accountCategory()
+        // We also need to track selectedAccountId() explicitly if logic changes,
+        // but loadStats() reads it so it is tracked.
+        this.loadStats();
     });
   }
 
-  loadStats(accountId: string | null) {
-    const id = accountId || undefined;
-    this.tradesService.getStats(id).subscribe({
-      next: (data) => {
+  loadStats() {
+    const accountId = this.filterStore.selectedAccountId();
+    const idsToFetch = accountId || this.accountsService.filteredAccountIds();
+
+    // If we have "NONE" or empty, clear stats immediately
+    if (!idsToFetch || idsToFetch.length === 0 || (Array.isArray(idsToFetch) && idsToFetch[0] === '__NONE__')) {
+        this.clearStats();
+        return;
+    }
+
+    this.tradesService.getStats(idsToFetch).subscribe({
+      next: (data: any) => {
+        // If data is empty or invalid, clear stats
+        if (!data || !data.equityCurve) {
+            this.clearStats();
+            return;
+        }
+
         this.stats.set(data);
         this.prepareChartData();
         this.prepareSparklines(data.equityCurve);
-      }
+      },
+      error: () => this.clearStats()
     });
+  }
+
+  clearStats() {
+      this.stats.set(null);
+      this.chartData.set(null);
+      this.pnlSparkline.set(null);
+      this.winRateSparkline.set(null);
+      this.profitFactorSparkline.set(null);
   }
 
   onTimeframeChange() {

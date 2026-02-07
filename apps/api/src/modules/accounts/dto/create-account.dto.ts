@@ -1,5 +1,5 @@
 import { IsString, IsNotEmpty, IsNumber, Min, IsEnum, IsOptional } from 'class-validator';
-import { AccountType, MarketType } from '@prisma/client';
+import { AccountType, MarketType, PropFirmStatus } from '@prisma/client';
 
 export class CreateAccountDto {
   @IsString()
@@ -29,6 +29,10 @@ export class CreateAccountDto {
   @IsEnum(MarketType)
   @IsOptional()
   market?: MarketType;
+
+  @IsEnum(PropFirmStatus)
+  @IsOptional()
+  propFirmStatus?: PropFirmStatus;
 
   @IsNumber()
   @IsOptional()

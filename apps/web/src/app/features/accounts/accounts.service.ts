@@ -1,6 +1,7 @@
-import { Injectable, inject, signal } from '@angular/core';
+import { Injectable, inject, signal, effect, computed } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { Observable, map } from 'rxjs';
+import { FilterStore } from '../../core/filter.store';
 
 export interface Account {
   id: string;
@@ -11,6 +12,7 @@ export interface Account {
   type?: 'PERSONAL' | 'PROP_FIRM';
   market?: 'CFD' | 'FUTURES' | 'SPOT' | 'CRYPTO' | 'STOCKS';
   broker?: string;
+  propFirmStatus?: 'CHALLENGE' | 'FUNDED';
   externalId?: string;
   defaultRisk?: number;
   createdAt: string;
@@ -24,6 +26,7 @@ export interface CreateAccountDto {
   type: string;
   market: string;
   broker?: string;
+  propFirmStatus?: 'CHALLENGE' | 'FUNDED';
   externalId?: string;
   defaultRisk?: number;
 }
@@ -37,6 +40,31 @@ export class AccountsService {
   private apiUrl = '/api/accounts';
 
   accounts = signal<Account[]>([]);
+  private filterStore = inject(FilterStore);
+
+  filteredAccounts = computed(() => {
+    const category = this.filterStore.accountCategory();
+    const allAccounts = this.accounts();
+
+    return allAccounts.filter(acc => {
+      // Default to CHALLENGE if it's a PROP_FIRM account and status is missing
+      const status = acc.propFirmStatus || (acc.type === 'PROP_FIRM' ? 'CHALLENGE' : 'FUNDED');
+
+      if (category === 'CHALLENGE') {
+        return acc.type === 'PROP_FIRM' && status === 'CHALLENGE';
+      } else {
+        // FUNDED category includes PERSONAL accounts and FUNDED Prop Firm accounts
+        return acc.type === 'PERSONAL' || (acc.type === 'PROP_FIRM' && status === 'FUNDED');
+      }
+    });
+  });
+
+  filteredAccountIds = computed(() => {
+    const ids = this.filteredAccounts().map(acc => acc.id);
+    return ids.length > 0 ? ids : ['__NONE__'];
+  });
+
+  constructor() {}
 
   load() {
     this.findAll().subscribe(data => {

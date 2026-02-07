@@ -48,7 +48,7 @@
             @if (authService.isAuthenticated()) {
                 <div class="account-selector flex items-center">
                      <p-select
-                        [options]="accounts()"
+                        [options]="accountsService.filteredAccounts()"
                         optionLabel="name"
                         optionValue="id"
                         [ngModel]="selectedAccountValue()"
@@ -89,7 +89,7 @@
                         severity="secondary"
                         (onClick)="userMenu.toggle($event)"
                     ></p-button>
-                    <p-menu #userMenu [model]="userMenuItems" [popup]="true"></p-menu>
+                    <p-menu #userMenu [model]="userMenuItems()" [popup]="true"></p-menu>
                 </div>
             } @else {
                 <p-button label="Empezar" icon="pi pi-rocket" routerLink="/auth/register" [rounded]="true"></p-button>
@@ -124,6 +124,17 @@
             <div class="drawer-divider my-4 border-t border-slate-100"></div>
 
             <div class="px-4 py-2">
+                <p class="text-[10px] font-bold text-placeholder uppercase tracking-widest mb-3">Modo de Vista</p>
+                <p-selectButton
+                    [options]="categoryOptions"
+                    [ngModel]="filterStore.accountCategory()"
+                    (ngModelChange)="onCategoryChange($event)"
+                    optionLabel="label"
+                    optionValue="value"
+                    class="w-full mb-6 block"
+                    styleClass="p-button-sm w-full">
+                </p-selectButton>
+
                 <p class="text-[10px] font-bold text-placeholder uppercase tracking-widest mb-3">Cambiar Cuenta</p>
                 <p-select
                     [options]="accounts()"

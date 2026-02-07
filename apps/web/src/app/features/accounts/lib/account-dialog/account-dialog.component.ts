@@ -51,6 +51,11 @@ export class AccountDialogComponent implements OnChanges, OnInit {
       { label: 'GBP - Libra Esterlina', value: 'GBP' }
   ];
 
+  propFirmStatusOptions = [
+    { label: 'Challenge / Evaluación', value: 'CHALLENGE' },
+    { label: 'Fondeada / funded', value: 'FUNDED' }
+  ];
+
   constructor() {
     this.accountForm = this.fb.group({
       name: ['', Validators.required],
@@ -59,6 +64,7 @@ export class AccountDialogComponent implements OnChanges, OnInit {
       type: ['PERSONAL', Validators.required],
       market: ['CFD', Validators.required],
       broker: [''],
+      propFirmStatus: [null],
       externalId: [''],
       defaultRisk: [0, [Validators.min(0)]]
     });
@@ -89,6 +95,7 @@ export class AccountDialogComponent implements OnChanges, OnInit {
         type: this.account.type || 'PERSONAL',
         market: this.account.market || 'CFD',
         broker: this.account.broker || '',
+        propFirmStatus: this.account.propFirmStatus || null,
         externalId: this.account.externalId || '',
         defaultRisk: this.account.defaultRisk || 0
       });

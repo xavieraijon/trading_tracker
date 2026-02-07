@@ -50,7 +50,7 @@ export class TradesService {
   }
 
   findAll(filters: {
-    accountId?: string;
+    accountId?: string | string[];
     side?: string;
     instrument?: string;
     daysRange?: number;
@@ -63,7 +63,11 @@ export class TradesService {
     let params = new HttpParams();
     Object.entries(filters).forEach(([key, value]) => {
       if (value !== null && value !== undefined && value !== '') {
-        params = params.set(key, value.toString());
+        if (Array.isArray(value)) {
+          value.forEach(v => params = params.append(key, v.toString()));
+        } else {
+          params = params.set(key, value.toString());
+        }
       }
     });
     return this.http.get<Trade[]>(this.apiUrl, { params });
@@ -85,22 +89,38 @@ export class TradesService {
     return this.http.patch<Trade>(`${this.apiUrl}/${id}`, trade);
   }
 
-  getStats(accountId?: string): Observable<TradeStats> {
-    const params: any = {};
-    if (accountId) params.accountId = accountId;
+  getStats(accountId?: string | string[]): Observable<TradeStats> {
+    let params = new HttpParams();
+    if (accountId) {
+      if (Array.isArray(accountId)) {
+        accountId.forEach(id => params = params.append('accountId', id));
+      } else {
+        params = params.set('accountId', accountId);
+      }
+    }
     return this.http.get<TradeStats>(`${this.apiUrl}/stats`, { params });
   }
 
-  getCalendarStats(accountId?: string): Observable<any[]> {
-    const params: any = {};
-    if (accountId) params.accountId = accountId;
+  getCalendarStats(accountId?: string | string[]): Observable<any[]> {
+    let params = new HttpParams();
+    if (accountId) {
+      if (Array.isArray(accountId)) {
+        accountId.forEach(id => params = params.append('accountId', id));
+      } else {
+        params = params.set('accountId', accountId);
+      }
+    }
     return this.http.get<any[]>(`${this.apiUrl}/calendar-stats`, { params });
   }
 
-  exportCsv(accountId?: string): Observable<Blob> {
+  exportCsv(accountId?: string | string[]): Observable<Blob> {
     let params = new HttpParams();
     if (accountId) {
-      params = params.set('accountId', accountId);
+      if (Array.isArray(accountId)) {
+        accountId.forEach(id => params = params.append('accountId', id));
+      } else {
+        params = params.set('accountId', accountId);
+      }
     }
     return this.http.get(`${this.apiUrl}/export`, {
       params,

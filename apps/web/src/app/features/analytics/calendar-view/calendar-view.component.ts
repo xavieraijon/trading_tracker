@@ -7,6 +7,7 @@ import { TooltipModule } from 'primeng/tooltip';
 import { PopoverModule, Popover } from 'primeng/popover';
 import { TableModule } from 'primeng/table';
 import { TradesService, Trade } from '../../trades/trades.service';
+import { AccountsService } from '../../accounts/accounts.service';
 import { PageLayoutComponent } from '../../../shared/components/page-layout/page-layout.component';
 import { FilterStore } from '../../../core/filter.store';
 
@@ -50,12 +51,13 @@ export class CalendarViewComponent implements OnInit {
   weekDays = ['Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb', 'Dom', 'Total'];
 
   private tradesService = inject(TradesService);
+  private accountsService = inject(AccountsService);
   private filterStore = inject(FilterStore);
 
   constructor() {
     effect(() => {
-        const accountId = this.filterStore.selectedAccountId();
-        this.loadCalendarData(accountId);
+        // Automatically tracks dependencies: selectedAccountId -> filteredAccountIds -> accountCategory
+        this.loadCalendarData();
     });
   }
 
@@ -66,17 +68,23 @@ export class CalendarViewComponent implements OnInit {
     const newDate = new Date(this.currentDate());
     newDate.setMonth(newDate.getMonth() + delta);
     this.currentDate.set(newDate);
-    this.loadCalendarData(this.filterStore.selectedAccountId());
+    this.loadCalendarData();
   }
 
-  loadCalendarData(accountId: string | null) {
+  loadCalendarData() {
     this.loading.set(true);
-    const id = accountId || undefined;
+    const accountId = this.filterStore.selectedAccountId();
+    const idsToFetch = accountId || this.accountsService.filteredAccountIds();
+
+    if (!idsToFetch) {
+        this.loading.set(false);
+        return;
+    }
 
     // Fetch both aggregated stats and individual trades to show details
-    this.tradesService.getCalendarStats(id).subscribe({
+    this.tradesService.getCalendarStats(idsToFetch).subscribe({
       next: (stats) => {
-        this.tradesService.findAll({ accountId: id }).subscribe({
+        this.tradesService.findAll({ accountId: idsToFetch }).subscribe({
             next: (trades) => {
                 this.generateCalendar(stats, trades);
                 this.calculateMonthlyStats(stats);

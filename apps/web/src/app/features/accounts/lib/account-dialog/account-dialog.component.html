@@ -45,6 +45,22 @@
                 </div>
             </div>
 
+            @if (accountForm.get('type')?.value === 'PROP_FIRM') {
+                <div class="form-group">
+                    <label for="propFirmStatus" class="form-label">Fase / Estado de la Cuenta</label>
+                    <p-select
+                        id="propFirmStatus"
+                        formControlName="propFirmStatus"
+                        [options]="propFirmStatusOptions"
+                        optionLabel="label"
+                        optionValue="value"
+                        placeholder="Seleccionar estado"
+                        appendTo="body"
+                        styleClass="w-full">
+                    </p-select>
+                </div>
+            }
+
             <div class="form-group">
                 <label for="broker" class="form-label">Broker / Prop Firm</label>
                 <p-autoComplete

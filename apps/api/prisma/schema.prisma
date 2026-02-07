@@ -37,10 +37,16 @@ model Account {
 
   startedAt      DateTime?
   status         String   @default("active") // active|archived
+  propFirmStatus PropFirmStatus?
   createdAt      DateTime @default(now())
   deletedAt      DateTime?
 
   trades         Trade[]
+}
+
+enum PropFirmStatus {
+  CHALLENGE
+  FUNDED
 }
 
 model Trade {

@@ -74,7 +74,7 @@ export class TradesService {
   }
 
   async findAll(userId: string, filters: {
-    accountId?: string;
+    accountId?: string | string[];
     side?: string;
     instrument?: string;
     daysRange?: number;
@@ -87,7 +87,7 @@ export class TradesService {
 
     const where: any = {
       userId,
-      ...(accountId ? { accountId } : {}),
+      ...(accountId ? { accountId: Array.isArray(accountId) ? { in: accountId } : accountId } : {}),
       ...(side ? { side } : {}),
       ...(instrument ? { instrument: { contains: instrument, mode: 'insensitive' } } : {}),
     };
@@ -160,13 +160,14 @@ export class TradesService {
     });
   }
 
-  async getStats(userId: string, accountId?: string) {
+  async getStats(userId: string, accountId?: string | string[]) {
+    const where: any = {
+      userId,
+      ...(accountId ? { accountId: Array.isArray(accountId) ? { in: accountId } : accountId } : {}),
+      closeAt: { not: null }
+    };
     const trades = await this.prisma.trade.findMany({
-      where: {
-        userId,
-        ...(accountId ? { accountId } : {}),
-        closeAt: { not: null }
-      },
+      where,
       include: {
         account: { select: { name: true, defaultRisk: true } }
       },
@@ -263,13 +264,14 @@ export class TradesService {
     };
   }
 
-  async getCalendarStats(userId: string, accountId?: string) {
+  async getCalendarStats(userId: string, accountId?: string | string[]) {
+    const where: any = {
+      userId,
+      ...(accountId ? { accountId: Array.isArray(accountId) ? { in: accountId } : accountId } : {}),
+      closeAt: { not: null }
+    };
     const trades = await this.prisma.trade.findMany({
-      where: {
-        userId,
-        ...(accountId ? { accountId } : {}),
-        closeAt: { not: null }
-      },
+      where,
       select: {
         closeAt: true,
         pnlNet: true,
@@ -305,11 +307,11 @@ export class TradesService {
     }));
   }
 
-  async exportCsv(userId: string, accountId?: string) {
+  async exportCsv(userId: string, accountId?: string | string[]) {
     const trades = await this.prisma.trade.findMany({
       where: {
         userId,
-        ...(accountId ? { accountId } : {}),
+        ...(accountId ? { accountId: Array.isArray(accountId) ? { in: accountId } : accountId } : {}),
       },
       include: {
         account: {

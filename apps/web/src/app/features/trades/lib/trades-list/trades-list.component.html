@@ -167,6 +167,30 @@
                     ></p-select>
                 </div>
 
+                <!-- Categoría (Challenge/Real) -->
+                <div class="filter-field">
+                    <label>Categoría</label>
+                    <p-select
+                        [options]="categoryOptions"
+                        [ngModel]="filterStore.accountCategory()"
+                        (ngModelChange)="onFilterChange('accountCategory', $event)"
+                        optionLabel="label"
+                        optionValue="value"
+                        placeholder="Categoría"
+                        appendTo="body"
+                        class="w-full premium-select"
+                    >
+                        <ng-template pTemplate="selectedItem" let-selectedOption>
+                            @if (selectedOption) {
+                                <div class="flex items-center gap-2">
+                                     <i [class]="selectedOption.icon" [class.text-amber-500]="selectedOption.value === 'CHALLENGE'" [class.text-emerald-500]="selectedOption.value === 'FUNDED'"></i>
+                                     <span>{{ selectedOption.label }}</span>
+                                </div>
+                            }
+                        </ng-template>
+                    </p-select>
+                </div>
+
                 <!-- Acciones -->
                 <div class="filter-actions h-[48px] flex items-center">
                     <p-button
@@ -195,6 +219,7 @@
             <tr>
                 <th pSortableColumn="openAt">Fecha <p-sortIcon field="openAt"></p-sortIcon></th>
                 <th pSortableColumn="account.name">Cuenta <p-sortIcon field="account.name"></p-sortIcon></th>
+                <th pSortableColumn="account.propFirmStatus">Categoría <p-sortIcon field="account.propFirmStatus"></p-sortIcon></th>
                 <th pSortableColumn="instrument">Instrumento <p-sortIcon field="instrument"></p-sortIcon></th>
                 <th pSortableColumn="side">L/S <p-sortIcon field="side"></p-sortIcon></th>
                 <th pSortableColumn="quantity">Size <p-sortIcon field="quantity"></p-sortIcon></th>
@@ -209,6 +234,17 @@
             <tr>
                 <td>{{ trade.openAt | date:'short' }}</td>
                 <td>{{ trade.account?.name }}</td>
+                <td>
+                    @if (trade.account?.type === 'PROP_FIRM' && trade.account?.propFirmStatus) {
+                        <span class="badge w-fit" [ngClass]="getPropFirmStatusBadgeClass(trade.account.propFirmStatus)">
+                            {{ getPropFirmStatusLabel(trade.account.propFirmStatus) }}
+                        </span>
+                    } @else if (trade.account?.type === 'PERSONAL') {
+                        <span class="badge badge-neutral w-fit">Real</span>
+                    } @else {
+                        <span class="text-muted italic text-xs">Sin asignar</span>
+                    }
+                </td>
                 <td>{{ trade.instrument }}</td>
                 <td>
                     <p-tag [value]="trade.side" [severity]="getSideSeverity(trade.side)"></p-tag>
