@@ -3,7 +3,7 @@
     [(visible)]="visible"
     [modal]="true"
     [style]="{ width: '450px' }"
-    styleClass="p-fluid bullish-dialog"
+    class="p-fluid bullish-dialog"
     (onHide)="hideDialog()"
     [appendTo]="'body'"
 >
@@ -27,7 +27,7 @@
                         optionValue="value"
                         placeholder="Seleccionar"
                         appendTo="body"
-                        styleClass="w-full">
+                        class="w-full">
                     </p-select>
                 </div>
                 <div class="form-group">
@@ -40,7 +40,7 @@
                         optionValue="value"
                         placeholder="Seleccionar"
                         appendTo="body"
-                        styleClass="w-full">
+                        class="w-full">
                     </p-select>
                 </div>
             </div>
@@ -56,7 +56,7 @@
                         optionValue="value"
                         placeholder="Seleccionar estado"
                         appendTo="body"
-                        styleClass="w-full">
+                        class="w-full">
                     </p-select>
                 </div>
             }
@@ -70,8 +70,8 @@
                     (completeMethod)="searchBrokers($event)"
                     [dropdown]="true"
                     placeholder="Seleccionar o escribir..."
-                    styleClass="w-full"
-                    inputStyleClass="w-full"
+                    class="w-full"
+                    inputClass="w-full"
                 ></p-autoComplete>
             </div>
 
@@ -97,7 +97,7 @@
                         [currency]="accountForm.get('currency')?.value || 'USD'"
                         locale="es-ES"
                         placeholder="0.00"
-                        styleClass="w-full"
+                        class="w-full"
                     ></p-inputNumber>
                 </div>
                 <div class="form-group">
@@ -109,7 +109,7 @@
                         [currency]="accountForm.get('currency')?.value || 'USD'"
                         locale="es-ES"
                         placeholder="0.00"
-                        styleClass="w-full"
+                        class="w-full"
                         pTooltip="Se usará para calcular R si no hay Stop Loss"
                         tooltipPosition="top"
                     ></p-inputNumber>

@@ -9,7 +9,7 @@
             icon="pi pi-plus"
             [rounded]="true"
             (onClick)="openNew()"
-            styleClass="primary-glow"
+            class="primary-glow"
         ></p-button>
         <p-button
             label="Importar MT5"
@@ -40,7 +40,7 @@
         [(visible)]="importDialog"
         [modal]="true"
         [style]="{ width: '400px' }"
-        styleClass="bullish-dialog"
+        class="bullish-dialog"
         [appendTo]="'body'"
     >
         <div class="flex flex-col gap-4 pt-4">
@@ -68,7 +68,7 @@
                 label="Confirmar Importación"
                 [disabled]="!importAccountId"
                 (onClick)="confirmImport()"
-                styleClass="primary-glow"
+                class="primary-glow"
             ></p-button>
         </ng-template>
     </p-dialog>

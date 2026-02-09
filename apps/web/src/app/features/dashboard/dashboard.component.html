@@ -5,7 +5,7 @@
   @if (stats()) {
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-6 mb-10">
       <!-- Beneficio Neto -->
-      <p-card styleClass="kpi-card stats-card border-left-pnl relative overflow-hidden">
+      <p-card class="kpi-card stats-card border-left-pnl relative overflow-hidden">
         <!-- ... content ... -->
         <div class="flex flex-col h-full justify-between gap-1">
           <div class="flex items-center justify-between">
@@ -29,7 +29,7 @@
       </p-card>
 
       <!-- Win Rate -->
-      <p-card styleClass="kpi-card stats-card relative overflow-hidden">
+      <p-card class="kpi-card stats-card relative overflow-hidden">
         <div class="flex flex-col h-full justify-between gap-1">
           <div class="flex items-center justify-between">
             <div class="flex items-center gap-3">
@@ -52,7 +52,7 @@
       </p-card>
 
       <!-- Profit Factor -->
-      <p-card styleClass="kpi-card stats-card relative overflow-hidden">
+      <p-card class="kpi-card stats-card relative overflow-hidden">
         <div class="flex flex-col h-full justify-between gap-1">
           <div class="flex items-center justify-between">
             <div class="flex items-center gap-3">
@@ -75,7 +75,7 @@
       </p-card>
 
       <!-- Avg Win/Loss -->
-      <p-card styleClass="kpi-card stats-card relative overflow-hidden">
+      <p-card class="kpi-card stats-card relative overflow-hidden">
         <div class="flex flex-col h-full justify-between gap-1">
           <div class="flex items-center justify-between">
             <div class="flex items-center gap-3">
@@ -96,7 +96,7 @@
       </p-card>
 
       <!-- Max Drawdown -->
-      <p-card styleClass="kpi-card stats-card border-left-danger relative overflow-hidden">
+      <p-card class="kpi-card stats-card border-left-danger relative overflow-hidden">
         <div class="flex flex-col h-full justify-between gap-1">
           <div class="flex items-center justify-between">
             <div class="flex items-center gap-3">
@@ -116,7 +116,7 @@
     </div>
 
     <div class="grid grid-cols-1">
-      <p-card styleClass="bullish-table-container overflow-hidden">
+      <p-card class="bullish-table-container overflow-hidden">
         <div class="p-6">
           <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
             <div>
@@ -124,7 +124,7 @@
               <p class="text-xs text-placeholder mt-1">Visión general del rendimiento acumulado de tu cuenta</p>
             </div>
             <div class="timeframe-selector">
-              <p-selectButton [options]="timeframeOptions" [(ngModel)]="selectedTimeframe" optionLabel="label" optionValue="value" (onChange)="onTimeframeChange()" styleClass="timeframe-buttons">
+              <p-selectButton [options]="timeframeOptions" [(ngModel)]="selectedTimeframe" optionLabel="label" optionValue="value" (onChange)="onTimeframeChange()" class="timeframe-buttons">
                 <ng-template pTemplate="item" let-item>
                   <div class="flex items-center gap-2 px-1">
                     <i [class]="item.icon" class="text-[10px]"></i>

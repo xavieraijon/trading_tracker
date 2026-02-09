@@ -70,7 +70,7 @@
 </app-page-layout>
 
 <!-- Popover for Day Details -->
-<p-popover #op styleClass="calendar-details-popover" [appendTo]="'body'">
+<p-popover #op class="calendar-details-popover" [appendTo]="'body'">
     @if (selectedDay()) {
         <div class="popover-container">
             <div class="popover-header">
@@ -81,7 +81,7 @@
             </div>
 
             <div class="popover-content">
-                <p-table [value]="selectedDay()?.trades || []" styleClass="p-datatable-sm">
+                <p-table [value]="selectedDay()?.trades || []" [size]="'small'">
                     <ng-template pTemplate="header">
                         <tr>
                             <th>Instrumento</th>

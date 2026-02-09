@@ -24,7 +24,7 @@
             <div class="form-group">
                 <label for="email" class="form-label">Email</label>
                 <p-iconfield class="w-full">
-                    <p-inputicon styleClass="pi pi-envelope" />
+                    <p-inputicon class="pi pi-envelope" />
                     <input
                         pInputText
                         id="email"
@@ -43,8 +43,8 @@
                         formControlName="password"
                         [toggleMask]="true"
                         placeholder="Mínimo 8 caracteres"
-                        styleClass="w-full"
-                        inputStyleClass="w-full"
+                        class="w-full"
+                        inputClass="w-full"
                     >
                         <ng-template pTemplate="header">
                             <h6 class="mt-0 mb-2">Seguridad ante todo</h6>
@@ -63,7 +63,7 @@
                 type="submit"
                 [loading]="loading"
                 [disabled]="registerForm.invalid"
-                styleClass="w-full py-4 shadow-lg primary-glow"
+                class="w-full py-4 shadow-lg primary-glow"
             ></p-button>
 
             <div class="text-center mt-8 text-sm font-medium">

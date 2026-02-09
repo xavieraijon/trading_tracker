@@ -98,7 +98,7 @@
     </div>
 </header>
 
-<p-drawer [(visible)]="mobileMenuVisible" position="left" styleClass="mobile-drawer">
+<p-drawer [(visible)]="mobileMenuVisible" position="left" class="mobile-drawer">
     <ng-template pTemplate="header">
         <div class="flex items-center gap-2 px-2">
             <span class="text-xl">🍌</span>
@@ -131,8 +131,7 @@
                     (ngModelChange)="onCategoryChange($event)"
                     optionLabel="label"
                     optionValue="value"
-                    class="w-full mb-6 block"
-                    styleClass="p-button-sm w-full">
+                    class="w-full mb-6 block p-button-sm">
                 </p-selectButton>
 
                 <p class="text-[10px] font-bold text-placeholder uppercase tracking-widest mb-3">Cambiar Cuenta</p>
@@ -150,8 +149,8 @@
                 </p-select>
             </div>
         } @else {
-            <p-button label="Iniciar Sesión" routerLink="/auth/login" styleClass="w-full mb-2" (onClick)="mobileMenuVisible.set(false)"></p-button>
-            <p-button label="Registrarse" severity="secondary" routerLink="/auth/register" styleClass="w-full" (onClick)="mobileMenuVisible.set(false)"></p-button>
+            <p-button label="Iniciar Sesión" routerLink="/auth/login" class="w-full mb-2" (onClick)="mobileMenuVisible.set(false)"></p-button>
+            <p-button label="Registrarse" severity="secondary" routerLink="/auth/register" class="w-full" (onClick)="mobileMenuVisible.set(false)"></p-button>
         }
     </div>
 </p-drawer>
