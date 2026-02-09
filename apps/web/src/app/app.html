@@ -46,6 +46,27 @@
         <!-- Right: Selector (desktop) / User Button (always right) -->
         <div class="header-right flex-1 flex items-center justify-end gap-2 sm:gap-4">
             @if (authService.isAuthenticated()) {
+                <div class="category-selector hidden sm:flex items-center">
+                    <p-select
+                        [options]="categoryOptions"
+                        [ngModel]="filterStore.accountCategory()"
+                        (ngModelChange)="onCategoryChange($event)"
+                        optionLabel="label"
+                        optionValue="value"
+                        placeholder="Vista"
+                        class="w-32 lg:w-40"
+                        variant="filled">
+                        <ng-template pTemplate="selectedItem" let-selectedOption>
+                            @if (selectedOption) {
+                                <div class="flex items-center gap-2">
+                                    <i [class]="selectedOption.icon + ' text-muted'"></i>
+                                    <span>{{ selectedOption.label }}</span>
+                                </div>
+                            }
+                        </ng-template>
+                    </p-select>
+                </div>
+
                 <div class="account-selector flex items-center">
                      <p-select
                         [options]="accountsService.filteredAccounts()"
@@ -125,14 +146,25 @@
 
             <div class="px-4 py-2">
                 <p class="text-[10px] font-bold text-placeholder uppercase tracking-widest mb-3">Modo de Vista</p>
-                <p-selectButton
+                <p-select
                     [options]="categoryOptions"
                     [ngModel]="filterStore.accountCategory()"
                     (ngModelChange)="onCategoryChange($event)"
                     optionLabel="label"
                     optionValue="value"
-                    class="w-full mb-6 block p-button-sm">
-                </p-selectButton>
+                    placeholder="Seleccionar vista"
+                    class="w-full mb-6"
+                    variant="filled"
+                    appendTo="body">
+                    <ng-template pTemplate="selectedItem" let-selectedOption>
+                        @if (selectedOption) {
+                            <div class="flex items-center gap-2">
+                                <i [class]="selectedOption.icon + ' text-muted'"></i>
+                                <span>{{ selectedOption.label }}</span>
+                            </div>
+                        }
+                    </ng-template>
+                </p-select>
 
                 <p class="text-[10px] font-bold text-placeholder uppercase tracking-widest mb-3">Cambiar Cuenta</p>
                 <p-select

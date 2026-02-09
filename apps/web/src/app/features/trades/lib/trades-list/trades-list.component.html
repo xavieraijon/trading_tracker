@@ -165,31 +165,6 @@
                 <label for="market">Mercado / Tipo</label>
             </p-iftalabel>
 
-            <!-- Categoría -->
-            <p-iftalabel>
-                <p-select
-                    id="category"
-                    [options]="categoryOptions"
-                    [ngModel]="filterStore.accountCategory()"
-                    (ngModelChange)="onFilterChange('accountCategory', $event)"
-                    optionLabel="label"
-                    optionValue="value"
-                    placeholder="Categoría"
-                    appendTo="body"
-                    variant="filled"
-                    styleClass="w-48"
-                >
-                    <ng-template pTemplate="selectedItem" let-selectedOption>
-                        @if (selectedOption) {
-                            <div class="flex items-center gap-2">
-                                 <i [class]="selectedOption.icon" [class.text-amber-500]="selectedOption.value === 'CHALLENGE'" [class.text-emerald-500]="selectedOption.value === 'FUNDED'"></i>
-                                 <span>{{ selectedOption.label }}</span>
-                            </div>
-                        }
-                    </ng-template>
-                </p-select>
-                <label for="category">Categoría</label>
-            </p-iftalabel>
         </div>
     </app-filter-toolbar>
 

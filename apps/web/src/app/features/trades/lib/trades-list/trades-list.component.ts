@@ -109,16 +109,8 @@ export class TradesListComponent implements OnInit {
       { label: 'Short', value: 'SHORT' }
   ];
 
-  categoryOptions = [
-      { label: 'Cuentas Reales', value: 'FUNDED', icon: 'pi pi-briefcase' },
-      { label: 'Challenges', value: 'CHALLENGE', icon: 'pi pi-verified' }
-  ];
 
   onFilterChange(type: string, value: any) {
-      if (type === 'accountCategory') {
-          this.filterStore.setAccountCategory(value);
-          return;
-      }
       this.filterStore.setFilters({ [type]: value });
   }
 

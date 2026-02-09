@@ -12,13 +12,13 @@ export class FilterStore {
   instrument = signal<string | null>(null);
   accountMarket = signal<string | null>(null);
   currency = signal<string | null>(null);
-  accountCategory = signal<'FUNDED' | 'CHALLENGE'>('FUNDED');
+  accountCategory = signal<'FUNDED' | 'CHALLENGE' | 'PERSONAL' | null>(null);
 
   setAccount(accountId: string | null) {
     this.selectedAccountId.set(accountId);
   }
 
-  setAccountCategory(category: 'FUNDED' | 'CHALLENGE') {
+  setAccountCategory(category: 'FUNDED' | 'CHALLENGE' | 'PERSONAL' | null) {
     this.accountCategory.set(category);
     // When changing category, we should reset the selected account as it might not belong to the new category
     this.selectedAccountId.set(null);

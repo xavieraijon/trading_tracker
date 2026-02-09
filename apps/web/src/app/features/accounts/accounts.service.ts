@@ -46,16 +46,18 @@ export class AccountsService {
     const category = this.filterStore.accountCategory();
     const allAccounts = this.accounts();
 
-    return allAccounts.filter(acc => {
-      // Default to CHALLENGE if it's a PROP_FIRM account and status is missing
-      const status = acc.propFirmStatus || (acc.type === 'PROP_FIRM' ? 'CHALLENGE' : 'FUNDED');
+    if (!category) return allAccounts;
 
-      if (category === 'CHALLENGE') {
-        return acc.type === 'PROP_FIRM' && status === 'CHALLENGE';
-      } else {
-        // FUNDED category includes PERSONAL accounts and FUNDED Prop Firm accounts
-        return acc.type === 'PERSONAL' || (acc.type === 'PROP_FIRM' && status === 'FUNDED');
-      }
+    return allAccounts.filter(acc => {
+      if (category === 'PERSONAL') return acc.type === 'PERSONAL';
+
+      const isPropFirm = acc.type === 'PROP_FIRM';
+      const status = acc.propFirmStatus || 'CHALLENGE';
+
+      if (category === 'CHALLENGE') return isPropFirm && status === 'CHALLENGE';
+      if (category === 'FUNDED') return isPropFirm && status === 'FUNDED';
+
+      return true;
     });
   });
 

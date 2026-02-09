@@ -28,20 +28,32 @@ export class App implements OnInit {
   mobileMenuVisible = signal(false);
 
   categoryOptions = [
-    { label: 'Real / Funded', value: 'FUNDED', icon: 'pi pi-verified' },
-    { label: 'Challenge', value: 'CHALLENGE', icon: 'pi pi-trophy' }
+    { label: 'Todo', value: null, icon: 'pi pi-globe' },
+    { label: 'Fondeada', value: 'FUNDED', icon: 'pi pi-verified' },
+    { label: 'Challenge', value: 'CHALLENGE', icon: 'pi pi-trophy' },
+    { label: 'Personal', value: 'PERSONAL', icon: 'pi pi-user' }
   ];
 
   userMenuItems = computed(() => [
     {
-        label: 'Real / Funded',
+        label: 'Todas las Cuentas',
+        icon: this.filterStore.accountCategory() === null ? 'pi pi-check text-primary' : 'pi pi-globe',
+        command: () => this.onCategoryChange(null)
+    },
+    {
+        label: 'Prop Firm - Fondeada',
         icon: this.filterStore.accountCategory() === 'FUNDED' ? 'pi pi-check text-blue-500' : 'pi pi-verified',
         command: () => this.onCategoryChange('FUNDED')
     },
     {
-        label: 'Challenge',
+        label: 'Prop Firm - Challenge',
         icon: this.filterStore.accountCategory() === 'CHALLENGE' ? 'pi pi-check text-amber-500' : 'pi pi-trophy',
         command: () => this.onCategoryChange('CHALLENGE')
+    },
+    {
+        label: 'Capital Propio',
+        icon: this.filterStore.accountCategory() === 'PERSONAL' ? 'pi pi-check text-secondary' : 'pi pi-user',
+        command: () => this.onCategoryChange('PERSONAL')
     },
     { separator: true },
     { label: 'Mi Perfil', icon: 'pi pi-user' },
@@ -63,9 +75,10 @@ export class App implements OnInit {
     this.filterStore.setAccount(this.selectedAccountValue());
   }
 
-  onCategoryChange(category: 'FUNDED' | 'CHALLENGE') {
+  onCategoryChange(category: 'FUNDED' | 'CHALLENGE' | 'PERSONAL' | null) {
     this.filterStore.setAccountCategory(category);
     this.selectedAccountValue.set(null);
+    this.onAccountChange(); // Ensure signals are updated
   }
 
   logout() {

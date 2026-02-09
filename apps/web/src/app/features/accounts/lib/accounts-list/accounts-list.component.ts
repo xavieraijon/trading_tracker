@@ -49,7 +49,6 @@ export class AccountsListComponent implements OnInit {
   searchTerm = signal('');
   selectedMarket = signal<string | null>(null);
   selectedType = signal<string | null>(null);
-  selectedCategory = signal<string | null>(null);
   selectedCurrency = signal<string | null>(null);
 
   private accountsService = inject(AccountsService);
@@ -67,16 +66,14 @@ export class AccountsListComponent implements OnInit {
     const search = this.searchTerm().toLowerCase();
     const market = this.selectedMarket();
     const type = this.selectedType();
-    const category = this.selectedCategory();
     const currency = this.selectedCurrency();
 
     return list.filter(acc => {
       const matchesSearch = !search || acc.name.toLowerCase().includes(search) || (acc.broker && acc.broker.toLowerCase().includes(search));
       const matchesMarket = !market || acc.market === market;
       const matchesType = !type || acc.type === type;
-      const matchesCategory = !category || acc.propFirmStatus === category;
       const matchesCurrency = !currency || acc.currency === currency;
-      return matchesSearch && matchesMarket && matchesType && matchesCategory && matchesCurrency;
+      return matchesSearch && matchesMarket && matchesType && matchesCurrency;
     });
   });
 
@@ -113,7 +110,6 @@ export class AccountsListComponent implements OnInit {
     this.searchTerm.set('');
     this.selectedMarket.set(null);
     this.selectedType.set(null);
-    this.selectedCategory.set(null);
     this.selectedCurrency.set(null);
   }
 
