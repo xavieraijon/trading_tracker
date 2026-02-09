@@ -16,12 +16,14 @@ import { InputTextModule } from 'primeng/inputtext';
 import { IconFieldModule } from 'primeng/iconfield';
 import { InputIconModule } from 'primeng/inputicon';
 import { DatePickerModule } from 'primeng/datepicker';
+import { IftaLabelModule } from 'primeng/iftalabel';
 import { TradesService, Trade } from '../../trades.service';
 import { TradeFormDialogComponent } from '../trade-form/trade-form.component';
 import { AccountDialogComponent } from '../../../accounts/lib/account-dialog/account-dialog.component';
 import { AccountsService } from '../../../accounts/accounts.service';
 import { PageLayoutComponent } from '../../../../shared/components/page-layout/page-layout.component';
 import { FilterStore } from '../../../../core/filter.store';
+import { FilterToolbarComponent } from '../../../../shared/components/filter-toolbar/filter-toolbar.component';
 
 @Component({
   selector: 'app-trades-list',
@@ -45,7 +47,9 @@ import { FilterStore } from '../../../../core/filter.store';
     DatePickerModule,
     TradeFormDialogComponent,
     AccountDialogComponent,
-    PageLayoutComponent
+    PageLayoutComponent,
+    IftaLabelModule,
+    FilterToolbarComponent
   ],
   providers: [MessageService, ConfirmationService],
   templateUrl: './trades-list.component.html',

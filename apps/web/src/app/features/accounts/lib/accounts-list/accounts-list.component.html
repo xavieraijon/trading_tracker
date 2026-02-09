@@ -14,11 +14,58 @@
 
     <p-toast></p-toast>
     <p-confirmDialog [appendTo]="'body'"></p-confirmDialog>
+    <app-filter-toolbar (clear)="clearFilters()">
+        <div start class="flex flex-wrap gap-4 items-center">
+            <!-- Buscador -->
+            <p-iftalabel>
+                <input
+                    pInputText
+                    id="search"
+                    [(ngModel)]="searchTerm"
+                    placeholder="Nombre o Broker..."
+                    class="w-64"
+                    variant="filled"
+                />
+                <label for="search">Búsqueda</label>
+            </p-iftalabel>
+
+            <!-- Mercado -->
+            <p-iftalabel>
+                <p-select
+                    id="market"
+                    [options]="marketOptions"
+                    [(ngModel)]="selectedMarket"
+                    optionLabel="label"
+                    optionValue="value"
+                    placeholder="Cualquiera"
+                    appendTo="body"
+                    variant="filled"
+                    styleClass="w-48"
+                ></p-select>
+                <label for="market">Mercado</label>
+            </p-iftalabel>
+
+            <!-- Tipo -->
+            <p-iftalabel>
+                <p-select
+                    id="type"
+                    [options]="typeOptions"
+                    [(ngModel)]="selectedType"
+                    optionLabel="label"
+                    optionValue="value"
+                    placeholder="Cualquiera"
+                    appendTo="body"
+                    variant="filled"
+                    styleClass="w-48"
+                ></p-select>
+                <label for="type">Tipo de Cuenta</label>
+            </p-iftalabel>
+        </div>
+    </app-filter-toolbar>
 
     <div class="bullish-table-container">
-        <!-- ... existing table ... -->
         <p-table
-            [value]="accounts()"
+            [value]="filteredAccounts()"
             [rows]="10"
             [paginator]="true"
             [size]="'small'"

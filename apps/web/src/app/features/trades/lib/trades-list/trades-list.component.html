@@ -75,135 +75,123 @@
     <p-toast></p-toast>
     <p-confirmDialog [appendTo]="'body'"></p-confirmDialog>
 
-    <div class="filters-container bullish-card mb-8">
-        <div class="filters-body p-4">
-            <div class="filters-grid">
-                <!-- Periodo de Tiempo (Rango de Fechas) -->
-                <div class="filter-field">
-                    <label>Periodo de Tiempo</label>
-                    <p-datepicker
-                        [ngModel]="filterStore.dateRange()"
-                        (ngModelChange)="onFilterChange('dateRange', $event)"
-                        selectionMode="range"
-                        [readonlyInput]="true"
-                        placeholder="Seleccionar rango"
-                        [showIcon]="true"
-                        iconDisplay="input"
-                        [showButtonBar]="true"
-                        appendTo="body"
-                        class="w-full"
-                    ></p-datepicker>
-                </div>
+    <app-filter-toolbar (clear)="clearFilters()">
+        <div start class="flex flex-wrap gap-4 items-center">
+            <!-- Periodo de Tiempo -->
+            <p-iftalabel>
+                <p-datepicker
+                    id="dateRange"
+                    [ngModel]="filterStore.dateRange()"
+                    (ngModelChange)="onFilterChange('dateRange', $event)"
+                    selectionMode="range"
+                    [readonlyInput]="true"
+                    placeholder="Seleccionar rango"
+                    [showIcon]="true"
+                    iconDisplay="input"
+                    [showButtonBar]="true"
+                    appendTo="body"
+                    variant="filled"
+                ></p-datepicker>
+                <label for="dateRange">Periodo de Tiempo</label>
+            </p-iftalabel>
 
-                <!-- Instrumento Dropdown -->
-                <div class="filter-field">
-                    <label>Instrumento</label>
-                    <p-select
-                        [options]="instruments()"
-                        [ngModel]="filterStore.instrument()"
-                        (ngModelChange)="onFilterChange('instrument', $event)"
-                        optionLabel="label"
-                        optionValue="value"
-                        placeholder="Todos los pares"
-                        [filter]="true"
-                        filterBy="label"
-                        appendTo="body"
-                        class="w-full"
-                    >
-                        <ng-template pTemplate="selectedItem" let-selectedOption>
-                            @if (selectedOption) {
-                                <div class="flex items-center gap-2">
-                                     <i class="pi pi-chart-line text-blue-500"></i>
-                                     <span>{{ selectedOption.label }}</span>
-                                </div>
-                            }
-                        </ng-template>
-                    </p-select>
-                </div>
+            <!-- Instrumento -->
+            <p-iftalabel>
+                <p-select
+                    id="instrument"
+                    [options]="instruments()"
+                    [ngModel]="filterStore.instrument()"
+                    (ngModelChange)="onFilterChange('instrument', $event)"
+                    optionLabel="label"
+                    optionValue="value"
+                    placeholder="Todos los pares"
+                    [filter]="true"
+                    filterBy="label"
+                    appendTo="body"
+                    variant="filled"
+                    styleClass="w-56"
+                >
+                    <ng-template pTemplate="selectedItem" let-selectedOption>
+                        @if (selectedOption) {
+                            <div class="flex items-center gap-2">
+                                 <i class="pi pi-chart-line text-blue-500"></i>
+                                 <span>{{ selectedOption.label }}</span>
+                            </div>
+                        }
+                    </ng-template>
+                </p-select>
+                <label for="instrument">Instrumento</label>
+            </p-iftalabel>
 
-                <!-- Tipo (Long/Short) -->
-                <div class="filter-field">
-                    <label>Dirección</label>
-                    <p-select
-                        [options]="sideOptions"
-                        [ngModel]="filterStore.side()"
-                        (ngModelChange)="onFilterChange('side', $event)"
-                        optionLabel="label"
-                        optionValue="value"
-                        placeholder="Cualquiera"
-                        appendTo="body"
-                        class="w-full"
-                    >
-                        <ng-template pTemplate="selectedItem" let-selectedOption>
-                            @if (selectedOption && selectedOption.value) {
-                                <p-tag [value]="selectedOption.label" [severity]="getSideSeverity(selectedOption.value)"></p-tag>
-                            } @else {
-                                <span>Cualquiera</span>
-                            }
-                        </ng-template>
-                        <ng-template pTemplate="item" let-option>
-                            @if (option.value) {
-                                <p-tag [value]="option.label" [severity]="getSideSeverity(option.value)"></p-tag>
-                            } @else {
-                                <span>{{ option.label }}</span>
-                            }
-                        </ng-template>
-                    </p-select>
-                </div>
+            <!-- Dirección -->
+            <p-iftalabel>
+                <p-select
+                    id="side"
+                    [options]="sideOptions"
+                    [ngModel]="filterStore.side()"
+                    (ngModelChange)="onFilterChange('side', $event)"
+                    optionLabel="label"
+                    optionValue="value"
+                    placeholder="Cualquiera"
+                    appendTo="body"
+                    variant="filled"
+                    styleClass="w-40"
+                >
+                    <ng-template pTemplate="selectedItem" let-selectedOption>
+                        @if (selectedOption && selectedOption.value) {
+                            <p-tag [value]="selectedOption.label" [severity]="getSideSeverity(selectedOption.value)"></p-tag>
+                        } @else {
+                            <span>Cualquiera</span>
+                        }
+                    </ng-template>
+                </p-select>
+                <label for="side">Dirección</label>
+            </p-iftalabel>
 
-                <!-- Mercado -->
-                <div class="filter-field">
-                    <label>Mercado / Tipo</label>
-                    <p-select
-                        [options]="markets()"
-                        [ngModel]="filterStore.accountMarket()"
-                        (ngModelChange)="onFilterChange('accountMarket', $event)"
-                        optionLabel="label"
-                        optionValue="value"
-                        placeholder="Cualquiera"
-                        appendTo="body"
-                        class="w-full"
-                    ></p-select>
-                </div>
+            <!-- Mercado -->
+            <p-iftalabel>
+                <p-select
+                    id="market"
+                    [options]="markets()"
+                    [ngModel]="filterStore.accountMarket()"
+                    (ngModelChange)="onFilterChange('accountMarket', $event)"
+                    optionLabel="label"
+                    optionValue="value"
+                    placeholder="Cualquiera"
+                    appendTo="body"
+                    variant="filled"
+                    styleClass="w-44"
+                ></p-select>
+                <label for="market">Mercado / Tipo</label>
+            </p-iftalabel>
 
-                <!-- Categoría (Challenge/Real) -->
-                <div class="filter-field">
-                    <label>Categoría</label>
-                    <p-select
-                        [options]="categoryOptions"
-                        [ngModel]="filterStore.accountCategory()"
-                        (ngModelChange)="onFilterChange('accountCategory', $event)"
-                        optionLabel="label"
-                        optionValue="value"
-                        placeholder="Categoría"
-                        appendTo="body"
-                        class="w-full"
-                    >
-                        <ng-template pTemplate="selectedItem" let-selectedOption>
-                            @if (selectedOption) {
-                                <div class="flex items-center gap-2">
-                                     <i [class]="selectedOption.icon" [class.text-amber-500]="selectedOption.value === 'CHALLENGE'" [class.text-emerald-500]="selectedOption.value === 'FUNDED'"></i>
-                                     <span>{{ selectedOption.label }}</span>
-                                </div>
-                            }
-                        </ng-template>
-                    </p-select>
-                </div>
-
-                <!-- Acciones -->
-                <div class="filter-actions h-[48px] flex items-center">
-                    <p-button
-                        icon="pi pi-filter-slash"
-                        [text]="true"
-                        severity="secondary"
-                        (onClick)="clearFilters()"
-                        class="hover-shake"
-                        [raised]="true"
-                    ></p-button>
-                </div>
-            </div>
+            <!-- Categoría -->
+            <p-iftalabel>
+                <p-select
+                    id="category"
+                    [options]="categoryOptions"
+                    [ngModel]="filterStore.accountCategory()"
+                    (ngModelChange)="onFilterChange('accountCategory', $event)"
+                    optionLabel="label"
+                    optionValue="value"
+                    placeholder="Categoría"
+                    appendTo="body"
+                    variant="filled"
+                    styleClass="w-48"
+                >
+                    <ng-template pTemplate="selectedItem" let-selectedOption>
+                        @if (selectedOption) {
+                            <div class="flex items-center gap-2">
+                                 <i [class]="selectedOption.icon" [class.text-amber-500]="selectedOption.value === 'CHALLENGE'" [class.text-emerald-500]="selectedOption.value === 'FUNDED'"></i>
+                                 <span>{{ selectedOption.label }}</span>
+                            </div>
+                        }
+                    </ng-template>
+                </p-select>
+                <label for="category">Categoría</label>
+            </p-iftalabel>
         </div>
-    </div>
+    </app-filter-toolbar>
 
     <div class="bullish-table-container">
         <p-table

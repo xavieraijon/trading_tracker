@@ -7,14 +7,35 @@ import { ToastModule } from 'primeng/toast';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { TagModule } from 'primeng/tag';
+import { SelectModule } from 'primeng/select';
+import { InputTextModule } from 'primeng/inputtext';
+import { IftaLabelModule } from 'primeng/iftalabel';
+import { FormsModule } from '@angular/forms';
 import { AccountsService, Account } from '../../accounts.service';
 import { PageLayoutComponent } from '../../../../shared/components/page-layout/page-layout.component';
 import { AccountDialogComponent } from '../account-dialog/account-dialog.component';
+import { FilterToolbarComponent } from '../../../../shared/components/filter-toolbar/filter-toolbar.component';
+import { computed } from '@angular/core';
 
 @Component({
   selector: 'app-accounts-list',
   standalone: true,
-  imports: [CommonModule, TableModule, ButtonModule, ToolbarModule, ToastModule, ConfirmDialogModule, TagModule, AccountDialogComponent, PageLayoutComponent],
+  imports: [
+    CommonModule,
+    TableModule,
+    ButtonModule,
+    ToolbarModule,
+    ToastModule,
+    ConfirmDialogModule,
+    TagModule,
+    AccountDialogComponent,
+    PageLayoutComponent,
+    FilterToolbarComponent,
+    IftaLabelModule,
+    SelectModule,
+    InputTextModule,
+    FormsModule
+  ],
   providers: [MessageService, ConfirmationService],
   templateUrl: './accounts-list.component.html',
   styleUrl: './accounts-list.component.scss'
@@ -23,6 +44,11 @@ export class AccountsListComponent implements OnInit {
   selectedAccounts = signal<Account[] | null>(null);
   accountDialog = signal(false);
   account: Account | null = null;
+
+  // Filtros
+  searchTerm = signal('');
+  selectedMarket = signal<string | null>(null);
+  selectedType = signal<string | null>(null);
 
   private accountsService = inject(AccountsService);
   private messageService = inject(MessageService);
@@ -33,6 +59,41 @@ export class AccountsListComponent implements OnInit {
   }
 
   accounts = this.accountsService.accounts;
+
+  filteredAccounts = computed(() => {
+    const list = this.accounts();
+    const search = this.searchTerm().toLowerCase();
+    const market = this.selectedMarket();
+    const type = this.selectedType();
+
+    return list.filter(acc => {
+      const matchesSearch = !search || acc.name.toLowerCase().includes(search) || (acc.broker && acc.broker.toLowerCase().includes(search));
+      const matchesMarket = !market || acc.market === market;
+      const matchesType = !type || acc.type === type;
+      return matchesSearch && matchesMarket && matchesType;
+    });
+  });
+
+  marketOptions = [
+    { label: 'Todos los Mercados', value: null },
+    { label: 'CFD', value: 'CFD' },
+    { label: 'Futures', value: 'FUTURES' },
+    { label: 'Spot', value: 'SPOT' },
+    { label: 'Stocks', value: 'STOCKS' },
+    { label: 'Crypto', value: 'CRYPTO' }
+  ];
+
+  typeOptions = [
+    { label: 'Todos los Tipos', value: null },
+    { label: 'Capital Propio', value: 'PERSONAL' },
+    { label: 'Prop Firm', value: 'PROP_FIRM' }
+  ];
+
+  clearFilters() {
+    this.searchTerm.set('');
+    this.selectedMarket.set(null);
+    this.selectedType.set(null);
+  }
 
   loadAccounts() {
     this.accountsService.load();
