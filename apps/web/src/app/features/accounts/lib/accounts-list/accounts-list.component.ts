@@ -6,6 +6,7 @@ import { ToolbarModule } from 'primeng/toolbar';
 import { ToastModule } from 'primeng/toast';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
+import { TagModule } from 'primeng/tag';
 import { AccountsService, Account } from '../../accounts.service';
 import { PageLayoutComponent } from '../../../../shared/components/page-layout/page-layout.component';
 import { AccountDialogComponent } from '../account-dialog/account-dialog.component';
@@ -13,7 +14,7 @@ import { AccountDialogComponent } from '../account-dialog/account-dialog.compone
 @Component({
   selector: 'app-accounts-list',
   standalone: true,
-  imports: [CommonModule, TableModule, ButtonModule, ToolbarModule, ToastModule, ConfirmDialogModule, AccountDialogComponent, PageLayoutComponent],
+  imports: [CommonModule, TableModule, ButtonModule, ToolbarModule, ToastModule, ConfirmDialogModule, TagModule, AccountDialogComponent, PageLayoutComponent],
   providers: [MessageService, ConfirmationService],
   templateUrl: './accounts-list.component.html',
   styleUrl: './accounts-list.component.scss'
@@ -90,19 +91,19 @@ export class AccountsListComponent implements OnInit {
     return labels[status] || status;
   }
 
-  getPropFirmStatusBadgeClass(status: string): string {
-    return status === 'CHALLENGE' ? 'badge-challenge' : 'badge-funded';
+  getPropFirmStatusSeverity(status: string): 'success' | 'info' | 'warn' | 'danger' | 'secondary' | 'contrast' {
+    return status === 'CHALLENGE' ? 'warn' : 'info';
   }
 
-  getMarketBadgeClass(market: string): string {
-    const classes: Record<string, string> = {
-      'CFD': 'badge-cfd',
-      'FUTURES': 'badge-futures',
-      'SPOT': 'badge-spot',
-      'CRYPTO': 'badge-crypto',
-      'STOCKS': 'badge-stocks'
+  getMarketSeverity(market: string): 'success' | 'info' | 'warn' | 'danger' | 'secondary' | 'contrast' {
+    const severities: Record<string, 'success' | 'info' | 'warn' | 'danger' | 'secondary' | 'contrast'> = {
+      'CFD': 'info',
+      'FUTURES': 'contrast',
+      'SPOT': 'success',
+      'CRYPTO': 'warn',
+      'STOCKS': 'secondary'
     };
-    return classes[market] || 'badge-neutral';
+    return severities[market] || 'secondary';
   }
 
   getBalanceClass(account: Account): string {

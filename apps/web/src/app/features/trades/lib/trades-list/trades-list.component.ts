@@ -289,7 +289,7 @@ export class TradesListComponent implements OnInit {
     this.tradeDialog.set(false);
   }
 
-  getSideSeverity(side: string) {
+  getSideSeverity(side: string): 'success' | 'info' | 'warn' | 'danger' | 'secondary' | 'contrast' {
     return side === 'LONG' ? 'success' : 'danger';
   }
 
@@ -301,8 +301,8 @@ export class TradesListComponent implements OnInit {
     return labels[status] || status;
   }
 
-  getPropFirmStatusBadgeClass(status: string): string {
-    return status === 'CHALLENGE' ? 'badge-challenge' : 'badge-funded';
+  getPropFirmStatusSeverity(status: string): 'success' | 'info' | 'warn' | 'danger' | 'secondary' | 'contrast' {
+    return status === 'CHALLENGE' ? 'warn' : 'info';
   }
 
   deleteTrade(trade: Trade) {

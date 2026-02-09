@@ -7,10 +7,10 @@
     border-radius: 12px;
     box-shadow: var(--shadow-sm);
     border: 1px solid var(--border-subtle);
-    overflow-x: auto; /* Allow horizontal scroll */
+    overflow-x: auto;
 
     .calendar-body, .calendar-header {
-        min-width: 900px; /* Force minimum width to prevent collapse */
+        min-width: 900px;
     }
 }
 
@@ -122,12 +122,6 @@
         border-color: rgba(239, 68, 68, 0.2);
         box-shadow: 0 4px 12px -2px rgba(239, 68, 68, 0.1);
     }
-}
-
-/* Dark: texto más claro en la tarjeta mensual */
-:host-context(.dark) .monthly-pnl-card {
-    &.is-profit { color: #34d399; }
-    &.is-loss   { color: #fca5a5; }
 }
 
 /* Day Cell */
@@ -261,137 +255,5 @@
     @media (min-width: 768px) {
         font-size: 0.75rem;
         margin-top: 0.25rem;
-    }
-}
-
-/* Popover Styling */
-::ng-deep .calendar-details-popover {
-    background: var(--bg-card) !important;
-    border: none !important;
-    border-radius: 20px !important;
-    box-shadow: var(--shadow-md) !important;
-    padding: 0 !important;
-    overflow: hidden;
-    width: 400px;
-
-    .popover-container {
-        font-family: var(--font-family);
-    }
-
-    .popover-header {
-        background: var(--bg-muted);
-        padding: 1.5rem;
-        display: flex;
-        flex-direction: column;
-        gap: 0.75rem;
-        border-bottom: 1px solid var(--border-subtle);
-
-        .popover-date {
-            font-size: 1rem;
-            font-weight: 700;
-            color: var(--text-primary);
-            text-transform: capitalize;
-        }
-
-        .popover-summary-pill {
-            align-self: flex-start;
-            padding: 0.25rem 0.75rem;
-            border-radius: 99px;
-            font-size: 0.85rem;
-            font-weight: 800;
-
-            &.is-profit { background: #d1fae5; color: #065f46; }
-            &.is-loss   { background: #fee2e2; color: #991b1b; }
-        }
-    }
-
-    .popover-content {
-        padding: 0.5rem;
-
-        .p-datatable {
-            .p-datatable-thead > tr > th {
-                background: transparent;
-                color: var(--text-placeholder);
-                font-size: 0.7rem;
-                font-weight: 700;
-                text-transform: uppercase;
-                letter-spacing: 0.05em;
-                padding: 0.75rem 1rem;
-                border: none;
-            }
-
-            .p-datatable-tbody > tr {
-                background: transparent;
-                transition: background 0.15s ease;
-                color: var(--text-primary);
-
-                &:hover {
-                    background: var(--bg-card-hover);
-                }
-
-                > td {
-                    padding: 0.85rem 1rem;
-                    border: none;
-                    font-size: 0.9rem;
-                }
-            }
-        }
-    }
-
-    .trade-side-pill {
-        font-size: 0.65rem;
-        font-weight: 800;
-        padding: 0.15rem 0.4rem;
-        border-radius: 4px;
-        text-transform: uppercase;
-
-        &.is-long  { background: #f0fdf4; color: #166534; border: 1px solid #dcfce7; }
-        &.is-short { background: #fff1f2; color: #9f1239; border: 1px solid #ffe4e6; }
-    }
-
-    .popover-footer {
-        padding: 1.25rem 1.5rem;
-        background: var(--bg-muted);
-        border-top: 1px solid var(--border-subtle);
-        display: flex;
-        justify-content: space-between;
-
-        .footer-stat {
-            display: flex;
-            flex-direction: column;
-            gap: 0.25rem;
-
-            .label {
-                font-size: 0.65rem;
-                font-weight: 700;
-                color: var(--text-placeholder);
-                text-transform: uppercase;
-            }
-
-            .value {
-                font-size: 1rem;
-                font-weight: 700;
-                color: var(--text-primary);
-
-                &.pnl { font-weight: 800; }
-            }
-        }
-    }
-
-    /* Arrow refinement */
-    .p-popover-arrow {
-        display: none !important;
-    }
-}
-
-/* Dark: pills semánticos dentro del popover (::ng-deep → global) */
-::ng-deep html.dark .calendar-details-popover {
-    .popover-summary-pill {
-        &.is-profit { background: rgba(16, 185, 129, 0.15); color: #34d399; }
-        &.is-loss   { background: rgba(239, 68, 68, 0.15);  color: #fca5a5; }
-    }
-    .trade-side-pill {
-        &.is-long  { background: rgba(22, 101, 52, 0.2);  color: #86efac; border-color: rgba(22, 101, 52, 0.3); }
-        &.is-short { background: rgba(159, 18, 57, 0.2);  color: #fda4af; border-color: rgba(159, 18, 57, 0.3); }
     }
 }

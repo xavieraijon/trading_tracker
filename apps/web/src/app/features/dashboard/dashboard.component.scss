@@ -1,31 +1,26 @@
 .stats-card {
-    background: var(--glass-bg) !important;
+    background: var(--glass-bg);
     backdrop-filter: var(--glass-blur);
     -webkit-backdrop-filter: var(--glass-blur);
-    border: 1px solid var(--glass-border) !important;
-    border-radius: 20px !important;
-    box-shadow: var(--shadow-sm) !important;
+    border: 1px solid var(--glass-border);
+    border-radius: 20px;
+    box-shadow: var(--shadow-sm);
     transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     height: 160px;
 
     &:hover {
         transform: translateY(-6px) scale(1.02);
-        background: var(--bg-card) !important;
-        box-shadow: var(--shadow-md) !important;
-    }
-
-    ::ng-deep .p-card-body {
-        padding: 1.25rem !important;
-        height: 100%;
+        background: var(--bg-card);
+        box-shadow: var(--shadow-md);
     }
 }
 
 .border-left-pnl {
-    border-left: 4px solid var(--primary-color) !important;
+    border-left: 4px solid var(--primary-color);
 }
 
 .border-left-danger {
-    border-left: 4px solid var(--error) !important;
+    border-left: 4px solid var(--error);
 }
 
 .chart-area {
@@ -47,16 +42,15 @@
     box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.15);
 
     i {
-        color: white !important;
+        color: white;
         filter: drop-shadow(0 2px 2px rgba(0,0,0,0.1));
     }
 
-    // Semantic icon badges – same in light & dark
-    &.bg-emerald-50 { background: #10b981 !important; }
-    &.bg-blue-50   { background: #3b82f6 !important; }
-    &.bg-orange-50 { background: #f59e0b !important; }
-    &.bg-rose-50   { background: #ef4444 !important; }
-    &.bg-slate-50  { background: #64748b !important; }
+    &.bg-emerald-50 { background: #10b981; }
+    &.bg-blue-50   { background: #3b82f6; }
+    &.bg-orange-50 { background: #f59e0b; }
+    &.bg-rose-50   { background: #ef4444; }
+    &.bg-slate-50  { background: #64748b; }
 }
 
 .sparkline-container {
@@ -79,28 +73,16 @@
 .tracking-widest  { letter-spacing: 0.1em; }
 .tracking-tighter { letter-spacing: -0.05em; }
 
-/* Tooltip custom styling */
-::ng-deep .p-tooltip {
-    .p-tooltip-text {
-        background: #1e293b;
-        color: #f8fafc;
-        font-size: 0.75rem;
-        padding: 0.5rem 0.75rem;
-        border-radius: 8px;
-        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
-    }
-}
-
 /* Help icons refinement */
 .pi-question-circle {
-    opacity: 0.25 !important;
-    color: var(--text-placeholder) !important;
+    opacity: 0.25;
+    color: var(--text-placeholder);
     transition: all 0.2s ease;
     cursor: help;
 
     &:hover {
-        opacity: 0.8 !important;
-        color: var(--text-muted) !important;
+        opacity: 0.8;
+        color: var(--text-muted);
         transform: scale(1.1);
     }
 }
@@ -119,42 +101,4 @@
 
 .kpi-card {
     animation: fadeInSlideUp 0.5s ease-out forwards;
-}
-
-/* Timeframe Selector Refinement */
-.timeframe-selector {
-    ::ng-deep .p-selectbutton {
-        display: flex;
-        background: var(--bg-muted);
-        padding: 4px;
-        border-radius: 12px;
-        border: 1px solid var(--border-subtle);
-
-        .p-button {
-            background: transparent;
-            border: none !important;
-            color: var(--text-muted);
-            font-size: 0.75rem;
-            padding: 0.5rem 1rem;
-            border-radius: 8px !important;
-            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-            font-weight: 700;
-            box-shadow: none !important;
-
-            &.p-highlight {
-                background: var(--bg-card) !important;
-                color: var(--primary-color) !important;
-                box-shadow: var(--shadow-sm) !important;
-            }
-
-            &:not(.p-highlight):hover {
-                background: var(--bg-card-hover) !important;
-                color: var(--text-secondary) !important;
-            }
-
-            .p-button-label {
-                display: none; // Using our template instead
-            }
-        }
-    }
 }

@@ -21,9 +21,8 @@
             [value]="accounts()"
             [rows]="10"
             [paginator]="true"
+            [size]="'small'"
             dataKey="id"
-            styleClass="p-datatable-bullish p-datatable-sm"
-            [responsiveLayout]="'scroll'"
         >
             <ng-template pTemplate="header">
                 <tr>
@@ -38,22 +37,20 @@
             </ng-template>
             <ng-template pTemplate="body" let-account>
                 <tr>
-                    <td class="font-bold text-lg">{{ account.name }}</td>
+                    <td class="font-bold">{{ account.name }}</td>
                     <td class="text-muted">{{ getAccountTypeLabel(account.type) }}</td>
                     <td>
                         @if (account.type === 'PROP_FIRM' && account.propFirmStatus) {
-                            <span class="badge w-fit" [ngClass]="getPropFirmStatusBadgeClass(account.propFirmStatus)">
-                                {{ getPropFirmStatusLabel(account.propFirmStatus) }}
-                            </span>
+                            <p-tag [value]="getPropFirmStatusLabel(account.propFirmStatus)" [severity]="getPropFirmStatusSeverity(account.propFirmStatus)"></p-tag>
                         } @else if (account.type === 'PERSONAL') {
-                            <span class="badge badge-neutral w-fit">Real</span>
+                            <p-tag value="Real" severity="secondary"></p-tag>
                         } @else {
                             <span class="text-muted italic text-xs">Sin asignar</span>
                         }
                     </td>
-                    <td><span class="badge" [ngClass]="getMarketBadgeClass(account.market)">{{ account.market }}</span></td>
-                    <td><span class="badge badge-neutral">{{ account.currency }}</span></td>
-                    <td class="font-mono text-xl" [ngClass]="getBalanceClass(account)">
+                    <td><p-tag [value]="account.market" [severity]="getMarketSeverity(account.market)"></p-tag></td>
+                    <td><p-tag [value]="account.currency" severity="secondary"></p-tag></td>
+                    <td class="font-mono" [ngClass]="getBalanceClass(account)">
                         {{ account.balance | currency:account.currency }}
                     </td>
                     <td class="sticky-actions text-center">

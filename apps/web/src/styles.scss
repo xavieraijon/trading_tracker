@@ -1,26 +1,130 @@
-/* Abstracts */
+/* Abstracts (Variables & Mixins - No CSS output, so no layer needed) */
 @use 'styles/abstracts/variables';
 @use 'styles/abstracts/mixins';
 
+/* CSS Layer Order */
+@layer reset, theme, base, primeng, layout, components, utilities;
+
 /* Base */
-@use 'styles/base/reset';
-@use 'styles/base/typography';
+@layer reset {
+    @import 'styles/base/reset';
+}
+
+@layer base {
+    @import 'styles/base/typography';
+}
 
 /* Layout */
-@use 'styles/layout/structure';
-@use 'styles/layout/main';
-@use 'styles/layout/auth';
-
-/* Components */
-@use 'styles/components/primeng';
-@use 'styles/components/tables';
-@use 'styles/components/badges';
+@layer layout {
+    @import 'styles/layout/structure';
+    @import 'styles/layout/main';
+    @import 'styles/layout/auth';
+}
 
 /* Utilities */
-@use 'styles/utilities/utilities';
+@layer utilities {
+    @import 'styles/utilities/utilities';
+}
 
-/* Test Autoprefixer */
-.test-autoprefix {
-    user-select: none;
-    transform: rotate(45deg);
+/* External Libs / Overrides (PrimeNG moved to layer in config, here we just reference if needed) */
+/* Note: PrimeNG layer is defined in app.config.ts as 'primeng' */
+
+/* ─── Calendar Popover (global scope for appendTo="body") ─── */
+.calendar-details-popover.p-popover {
+    width: 400px;
+    overflow: hidden;
+
+    .popover-container {
+        font-family: var(--font-family);
+    }
+
+    .popover-header {
+        background: var(--bg-muted);
+        padding: 1.5rem;
+        display: flex;
+        flex-direction: column;
+        gap: 0.75rem;
+        border-bottom: 1px solid var(--border-subtle);
+
+        .popover-date {
+            font-size: 1rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            text-transform: capitalize;
+        }
+
+        .popover-summary-pill {
+            align-self: flex-start;
+            padding: 0.25rem 0.75rem;
+            border-radius: 99px;
+            font-size: 0.85rem;
+            font-weight: 800;
+
+            &.is-profit { background: #d1fae5; color: #065f46; }
+            &.is-loss   { background: #fee2e2; color: #991b1b; }
+        }
+    }
+
+    .popover-content {
+        padding: 0.5rem;
+    }
+
+    .trade-side-pill {
+        font-size: 0.65rem;
+        font-weight: 800;
+        padding: 0.15rem 0.4rem;
+        border-radius: 4px;
+        text-transform: uppercase;
+
+        &.is-long  { background: #f0fdf4; color: #166534; border: 1px solid #dcfce7; }
+        &.is-short { background: #fff1f2; color: #9f1239; border: 1px solid #ffe4e6; }
+    }
+
+    .popover-footer {
+        padding: 1.25rem 1.5rem;
+        background: var(--bg-muted);
+        border-top: 1px solid var(--border-subtle);
+        display: flex;
+        justify-content: space-between;
+
+        .footer-stat {
+            display: flex;
+            flex-direction: column;
+            gap: 0.25rem;
+
+            .label {
+                font-size: 0.65rem;
+                font-weight: 700;
+                color: var(--text-placeholder);
+                text-transform: uppercase;
+            }
+
+            .value {
+                font-size: 1rem;
+                font-weight: 700;
+                color: var(--text-primary);
+
+                &.pnl { font-weight: 800; }
+            }
+        }
+    }
+}
+
+/* Dark mode: calendar popover + monthly card */
+html.dark {
+    .calendar-details-popover {
+        .popover-summary-pill {
+            &.is-profit { background: rgba(16, 185, 129, 0.15); color: #34d399; }
+            &.is-loss   { background: rgba(239, 68, 68, 0.15);  color: #fca5a5; }
+        }
+        .trade-side-pill {
+            &.is-long  { background: rgba(22, 101, 52, 0.2);  color: #86efac; border-color: rgba(22, 101, 52, 0.3); }
+            &.is-short { background: rgba(159, 18, 57, 0.2);  color: #fda4af; border-color: rgba(159, 18, 57, 0.3); }
+        }
+    }
+
+    .monthly-pnl-card {
+        &.is-profit { color: #34d399; }
+        &.is-loss   { color: #fca5a5; }
+    }
 }

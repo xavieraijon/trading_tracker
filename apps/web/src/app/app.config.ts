@@ -8,7 +8,7 @@ import { appRoutes } from './app.routes';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import { providePrimeNG } from 'primeng/config';
-import Aura from '@primeuix/themes/aura';
+import { BullishBananaPreset } from './core/theme/bullish-banana-preset';
 import { authInterceptor } from './core/auth/auth.interceptor';
 
 import { registerLocaleData } from '@angular/common';
@@ -26,8 +26,15 @@ export const appConfig: ApplicationConfig = {
     provideHttpClient(withInterceptors([authInterceptor])),
     providePrimeNG({
         theme: {
-            preset: Aura
-        }
+            preset: BullishBananaPreset,
+            options: {
+                darkModeSelector: '.dark',
+                cssLayer: {
+                    name: 'primeng',
+                    order: 'reset, theme, base, primeng, layout, components, utilities',
+                },
+            },
+        },
     }),
     { provide: LOCALE_ID, useValue: 'es-ES' }
   ],

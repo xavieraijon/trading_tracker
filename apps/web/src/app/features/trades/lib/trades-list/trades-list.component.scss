@@ -1,13 +1,3 @@
-.pnl-positive {
-    color: var(--success);
-    font-weight: 700;
-}
-
-.pnl-negative {
-    color: var(--error);
-    font-weight: 700;
-}
-
 .filters-container {
     background: var(--bg-card);
     border-radius: 1.5rem;
@@ -38,7 +28,7 @@
     gap: 0.75rem;
 
     label {
-        font-size: 0.65rem;
+        font-size: 0.625rem;
         font-weight: 800;
         text-transform: uppercase;
         color: var(--text-placeholder);
@@ -52,64 +42,6 @@
     align-items: center;
     justify-content: flex-start;
     padding-bottom: 4px;
-}
-
-:host ::ng-deep {
-    .premium-select.p-select,
-    .premium-datepicker.p-datepicker {
-        height: 44px;
-        border-radius: 12px;
-        background: var(--bg-muted);
-        border: 1px solid var(--border-default);
-        transition: all 0.2s ease;
-        min-width: 140px;
-
-        &:hover {
-            border-color: var(--primary-color);
-            background: var(--bg-card);
-        }
-
-        &.p-focus {
-            box-shadow: 0 0 0 4px rgba(5, 150, 105, 0.15);
-            border-color: var(--primary-color);
-            background: var(--bg-card);
-        }
-
-        .p-select-label,
-        .p-datepicker-input {
-            display: flex;
-            align-items: center;
-            font-weight: 600;
-            color: var(--text-primary) !important;
-            padding: 0 0.75rem;
-            font-size: 0.8rem;
-            background: transparent;
-            border: none !important;
-            height: 100% !important;
-            width: 100%;
-            outline: none;
-        }
-
-        &.premium-datepicker {
-            min-width: 180px;
-
-            .p-datepicker-input {
-                padding-right: 2rem;
-            }
-        }
-
-        .p-select-dropdown {
-            width: 2.5rem;
-            color: var(--text-placeholder);
-        }
-
-        .p-datepicker-button {
-            width: 2.5rem;
-            color: var(--text-placeholder);
-            background: transparent;
-            border: none;
-        }
-    }
 }
 
 .hover-shake:hover i {

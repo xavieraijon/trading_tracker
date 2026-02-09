@@ -34,12 +34,12 @@ export class App implements OnInit {
 
   userMenuItems = computed(() => [
     {
-        label: 'Modo Real / Fondeado',
+        label: 'Real / Funded',
         icon: this.filterStore.accountCategory() === 'FUNDED' ? 'pi pi-check text-blue-500' : 'pi pi-verified',
         command: () => this.onCategoryChange('FUNDED')
     },
     {
-        label: 'Modo Challenge',
+        label: 'Challenge',
         icon: this.filterStore.accountCategory() === 'CHALLENGE' ? 'pi pi-check text-amber-500' : 'pi pi-trophy',
         command: () => this.onCategoryChange('CHALLENGE')
     },

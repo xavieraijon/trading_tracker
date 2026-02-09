@@ -2,9 +2,8 @@
 @source "./apps/web/src/app";
 
 @theme {
-  /* Brand – se usan como utilidades de Tailwind (text-primary, text-accent …).
-     Los colores de surface / text viven en CSS custom properties (_variables.scss). */
-  --color-primary: #059669;
+  /* Brand – alias PrimeNG tokens for Tailwind utilities */
+  --color-primary: var(--p-primary-color, #059669);
   --color-accent: #fbbf24;
   --color-success: #10b981;
   --color-error: #ef4444;
@@ -13,8 +12,4 @@
   /* Fonts */
   --font-sans: 'Outfit', sans-serif;
   --font-mono: 'JetBrains Mono', monospace;
-
-  /* Radius */
-  --radius-lg: 16px;
-  --radius-md: 12px;
 }

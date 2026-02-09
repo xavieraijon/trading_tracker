@@ -5,3 +5,12 @@ h1, h2, h3, h4, .font-heading {
     letter-spacing: -0.025em;
     color: var(--heading-color);
 }
+
+/* Micro-label: used for KPI headers, filter labels, table column headers */
+.label-micro {
+    font-size: 0.625rem; /* 10px */
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--text-placeholder);
+}

@@ -10,6 +10,8 @@ import { InputTextModule } from 'primeng/inputtext';
 import { PasswordModule } from 'primeng/password';
 import { MessageModule } from 'primeng/message';
 import { FloatLabelModule } from 'primeng/floatlabel';
+import { IconFieldModule } from 'primeng/iconfield';
+import { InputIconModule } from 'primeng/inputicon';
 
 @Component({
   selector: 'app-register',
@@ -23,7 +25,9 @@ import { FloatLabelModule } from 'primeng/floatlabel';
     InputTextModule,
     PasswordModule,
     MessageModule,
-    FloatLabelModule
+    FloatLabelModule,
+    IconFieldModule,
+    InputIconModule
   ],
   templateUrl: './register.component.html',
   styleUrl: './register.component.scss',

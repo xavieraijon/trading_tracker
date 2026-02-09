@@ -92,7 +92,7 @@
                         iconDisplay="input"
                         [showButtonBar]="true"
                         appendTo="body"
-                        class="w-full premium-datepicker"
+                        class="w-full"
                     ></p-datepicker>
                 </div>
 
@@ -109,7 +109,7 @@
                         [filter]="true"
                         filterBy="label"
                         appendTo="body"
-                        class="w-full premium-select"
+                        class="w-full"
                     >
                         <ng-template pTemplate="selectedItem" let-selectedOption>
                             @if (selectedOption) {
@@ -133,7 +133,7 @@
                         optionValue="value"
                         placeholder="Cualquiera"
                         appendTo="body"
-                        class="w-full premium-select"
+                        class="w-full"
                     >
                         <ng-template pTemplate="selectedItem" let-selectedOption>
                             @if (selectedOption && selectedOption.value) {
@@ -163,7 +163,7 @@
                         optionValue="value"
                         placeholder="Cualquiera"
                         appendTo="body"
-                        class="w-full premium-select"
+                        class="w-full"
                     ></p-select>
                 </div>
 
@@ -178,7 +178,7 @@
                         optionValue="value"
                         placeholder="Categoría"
                         appendTo="body"
-                        class="w-full premium-select"
+                        class="w-full"
                     >
                         <ng-template pTemplate="selectedItem" let-selectedOption>
                             @if (selectedOption) {
@@ -212,8 +212,7 @@
             [paginator]="true"
             [loading]="loading()"
             dataKey="id"
-            styleClass="p-datatable-bullish p-datatable-sm"
-            [responsiveLayout]="'scroll'"
+            [size]="'small'"
         >
         <ng-template pTemplate="header">
             <tr>
@@ -236,11 +235,9 @@
                 <td>{{ trade.account?.name }}</td>
                 <td>
                     @if (trade.account?.type === 'PROP_FIRM' && trade.account?.propFirmStatus) {
-                        <span class="badge w-fit" [ngClass]="getPropFirmStatusBadgeClass(trade.account.propFirmStatus)">
-                            {{ getPropFirmStatusLabel(trade.account.propFirmStatus) }}
-                        </span>
+                        <p-tag [value]="getPropFirmStatusLabel(trade.account.propFirmStatus)" [severity]="getPropFirmStatusSeverity(trade.account.propFirmStatus)"></p-tag>
                     } @else if (trade.account?.type === 'PERSONAL') {
-                        <span class="badge badge-neutral w-fit">Real</span>
+                        <p-tag value="Real" severity="secondary"></p-tag>
                     } @else {
                         <span class="text-muted italic text-xs">Sin asignar</span>
                     }

@@ -7,6 +7,7 @@
 
 .header-container {
     max-width: 1400px;
+    width: 100%;
 }
 
 .content-wrapper {
@@ -101,9 +102,3 @@
         &:hover { color: var(--primary-color); }
     }
 }
-
-/* Utility Classes used in HTML */
-.sticky { position: sticky; }
-.top-0 { top: 0; }
-.z-50 { z-index: 50; }
-.mx-auto { margin-left: auto; margin-right: auto; }

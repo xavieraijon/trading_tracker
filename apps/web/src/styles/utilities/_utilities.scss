@@ -14,31 +14,25 @@
     margin-bottom: 0.25rem;
 }
 
-.full-width { width: 100% !important; }
-
 /* PnL & Status */
-.pnl-positive { color: var(--success) !important; font-weight: 600; }
-.pnl-negative { color: var(--error) !important; font-weight: 600; }
+.pnl-positive { color: var(--success); font-weight: 600; }
+.pnl-negative { color: var(--error); font-weight: 600; }
 
-.text-success { color: var(--success) !important; }
-.text-danger  { color: var(--error)   !important; }
-
-/* Typography */
-.font-bold     { font-weight: 700 !important; }
-.font-semibold { font-weight: 600 !important; }
+.text-success { color: var(--success); }
+.text-danger  { color: var(--error); }
 
 /* ─── Semantic text / surface utilities ─── */
-.text-muted       { color: var(--text-muted)       !important; }
-.text-secondary   { color: var(--text-secondary)   !important; }
-.text-placeholder { color: var(--text-placeholder) !important; }
-.text-disabled    { color: var(--text-disabled)    !important; }
+.text-muted       { color: var(--text-muted); }
+.text-secondary   { color: var(--text-secondary); }
+.text-placeholder { color: var(--text-placeholder); }
+.text-disabled    { color: var(--text-disabled); }
 
-.bg-surface       { background-color: var(--bg-card)  !important; }
-.bg-surface-muted { background-color: var(--bg-muted) !important; }
+.bg-surface       { background-color: var(--bg-card); }
+.bg-surface-muted { background-color: var(--bg-muted); }
 
-.border-default   { border-color: var(--border-default) !important; }
-.border-subtle    { border-color: var(--border-subtle)  !important; }
-.shadow-surface   { box-shadow: var(--shadow-sm)        !important; }
+.border-default   { border-color: var(--border-default); }
+.border-subtle    { border-color: var(--border-subtle); }
+.shadow-surface   { box-shadow: var(--shadow-sm); }
 
 /* Error toast (auth pages) */
 .error-toast {
@@ -59,5 +53,33 @@ html.dark .error-toast {
     color: var(--error);
 }
 
-/* Dashboard refinements */
-.kpi-card .p-card-body { padding: 1.5rem !important; }
+/* Table: sticky actions column */
+.sticky-actions {
+    position: sticky;
+    right: 0;
+    z-index: 10;
+    background: inherit;
+    box-shadow: -4px 0 10px rgba(0, 0, 0, 0.05);
+
+    &::before {
+        content: '';
+        position: absolute;
+        left: 0;
+        top: 0;
+        bottom: 0;
+        width: 1px;
+        background: var(--border-subtle);
+    }
+}
+
+/* Table container */
+.bullish-table-container {
+    background: var(--bg-card);
+    border-radius: 24px;
+    border: 1px solid var(--border-subtle);
+    box-shadow: var(--shadow-md);
+    width: 100%;
+    max-width: 100vw;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+}

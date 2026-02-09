@@ -1,12 +1,12 @@
 /* ═══════════════════════════════════════════════
    BullishBanana – Design Tokens
-   Light  →  :root          (default)
-   Dark   →  html.dark      (synced con prefers-color-scheme en main.ts)
+   Surface, text, border, input, shadow, primary, radius
+   are managed by the BullishBanana PrimeNG preset.
+   Below: brand tokens + aliases to PrimeNG CSS vars.
    ═══════════════════════════════════════════════ */
 
 /* ─── Invariantes (no cambian con el tema) ─── */
 :root {
-    --primary-color: #059669;            /* Emerald 600 */
     --accent-color: #fbbf24;             /* Banana Gold */
     --accent-glow: rgba(251, 191, 36, 0.4);
 
@@ -17,46 +17,45 @@
     --font-family: 'Outfit', sans-serif;
     --font-mono: 'JetBrains Mono', monospace;
 
+    --glass-blur: blur(12px);
+
+    /* Aliases: map old var names to PrimeNG design tokens */
+    --primary-color: var(--p-primary-color);
+    --primary-dark: var(--p-primary-hover-color);
+
+    --bg-ground: #f8fafc;
+    --bg-card: var(--p-content-background);
+    --bg-card-hover: var(--p-content-hover-background);
+    --bg-muted: var(--p-surface-100);
+    --bg-subtle: var(--p-surface-50);
+
+    --border-default: var(--p-content-border-color);
+    --border-subtle: var(--p-surface-200);
+
+    --text-primary: var(--p-text-color);
+    --text-secondary: var(--p-text-muted-color);
+    --text-muted: var(--p-text-muted-color);
+    --text-placeholder: var(--p-surface-400);
+    --text-disabled: var(--p-surface-300);
+    --text-inverse: #ffffff;
+
+    --shadow-sm: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+    --shadow-md: 0 10px 15px -3px rgb(0 0 0 / 0.1);
+
+    --input-bg: var(--p-form-field-background);
+    --input-border: var(--p-form-field-border-color);
+
     --radius-lg: 16px;
     --radius-md: 12px;
-    --glass-blur: blur(12px);
 }
 
-/* ─── Light Theme (default) ─── */
+/* ─── Light Theme ─── */
 :root {
-    --primary-dark: #064e3b;
     --heading-color: #064e3b;
-
-    /* Surfaces */
-    --bg-ground: #f8fafc;
-    --bg-card: #ffffff;
-    --bg-card-hover: #f8fafc;
-    --bg-muted: #f1f5f9;
-    --bg-subtle: #fdfdfd;
-
-    /* Borders */
-    --border-default: #e2e8f0;
-    --border-subtle: #f1f5f9;
-
-    /* Text */
-    --text-primary: #1e293b;
-    --text-secondary: #475569;
-    --text-muted: #64748b;
-    --text-placeholder: #94a3b8;
-    --text-disabled: #cbd5e1;
-    --text-inverse: #ffffff;
 
     /* Glass */
     --glass-bg: rgba(255, 255, 255, 0.8);
     --glass-border: rgba(255, 255, 255, 0.2);
-
-    /* Shadows */
-    --shadow-sm: 0 4px 6px -1px rgb(0 0 0 / 0.1);
-    --shadow-md: 0 10px 15px -3px rgb(0 0 0 / 0.1);
-
-    /* Inputs */
-    --input-bg: #ffffff;
-    --input-border: #e2e8f0;
 
     /* Auth */
     --auth-gradient-start: #064e3b;
@@ -66,39 +65,22 @@
 
 /* ─── Dark Theme ─── */
 html.dark {
-    --primary-dark: #059669;
+    --bg-ground: #0f172a;
     --heading-color: #f1f5f9;
 
-    /* Surfaces */
-    --bg-ground: #0f172a;
-    --bg-card: #1e293b;
-    --bg-card-hover: #253447;
+    --border-subtle: var(--p-surface-700);
     --bg-muted: #162232;
     --bg-subtle: #1a2736;
-
-    /* Borders */
-    --border-default: #334155;
-    --border-subtle: #253447;
-
-    /* Text */
-    --text-primary: #f1f5f9;
-    --text-secondary: #cbd5e1;
-    --text-muted: #94a3b8;
-    --text-placeholder: #64748b;
-    --text-disabled: #475569;
+    --text-placeholder: var(--p-surface-500);
+    --text-disabled: var(--p-surface-600);
     --text-inverse: #1e293b;
+
+    --shadow-sm: 0 4px 6px -1px rgb(0 0 0 / 0.3);
+    --shadow-md: 0 10px 15px -3px rgb(0 0 0 / 0.35);
 
     /* Glass */
     --glass-bg: rgba(30, 41, 59, 0.85);
     --glass-border: rgba(51, 65, 85, 0.6);
-
-    /* Shadows */
-    --shadow-sm: 0 4px 6px -1px rgb(0 0 0 / 0.3);
-    --shadow-md: 0 10px 15px -3px rgb(0 0 0 / 0.35);
-
-    /* Inputs */
-    --input-bg: #1e293b;
-    --input-border: #334155;
 
     /* Auth */
     --auth-gradient-start: #071a12;
