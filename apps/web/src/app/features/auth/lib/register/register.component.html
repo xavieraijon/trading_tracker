@@ -30,7 +30,7 @@
                         id="email"
                         formControlName="email"
                         placeholder="tu@email.com"
-                        class="w-full"
+                        fluid
                     />
                 </p-iconfield>
             </div>
@@ -43,8 +43,7 @@
                         formControlName="password"
                         [toggleMask]="true"
                         placeholder="Mínimo 8 caracteres"
-                        class="w-full"
-                        inputClass="w-full"
+                        fluid
                     >
                         <ng-template pTemplate="header">
                             <h6 class="mt-0 mb-2">Seguridad ante todo</h6>
@@ -63,7 +62,8 @@
                 type="submit"
                 [loading]="loading"
                 [disabled]="registerForm.invalid"
-                class="w-full py-4 shadow-lg primary-glow"
+                [raised]="true"
+                fluid
             ></p-button>
 
             <div class="text-center mt-8 text-sm font-medium">

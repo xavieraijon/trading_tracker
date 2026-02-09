@@ -4,11 +4,11 @@
     [loading]="loading()">
 
     <div actions class="flex items-center gap-4 bg-surface p-2 rounded-xl shadow-surface border border-default">
-        <p-button icon="pi pi-chevron-left" [rounded]="true" [text]="true" (onClick)="changeMonth(-1)"></p-button>
+        <p-button icon="pi pi-chevron-left" [rounded]="true" [text]="true" (onClick)="changeMonth(-1)" [raised]="true"></p-button>
         <span class="text-xl font-bold min-w-[180px] text-center capitalize text-secondary">
             {{ currentDate() | date:'MMMM yyyy':'':'es-ES' }}
         </span>
-        <p-button icon="pi pi-chevron-right" [rounded]="true" [text]="true" (onClick)="changeMonth(1)"></p-button>
+        <p-button icon="pi pi-chevron-right" [rounded]="true" [text]="true" (onClick)="changeMonth(1)" [raised]="true"></p-button>
     </div>
 
     <!-- Calendar Container -->

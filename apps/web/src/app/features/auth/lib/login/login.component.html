@@ -1,71 +1,76 @@
 <div class="auth-page-container">
-    <!-- Background Elements -->
-    <div class="auth-bg-gradient"></div>
-    <div class="auth-floating-shapes">
-        <div class="shape shape-1"></div>
-        <div class="shape shape-2"></div>
+  <!-- Background Elements -->
+  <div class="auth-bg-gradient"></div>
+  <div class="auth-floating-shapes">
+    <div class="shape shape-1"></div>
+    <div class="shape shape-2"></div>
+  </div>
+
+  <div class="auth-card-wrapper glass-effect">
+    <div class="auth-header text-center mb-8">
+      <div class="auth-logo mb-3">🍌</div>
+      <h2 class="text-3xl font-bold">Bienvenido de nuevo</h2>
+      <p class="text-muted mt-2">Accede a tu cuenta en BullishBanana</p>
     </div>
 
-    <div class="auth-card-wrapper glass-effect">
-        <div class="auth-header text-center mb-8">
-            <div class="auth-logo mb-3">🍌</div>
-            <h2 class="text-3xl font-bold">Bienvenido de nuevo</h2>
-            <p class="text-muted mt-2">Accede a tu cuenta en BullishBanana</p>
+    <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="flex flex-col">
+      @if (error) {
+        <div
+          class="error-toast flex items-center gap-2 p-4 mb-6 text-sm rounded-xl"
+        >
+          <i class="pi pi-exclamation-circle font-bold"></i>
+          <span>{{ error }}</span>
         </div>
+      }
 
-        <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="flex flex-col">
-            @if (error) {
-                <div class="error-toast flex items-center gap-2 p-4 mb-6 text-sm rounded-xl">
-                    <i class="pi pi-exclamation-circle font-bold"></i>
-                    <span>{{ error }}</span>
-                </div>
-            }
+      <div class="form-group">
+        <label for="email" class="form-label">Email</label>
+        <p-iconfield class="w-full">
+          <p-inputicon class="pi pi-envelope" />
+          <input
+            pInputText
+            id="email"
+            formControlName="email"
+            placeholder="tu@email.com"
+            fluid
+          />
+        </p-iconfield>
+      </div>
 
-            <div class="form-group">
-                <label for="email" class="form-label">Email</label>
-                <p-iconfield class="w-full">
-                    <p-inputicon class="pi pi-envelope" />
-                    <input
-                        pInputText
-                        id="email"
-                        formControlName="email"
-                        placeholder="tu@email.com"
-                        class="w-full"
-                    />
-                </p-iconfield>
-            </div>
+      <div class="form-group">
+        <div class="flex justify-between items-center mb-1">
+          <label for="password" class="form-label mb-0">Contraseña</label>
+          <a
+            class="text-xs text-primary font-semibold cursor-pointer hover:underline"
+            >¿Olvidaste tu contraseña?</a
+          >
+        </div>
+        <p-password
+          id="password"
+          formControlName="password"
+          [feedback]="false"
+          [toggleMask]="true"
+          placeholder="••••••••"
+          fluid
+        ></p-password>
+      </div>
 
-            <div class="form-group">
-                <div class="flex justify-between items-center mb-1">
-                    <label for="password" class="form-label mb-0">Contraseña</label>
-                    <a class="text-xs text-primary font-semibold cursor-pointer hover:underline">¿Olvidaste tu contraseña?</a>
-                </div>
-                <div class="w-full">
-                    <p-password
-                        id="password"
-                        formControlName="password"
-                        [feedback]="false"
-                        [toggleMask]="true"
-                        placeholder="••••••••"
-                        class="w-full"
-                        inputClass="w-full"
-                    ></p-password>
-                </div>
-            </div>
+      <div class="mt-4">
+        <p-button
+          label="Iniciar Sesión"
+          type="submit"
+          [disabled]="loginForm.invalid"
+          [raised]="true"
+          fluid
+        ></p-button>
+      </div>
 
-            <div class="mt-4">
-                <p-button
-                    label="Iniciar Sesión"
-                    type="submit"
-                    [disabled]="loginForm.invalid"
-                    class="w-full py-4 shadow-lg primary-glow"
-                ></p-button>
-            </div>
-
-            <div class="text-center mt-8 text-sm font-medium">
-                ¿Todavía no eres un plátano Bullish?
-                <a routerLink="/auth/register" class="text-primary hover:underline ml-1">Crea tu cuenta gratis</a>
-            </div>
-        </form>
-    </div>
+      <div class="text-center mt-8 text-sm font-medium">
+        ¿Todavía no eres un plátano Bullish?<br />
+        <a routerLink="/auth/register" class="text-primary hover:underline ml-1"
+          >Crea tu cuenta gratis</a
+        >
+      </div>
+    </form>
+  </div>
 </div>

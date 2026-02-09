@@ -58,8 +58,9 @@ html.dark .error-toast {
     position: sticky;
     right: 0;
     z-index: 10;
-    background: inherit;
     box-shadow: -4px 0 10px rgba(0, 0, 0, 0.05);
+    width: 115px;
+    text-align: center;
 
     &::before {
         content: '';
@@ -72,6 +73,10 @@ html.dark .error-toast {
     }
 }
 
+td.sticky-actions {
+ background: inherit;
+}
+
 /* Table container */
 .bullish-table-container {
     background: var(--bg-card);
@@ -82,4 +87,12 @@ html.dark .error-toast {
     max-width: 100vw;
     overflow-x: auto;
     -webkit-overflow-scrolling: touch;
+
+    /* Prevent sort icon wrap */
+    .p-datatable-column-header-content {
+        display: flex;
+        align-items: center;
+        white-space: nowrap;
+        gap: 0.5rem;
+    }
 }

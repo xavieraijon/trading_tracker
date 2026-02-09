@@ -7,13 +7,3 @@
     -webkit-backdrop-filter: var(--glass-blur);
     border: 1px solid var(--glass-border);
 }
-
-.primary-glow {
-    box-shadow: 0 4px 14px 0 rgba(5, 150, 105, 0.39);
-}
-
-/*
- * Removed custom grid/flex utilities in favor of Tailwind CSS.
- * Previous classes like .grid, .flex, .grid-cols-*, .gap-* etc
- * are now handled by Tailwind directly.
- */

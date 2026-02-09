@@ -9,7 +9,7 @@
             icon="pi pi-plus"
             [rounded]="true"
             (onClick)="openNew()"
-            class="primary-glow"
+            [raised]="true"
         ></p-button>
         <p-button
             label="Importar MT5"
@@ -68,7 +68,6 @@
                 label="Confirmar Importación"
                 [disabled]="!importAccountId"
                 (onClick)="confirmImport()"
-                class="primary-glow"
             ></p-button>
         </ng-template>
     </p-dialog>
@@ -199,6 +198,7 @@
                         severity="secondary"
                         (onClick)="clearFilters()"
                         class="hover-shake"
+                        [raised]="true"
                     ></p-button>
                 </div>
             </div>

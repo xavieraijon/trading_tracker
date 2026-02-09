@@ -149,8 +149,8 @@
                 </p-select>
             </div>
         } @else {
-            <p-button label="Iniciar Sesión" routerLink="/auth/login" class="w-full mb-2" (onClick)="mobileMenuVisible.set(false)"></p-button>
-            <p-button label="Registrarse" severity="secondary" routerLink="/auth/register" class="w-full" (onClick)="mobileMenuVisible.set(false)"></p-button>
+            <p-button label="Iniciar Sesión" routerLink="/auth/login" class="w-full mb-2" (onClick)="mobileMenuVisible.set(false)" [raised]="true"></p-button>
+            <p-button label="Registrarse" severity="secondary" routerLink="/auth/register" class="w-full" (onClick)="mobileMenuVisible.set(false)" [raised]="true"></p-button>
         }
     </div>
 </p-drawer>
