@@ -49,6 +49,8 @@ export class AccountsListComponent implements OnInit {
   searchTerm = signal('');
   selectedMarket = signal<string | null>(null);
   selectedType = signal<string | null>(null);
+  selectedCategory = signal<string | null>(null);
+  selectedCurrency = signal<string | null>(null);
 
   private accountsService = inject(AccountsService);
   private messageService = inject(MessageService);
@@ -65,12 +67,16 @@ export class AccountsListComponent implements OnInit {
     const search = this.searchTerm().toLowerCase();
     const market = this.selectedMarket();
     const type = this.selectedType();
+    const category = this.selectedCategory();
+    const currency = this.selectedCurrency();
 
     return list.filter(acc => {
       const matchesSearch = !search || acc.name.toLowerCase().includes(search) || (acc.broker && acc.broker.toLowerCase().includes(search));
       const matchesMarket = !market || acc.market === market;
       const matchesType = !type || acc.type === type;
-      return matchesSearch && matchesMarket && matchesType;
+      const matchesCategory = !category || acc.propFirmStatus === category;
+      const matchesCurrency = !currency || acc.currency === currency;
+      return matchesSearch && matchesMarket && matchesType && matchesCategory && matchesCurrency;
     });
   });
 
@@ -89,10 +95,26 @@ export class AccountsListComponent implements OnInit {
     { label: 'Prop Firm', value: 'PROP_FIRM' }
   ];
 
+  categoryOptions = [
+    { label: 'Todas las Categorías', value: null },
+    { label: 'Challenge', value: 'CHALLENGE' },
+    { label: 'Fondeada', value: 'FUNDED' }
+  ];
+
+  currencyOptions = [
+    { label: 'Todas las Divisas', value: null },
+    { label: 'USD', value: 'USD' },
+    { label: 'EUR', value: 'EUR' },
+    { label: 'GBP', value: 'GBP' },
+    { label: 'JPY', value: 'JPY' }
+  ];
+
   clearFilters() {
     this.searchTerm.set('');
     this.selectedMarket.set(null);
     this.selectedType.set(null);
+    this.selectedCategory.set(null);
+    this.selectedCurrency.set(null);
   }
 
   loadAccounts() {
