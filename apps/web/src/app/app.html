@@ -1,209 +1,132 @@
-<header class="main-header glass-effect sticky top-0 z-50">
-    <div class="header-container mx-auto px-6 py-3 flex items-center justify-between">
-        <!-- Left Group: Hamburger + Logo (Always Left) -->
-        <div class="header-left flex-1 flex items-center justify-start gap-4">
-            <div class="lg:hidden">
-                <p-button
-                    icon="pi pi-bars"
-                    [text]="true"
-                    [rounded]="true"
-                    severity="secondary"
-                    (onClick)="mobileMenuVisible.set(true)"
-                ></p-button>
-            </div>
+@if (authService.isAuthenticated() && !isAuthPage()) {
 
-            <div class="brand flex items-center gap-2" routerLink="/">
-                <div class="logo-circle">
-                    <span class="logo-emoji">🍌</span>
-                </div>
-                <div class="brand-text">
-                    <span class="app-name text-xl md:text-2xl font-black text-secondary uppercase tracking-tighter">BullishBanana</span>
-                    <span class="app-tagline text-[0.6rem] hidden sm:block">The Golden Bunch of Pips</span>
-                </div>
-            </div>
+    <div class="layout-wrapper" [ngClass]="containerClass()">
+        <div class="layout-sidebar">
+            <app-sidebar></app-sidebar>
         </div>
 
-        <!-- Center Group: Desktop Navigation Only -->
-        <div class="header-center flex-none hidden lg:flex justify-center">
-            @if (authService.isAuthenticated()) {
-                <nav class="nav-links flex gap-3 xl:gap-6 whitespace-nowrap">
-                    <a routerLink="/dashboard" routerLinkActive="active" class="nav-item">
-                        <i class="pi pi-chart-bar mr-1"></i> Dashboard
-                    </a>
-                    <a routerLink="/accounts" routerLinkActive="active" class="nav-item">
-                        <i class="pi pi-wallet mr-1"></i> Cuentas
-                    </a>
-                    <a routerLink="/trades" routerLinkActive="active" class="nav-item">
-                        <i class="pi pi-briefcase mr-1"></i> Operaciones
-                    </a>
-                    <a routerLink="/calendar" routerLinkActive="active" class="nav-item">
-                        <i class="pi pi-calendar mr-1"></i> Calendario
-                    </a>
-                </nav>
-            }
-        </div>
+        <div class="layout-main-container">
+            <header class="layout-topbar sticky top-0 z-50">
+                <div class="flex items-center justify-between w-full h-full">
 
-        <!-- Right: Selector (desktop) / User Button (always right) -->
-        <div class="header-right flex-1 flex items-center justify-end gap-2 sm:gap-4">
-            @if (authService.isAuthenticated()) {
-                <div class="category-selector hidden sm:flex items-center">
-                    <p-select
-                        [options]="categoryOptions"
-                        [ngModel]="filterStore.accountCategory()"
-                        (ngModelChange)="onCategoryChange($event)"
-                        optionLabel="label"
-                        optionValue="value"
-                        placeholder="Vista"
-                        class="w-32 lg:w-40"
-                        variant="filled">
-                        <ng-template pTemplate="selectedItem" let-selectedOption>
-                            @if (selectedOption) {
-                                <div class="flex items-center gap-2">
-                                    <i [class]="selectedOption.icon + ' text-muted'"></i>
-                                    <span>{{ selectedOption.label }}</span>
-                                </div>
-                            }
-                        </ng-template>
-                    </p-select>
-                </div>
+                    <!-- Left Group: Toggle + Brand (Mobile) -->
+                    <div class="header-left flex-1 flex items-center justify-start gap-4">
+                        <p-button
+                            icon="pi pi-bars"
+                            [text]="true"
+                            [rounded]="true"
+                            severity="secondary"
+                            (onClick)="onSidebarToggle()"
+                            class="layout-sidebar-toggler"
+                        ></p-button>
 
-                <div class="account-selector flex items-center">
-                     <p-select
-                        [options]="accountsService.filteredAccounts()"
-                        optionLabel="name"
-                        optionValue="id"
-                        [ngModel]="selectedAccountValue()"
-                        (ngModelChange)="selectedAccountValue.set($event); onAccountChange()"
-                        placeholder="Cuenta"
-                        [showClear]="true"
-                        class="w-24 sm:w-48 lg:w-56"
-                        variant="filled">
-                        <ng-template pTemplate="selectedItem" let-selectedOption>
-                            @if (selectedOption) {
-                                <div class="flex items-center gap-2">
-                                    <i class="pi pi-wallet text-muted"></i>
-                                    <span>{{ selectedOption.name }}</span>
-                                </div>
-                            }
-                            @if (!selectedOption) {
-                                <div class="flex items-center gap-2">
-                                    <i class="pi pi-globe text-primary"></i>
-                                    <span>Todas las Cuentas</span>
-                                </div>
-                            }
-                        </ng-template>
-                        <ng-template let-account pTemplate="item">
-                            <div class="flex items-center gap-2">
-                                <i class="pi pi-wallet text-sm text-muted"></i>
-                                <span>{{ account.name }}</span>
-                                <span class="text-xs text-muted ml-auto bg-surface-muted px-2 py-0.5 rounded">{{ account.currency }}</span>
+                        <div class="lg:hidden brand flex items-center gap-2" routerLink="/">
+                            <div class="logo-circle shrink-0 w-8 h-8 flex items-center justify-center bg-accent-color rounded-full shadow-[0_0_10px_var(--accent-glow)]">
+                                <span class="logo-emoji text-lg">🍌</span>
                             </div>
-                        </ng-template>
-                    </p-select>
+                        </div>
+                    </div>
+
+                    <!-- Right: Nav Actions -->
+                    <div class="header-right flex-1 flex items-center justify-end gap-2 sm:gap-4">
+                        <div class="category-selector hidden sm:flex items-center">
+                            <p-select
+                                [options]="categoryOptions"
+                                [ngModel]="filterStore.accountCategory()"
+                                (ngModelChange)="onCategoryChange($event)"
+                                optionLabel="label"
+                                optionValue="value"
+                                placeholder="Vista"
+                                class="w-32 lg:w-40"
+                                appendTo="body"
+                                variant="filled">
+                                <ng-template pTemplate="selectedItem" let-selectedOption>
+                                    @if (selectedOption) {
+                                        <div class="flex items-center gap-2">
+                                            <i [class]="selectedOption.icon + ' text-muted'"></i>
+                                            <span>{{ selectedOption.label }}</span>
+                                        </div>
+                                    }
+                                </ng-template>
+                            </p-select>
+                        </div>
+
+                        <div class="account-selector flex items-center">
+                             <p-select
+                                [options]="accountsService.filteredAccounts()"
+                                optionLabel="name"
+
+                                optionValue="id"
+                                [ngModel]="selectedAccountValue()"
+                                (ngModelChange)="selectedAccountValue.set($event); onAccountChange()"
+                                placeholder="Cuenta"
+                                [showClear]="true"
+                                class="w-24 sm:w-48 lg:w-56"
+                                appendTo="body"
+                                variant="filled">
+                                <ng-template pTemplate="selectedItem" let-selectedOption>
+                                    @if (selectedOption) {
+                                        <div class="flex items-center gap-2">
+                                            <i class="pi pi-wallet text-muted"></i>
+                                            <span>{{ selectedOption.name }}</span>
+                                        </div>
+                                    }
+                                    @if (!selectedOption) {
+                                        <div class="flex items-center gap-2">
+                                            <i class="pi pi-globe text-primary"></i>
+                                            <span>Todas las Cuentas</span>
+                                        </div>
+                                    }
+                                </ng-template>
+                                <ng-template let-account pTemplate="item">
+                                    <div class="flex items-center gap-2">
+                                        <i class="pi pi-wallet text-sm text-muted"></i>
+                                        <span>{{ account.name }}</span>
+                                        <span class="text-xs text-muted ml-auto bg-surface-muted px-2 py-0.5 rounded">{{ account.currency }}</span>
+                                    </div>
+                                </ng-template>
+                            </p-select>
+                        </div>
+
+                        <div class="flex items-center">
+                            <p-button
+                                icon="pi pi-user"
+                                [rounded]="true"
+                                [text]="true"
+                                severity="secondary"
+                                (onClick)="userMenu.toggle($event)"
+                            ></p-button>
+                            <p-menu #userMenu [model]="userMenuItems()" [popup]="true" appendTo="body"></p-menu>
+
+                        </div>
+                    </div>
                 </div>
+            </header>
 
-                <div class="flex items-center">
-                    <p-button
-                        icon="pi pi-user"
-                        [rounded]="true"
-                        [text]="true"
-                        severity="secondary"
-                        (onClick)="userMenu.toggle($event)"
-                    ></p-button>
-                    <p-menu #userMenu [model]="userMenuItems()" [popup]="true"></p-menu>
+            <main class="layout-main min-h-screen p-6">
+                <router-outlet></router-outlet>
+            </main>
+
+            <footer class="layout-footer mt-12 py-12">
+                <div class="mx-auto px-6 text-center">
+                    <div class="footer-logo mb-4">
+                        <span class="logo-emoji grayscale">🍌</span>
+                    </div>
+                    <p class="text-muted mb-4">© 2026 BullishBanana. Gestión de riesgo con estilo.</p>
+                    <div class="flex justify-center gap-6 text-sm text-muted">
+                        <a href="#">Términos</a>
+                        <a href="#">Privacidad</a>
+                        <a href="#">Soporte</a>
+                    </div>
+                    <p class="mt-8 text-xs text-muted opacity-50 px-12 italic">
+                        El trading implica riesgos. Opera solo con capital que puedas permitirte perder. Este plátano no es asesoría financiera.
+                    </p>
                 </div>
-            } @else {
-                <p-button label="Empezar" icon="pi pi-rocket" routerLink="/auth/register" [rounded]="true"></p-button>
-            }
+            </footer>
         </div>
     </div>
-</header>
-
-<p-drawer [(visible)]="mobileMenuVisible" position="left" class="mobile-drawer">
-    <ng-template pTemplate="header">
-        <div class="flex items-center gap-2 px-2">
-            <span class="text-xl">🍌</span>
-            <span class="font-black text-secondary uppercase tracking-tighter">BullishBanana</span>
-        </div>
-    </ng-template>
-
-    <div class="flex flex-col gap-2 pt-6">
-        @if (authService.isAuthenticated()) {
-            <a routerLink="/dashboard" routerLinkActive="active" class="drawer-item" (click)="mobileMenuVisible.set(false)">
-                <i class="pi pi-chart-bar px-3 py-4"></i> Dashboard
-            </a>
-            <a routerLink="/accounts" routerLinkActive="active" class="drawer-item" (click)="mobileMenuVisible.set(false)">
-                <i class="pi pi-wallet px-3 py-4"></i> Cuentas
-            </a>
-            <a routerLink="/trades" routerLinkActive="active" class="drawer-item" (click)="mobileMenuVisible.set(false)">
-                <i class="pi pi-briefcase px-3 py-4"></i> Operaciones
-            </a>
-            <a routerLink="/calendar" routerLinkActive="active" class="drawer-item" (click)="mobileMenuVisible.set(false)">
-                <i class="pi pi-calendar px-3 py-4"></i> Calendario
-            </a>
-
-            <div class="drawer-divider my-4 border-t border-slate-100"></div>
-
-            <div class="px-4 py-2">
-                <p class="text-[10px] font-bold text-placeholder uppercase tracking-widest mb-3">Modo de Vista</p>
-                <p-select
-                    [options]="categoryOptions"
-                    [ngModel]="filterStore.accountCategory()"
-                    (ngModelChange)="onCategoryChange($event)"
-                    optionLabel="label"
-                    optionValue="value"
-                    placeholder="Seleccionar vista"
-                    class="w-full mb-6"
-                    variant="filled"
-                    appendTo="body">
-                    <ng-template pTemplate="selectedItem" let-selectedOption>
-                        @if (selectedOption) {
-                            <div class="flex items-center gap-2">
-                                <i [class]="selectedOption.icon + ' text-muted'"></i>
-                                <span>{{ selectedOption.label }}</span>
-                            </div>
-                        }
-                    </ng-template>
-                </p-select>
-
-                <p class="text-[10px] font-bold text-placeholder uppercase tracking-widest mb-3">Cambiar Cuenta</p>
-                <p-select
-                    [options]="accounts()"
-                    optionLabel="name"
-                    optionValue="id"
-                    [(ngModel)]="selectedAccountValue"
-                    (onChange)="onAccountChange(); mobileMenuVisible.set(false)"
-                    placeholder="Todas las Cuentas"
-                    [showClear]="true"
-                    class="w-full"
-                    variant="filled"
-                    appendTo="body">
-                </p-select>
-            </div>
-        } @else {
-            <p-button label="Iniciar Sesión" routerLink="/auth/login" class="w-full mb-2" (onClick)="mobileMenuVisible.set(false)" [raised]="true"></p-button>
-            <p-button label="Registrarse" severity="secondary" routerLink="/auth/register" class="w-full" (onClick)="mobileMenuVisible.set(false)" [raised]="true"></p-button>
-        }
+} @else {
+    <div class="auth-layout min-h-screen">
+        <router-outlet></router-outlet>
     </div>
-</p-drawer>
-
-<main class="content-wrapper min-h-screen">
-    <router-outlet></router-outlet>
-</main>
-
-<footer class="main-footer mt-12 py-12">
-    <div class="mx-auto px-6 text-center">
-        <div class="footer-logo mb-4">
-            <span class="logo-emoji grayscale">🍌</span>
-        </div>
-        <p class="text-muted mb-4">© 2026 BullishBanana. Gestión de riesgo con estilo.</p>
-        <div class="flex justify-center gap-6 text-sm text-muted">
-            <a href="#">Términos</a>
-            <a href="#">Privacidad</a>
-            <a href="#">Soporte</a>
-        </div>
-        <p class="mt-8 text-xs text-muted opacity-50 px-12 italic">
-            El trading implica riesgos. Opera solo con capital que puedas permitirte perder. Este plátano no es asesoría financiera.
-        </p>
-    </div>
-</footer>
+}

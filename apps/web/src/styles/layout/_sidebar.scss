@@ -1,0 +1,104 @@
+.layout-wrapper {
+    position: relative;
+    min-height: 100vh;
+}
+
+.layout-sidebar {
+    position: fixed;
+    width: 280px;
+    height: 100vh;
+    z-index: 1000;
+    overflow-y: auto;
+    top: 0;
+    left: 0;
+    transition: width 0.3s cubic-bezier(0, 0, 0.2, 1);
+    background: var(--surface-card);
+    border-right: 1px solid var(--border-subtle);
+    padding: 1.5rem 1rem;
+
+    /* Hide scrollbar */
+    &::-webkit-scrollbar { display: none; }
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+
+.layout-main-container {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    padding-left: 280px;
+    transition: padding-left 0.3s cubic-bezier(0, 0, 0.2, 1);
+}
+
+/* Topbar: Integrated (Non-floating, Non-rounded) */
+.layout-topbar {
+    height: 70px;
+    background: var(--surface-card);
+    border-bottom: 1px solid var(--border-subtle);
+    display: flex;
+    align-items: center;
+    padding: 0 2rem;
+    position: sticky;
+    top: 0;
+    z-index: 998;
+}
+
+/* Sidebar Collapsed State */
+.layout-sidebar-active {
+    .layout-sidebar {
+        width: 80px;
+        padding-left: 0.5rem;
+        padding-right: 0.5rem;
+
+        .brand-text {
+            display: none !important;
+        }
+
+        .sidebar-header {
+            justify-content: center;
+            padding-left: 0;
+            padding-right: 0;
+        }
+
+        .sidebar-menu li a {
+            justify-content: center;
+            padding: 0.75rem 0;
+
+            span {
+                display: none !important;
+            }
+
+            i {
+                margin: 0 !important;
+            }
+        }
+    }
+
+    .layout-main-container {
+        padding-left: 80px;
+    }
+}
+
+/* Mobile View */
+@media (max-width: 1024px) {
+    .layout-sidebar {
+        transform: translateX(-100%);
+        width: 280px;
+        transition: transform 0.3s;
+    }
+
+    .layout-main-container {
+        padding-left: 0 !important;
+    }
+
+    .layout-mobile-active {
+        .layout-sidebar {
+            transform: translateX(0);
+        }
+    }
+}
+
+.layout-main {
+    flex: 1 1 auto;
+    padding: 2rem;
+}

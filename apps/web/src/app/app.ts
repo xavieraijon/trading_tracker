@@ -1,19 +1,34 @@
 import { Component, inject, OnInit, signal, computed } from '@angular/core';
-import { RouterModule } from '@angular/router';
+import { Router, NavigationEnd, RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
+import { filter, map, startWith } from 'rxjs';
+import { toSignal } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
+
 import { ButtonModule } from 'primeng/button';
 import { MenuModule } from 'primeng/menu';
 import { AvatarModule } from 'primeng/avatar';
 import { SelectModule } from 'primeng/select';
 import { SelectButtonModule } from 'primeng/selectbutton';
 import { DrawerModule } from 'primeng/drawer';
+import { SidebarComponent } from './shared/components/sidebar/sidebar.component';
 import { AuthService } from './core/auth/auth.service';
 import { AccountsService } from './features/accounts/accounts.service';
 import { FilterStore } from './core/filter.store';
 
 @Component({
-  imports: [RouterModule, CommonModule, ButtonModule, MenuModule, AvatarModule, SelectModule, FormsModule, DrawerModule, SelectButtonModule],
+  imports: [
+    CommonModule,
+    RouterModule,
+    ButtonModule,
+    MenuModule,
+    AvatarModule,
+    SelectModule,
+    SelectButtonModule,
+    DrawerModule,
+    FormsModule,
+    SidebarComponent
+  ],
   selector: 'app-root',
   templateUrl: './app.html',
   styleUrl: './app.scss',
@@ -22,10 +37,26 @@ export class App implements OnInit {
   authService = inject(AuthService);
   accountsService = inject(AccountsService);
   filterStore = inject(FilterStore);
+  private router = inject(Router);
+
+  // Detect if current route is an auth page
+  isAuthPage = toSignal(
+    this.router.events.pipe(
+      filter(event => event instanceof NavigationEnd),
+      map(event => (event as NavigationEnd).urlAfterRedirects.includes('/auth/')),
+      startWith(this.router.url.includes('/auth/'))
+    )
+  );
 
   accounts = this.accountsService.accounts;
+
   selectedAccountValue = signal<string | null>(null);
+
+  // Layout Signals
+  sidebarActive = signal(false);
+  sidebarStatic = signal(true);
   mobileMenuVisible = signal(false);
+
 
   categoryOptions = [
     { label: 'Todo', value: null, icon: 'pi pi-globe' },
@@ -80,6 +111,18 @@ export class App implements OnInit {
     this.selectedAccountValue.set(null);
     this.onAccountChange(); // Ensure signals are updated
   }
+
+  onSidebarToggle() {
+    this.sidebarActive.set(!this.sidebarActive());
+  }
+
+  containerClass = computed(() => {
+    return {
+        'layout-sidebar-active': this.sidebarActive(),
+        'layout-sidebar-static': this.sidebarStatic(),
+        'layout-mobile-active': this.mobileMenuVisible()
+    };
+  });
 
   logout() {
     this.authService.logout();

@@ -1,0 +1,36 @@
+:host {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+.sidebar-menu {
+    flex: 1;
+
+    .active-route {
+        background: var(--accent-color) !important;
+        box-shadow: 0 4px 15px var(--accent-glow);
+
+        i, span {
+            color: white !important;
+        }
+
+        &:hover {
+            background: var(--accent-color) !important;
+        }
+    }
+}
+
+.brand-text {
+    /* Ensure text doesn't wrap during animation */
+    white-space: nowrap;
+}
+
+/* Micro-animations and hover effects */
+.sidebar-menu a {
+    &:hover:not(.active-route) {
+        i {
+            transform: scale(1.1);
+        }
+    }
+}

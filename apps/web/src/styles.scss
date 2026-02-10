@@ -17,9 +17,11 @@
 /* Layout */
 @layer layout {
     @import 'styles/layout/structure';
+    @import 'styles/layout/sidebar';
     @import 'styles/layout/main';
     @import 'styles/layout/auth';
 }
+
 
 /* Utilities */
 @layer utilities {
