@@ -1,0 +1,17 @@
+---
+description: Convenciones de commits y git flow en este proyecto
+alwaysApply: true
+---
+
+# Git y commits (trading_tracker)
+
+## Commits
+
+- **Idioma**: los mensajes de commit siempre en **inglés** (asunto y cuerpo).
+- **Mensajes**: máximo **120 caracteres** por línea. Si hace falta más contexto, usar cuerpo del commit en líneas siguientes.
+- **Contenido**: no incluir en commits nada relacionado con Cursor, IA o el asistente (referencias, firmas, etc.).
+
+## Git Flow
+
+- Usar **git flow** para los commits: crear y trabajar en ramas `feature/*` desde `develop`, y hacer merge con `git flow feature finish` (o el flujo equivalente si no está instalado el binario `git flow`).
+- Crear rama feature antes de commitear cambios de funcionalidad/fix.
