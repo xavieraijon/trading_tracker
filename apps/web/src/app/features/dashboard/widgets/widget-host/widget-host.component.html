@@ -1,0 +1,83 @@
+@if (definition(); as def) {
+  <div class="widget-host" [class.widget-host--kpi]="isKpi()" [class.widget-host--chart]="!isKpi()">
+    <!-- Title bar (window-style) -->
+    <div class="widget-host__titlebar" [class.widget-host__titlebar--kpi]="isKpi()">
+      <div class="widget-host__titlebar-left">
+        <div class="widget-host__traffic-lights">
+          <button class="widget-host__btn widget-host__btn--close" (click)="remove.emit(widgetId())" pTooltip="Ocultar widget" tooltipPosition="top">
+            <i class="pi pi-times"></i>
+          </button>
+        </div>
+        @if (!isKpi()) {
+          <span class="widget-host__title">
+            <i [class]="def.icon" class="widget-host__title-icon"></i>
+            {{ def.name }}
+          </span>
+        }
+      </div>
+      <div class="widget-host__drag-handle">
+        <i class="pi pi-arrows-alt"></i>
+      </div>
+    </div>
+
+    <!-- Widget content -->
+    <div class="widget-host__content" [class.widget-host__content--kpi]="isKpi()">
+      @switch (widgetId()) {
+        @case ('netProfit') {
+          <app-net-profit-widget [stats]="dataService.stats()" />
+        }
+        @case ('winRate') {
+          <app-win-rate-widget [stats]="dataService.stats()" />
+        }
+        @case ('profitFactor') {
+          <app-profit-factor-widget [stats]="dataService.stats()" />
+        }
+        @case ('avgWinLoss') {
+          <app-avg-win-loss-widget [stats]="dataService.stats()" />
+        }
+        @case ('maxDrawdown') {
+          <app-max-drawdown-widget [stats]="dataService.stats()" />
+        }
+        @case ('totalTrades') {
+          <app-total-trades-widget [stats]="dataService.stats()" />
+        }
+        @case ('expectancy') {
+          <app-expectancy-widget [stats]="dataService.stats()" />
+        }
+        @case ('largestWin') {
+          <app-largest-win-widget [stats]="dataService.stats()" />
+        }
+        @case ('largestLoss') {
+          <app-largest-loss-widget [stats]="dataService.stats()" />
+        }
+        @case ('streaks') {
+          <app-streaks-widget [stats]="dataService.stats()" />
+        }
+        @case ('equityCurve') {
+          <app-equity-curve-widget />
+        }
+        @case ('drawdown') {
+          <app-drawdown-widget />
+        }
+        @case ('pnlByPeriod') {
+          <app-pnl-by-period-widget />
+        }
+        @case ('grossPnlDonut') {
+          <app-gross-pnl-donut-widget />
+        }
+        @case ('longShortDonut') {
+          <app-long-short-donut-widget />
+        }
+        @case ('winsLossesDonut') {
+          <app-wins-losses-donut-widget />
+        }
+        @case ('pnlByInstrument') {
+          <app-pnl-by-instrument-widget />
+        }
+        @case ('activityByPeriod') {
+          <app-activity-by-period-widget />
+        }
+      }
+    </div>
+  </div>
+}

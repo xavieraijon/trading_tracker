@@ -2,7 +2,26 @@
   title="Panel de Rendimiento"
   subtitle="Análisis de resultados y métricas de BullishBanana">
 
-  @if (accountsService.accountsLoading()) {
+  <ng-container actions>
+    <button
+      pButton
+      icon="pi pi-cog"
+      class="p-button-text p-button-rounded p-button-sm"
+      pTooltip="Configurar dashboard"
+      tooltipPosition="bottom"
+      (click)="openConfigPanel()">
+    </button>
+    <button
+      pButton
+      icon="pi pi-refresh"
+      class="p-button-text p-button-rounded p-button-sm"
+      pTooltip="Restaurar layout por defecto"
+      tooltipPosition="bottom"
+      (click)="resetLayout()">
+    </button>
+  </ng-container>
+
+  @if (dataService.accountsService.accountsLoading()) {
     <div class="flex flex-col items-center justify-center py-24 gap-4">
       <p-progressSpinner
         styleClass="w-14 h-14"
@@ -11,373 +30,17 @@
       </p-progressSpinner>
       <p class="text-placeholder font-medium">Cargando cuentas y estadísticas…</p>
     </div>
-  } @else if (stats()) {
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-6 mb-10">
-      <!-- Beneficio Neto -->
-      <p-card class="kpi-card stats-card border-left-pnl relative overflow-hidden">
-        <!-- ... content ... -->
-        <div class="flex flex-col h-full justify-between gap-1">
-          <div class="flex items-center justify-between">
-            <div class="flex items-center gap-3">
-              <span class="text-[10px] font-bold text-placeholder uppercase tracking-widest">Net Profit</span>
-              <i class="pi pi-question-circle text-[10px] cursor-help" pTooltip="Beneficio total neto después de todas las operaciones cerradas." tooltipPosition="top"></i>
-            </div>
-            <div class="kpi-icon-container bg-emerald-50 text-emerald-500">
-              <i class="pi pi-dollar"></i>
-            </div>
-          </div>
-          <div class="text-2xl font-black font-mono tracking-tighter" [class.pnl-positive]="stats().totalPnL > 0" [class.pnl-negative]="stats().totalPnL < 0">
-            {{ stats().totalPnL | currency: 'USD' : 'symbol' : '1.0-0' }}
-          </div>
-          <div class="sparkline-container h-10 mt-2">
-            @if (pnlSparkline()) {
-              <p-chart type="line" [data]="pnlSparkline()" [options]="sparklineOptions" height="100%"></p-chart>
-            }
-          </div>
-        </div>
-      </p-card>
-
-      <!-- Win Rate -->
-      <p-card class="kpi-card stats-card relative overflow-hidden">
-        <div class="flex flex-col h-full justify-between gap-1">
-          <div class="flex items-center justify-between">
-            <div class="flex items-center gap-3">
-              <span class="text-[10px] font-bold text-placeholder uppercase tracking-widest">Win Rate</span>
-              <i class="pi pi-question-circle text-[10px] cursor-help" pTooltip="Porcentaje de operaciones ganadoras sobre el total." tooltipPosition="top"></i>
-            </div>
-            <div class="kpi-icon-container bg-blue-50 text-blue-500">
-              <i class="pi pi-percentage"></i>
-            </div>
-          </div>
-          <div class="text-2xl font-black text-blue-600 font-mono tracking-tighter">
-            {{ stats().winRate | number: '1.0-1' }}%
-          </div>
-          <div class="sparkline-container h-10 mt-2">
-            @if (winRateSparkline()) {
-              <p-chart type="line" [data]="winRateSparkline()" [options]="sparklineOptions" height="100%"></p-chart>
-            }
-          </div>
-        </div>
-      </p-card>
-
-      <!-- Profit Factor -->
-      <p-card class="kpi-card stats-card relative overflow-hidden">
-        <div class="flex flex-col h-full justify-between gap-1">
-          <div class="flex items-center justify-between">
-            <div class="flex items-center gap-3">
-              <span class="text-[10px] font-bold text-placeholder uppercase tracking-widest">Profit Factor</span>
-              <i class="pi pi-question-circle text-[10px] cursor-help" pTooltip="Relación entre el beneficio bruto y las pérdidas brutas. > 1.0 es rentable." tooltipPosition="top"></i>
-            </div>
-            <div class="kpi-icon-container bg-orange-50 text-orange-500">
-              <i class="pi pi-bolt"></i>
-            </div>
-          </div>
-          <div class="text-2xl font-black text-orange-600 font-mono tracking-tighter">
-            {{ stats().profitFactor | number: '1.2-2' }}
-          </div>
-          <div class="sparkline-container h-10 mt-2">
-            @if (profitFactorSparkline()) {
-              <p-chart type="line" [data]="profitFactorSparkline()" [options]="sparklineOptions" height="100%"></p-chart>
-            }
-          </div>
-        </div>
-      </p-card>
-
-      <!-- Avg Win/Loss -->
-      <p-card class="kpi-card stats-card relative overflow-hidden">
-        <div class="flex flex-col h-full justify-between gap-1">
-          <div class="flex items-center justify-between">
-            <div class="flex items-center gap-3">
-              <span class="text-[10px] font-bold text-placeholder uppercase tracking-widest">Avg W/L</span>
-              <i class="pi pi-question-circle text-[10px] cursor-help" pTooltip="Promedio ganado en trades ganadores vs promedio perdido en perdedores." tooltipPosition="top"></i>
-            </div>
-            <div class="kpi-icon-container bg-slate-50 text-slate-500">
-              <i class="pi pi-arrows-h"></i>
-            </div>
-          </div>
-          <div class="text-md font-black font-mono flex gap-1 items-baseline tracking-tighter">
-            <span class="text-success text-lg">{{ stats().avgWin | number: '1.0-0' }}</span>
-            <span class="text-disabled">/</span>
-            <span class="text-danger text-lg">{{ stats().avgLoss | number: '1.0-0' }}</span>
-          </div>
-          <div class="text-[10px] text-placeholder mt-auto pb-1">Risk/Reward profile</div>
-        </div>
-      </p-card>
-
-      <!-- Max Drawdown -->
-      <p-card class="kpi-card stats-card border-left-danger relative overflow-hidden">
-        <div class="flex flex-col h-full justify-between gap-1">
-          <div class="flex items-center justify-between">
-            <div class="flex items-center gap-3">
-              <span class="text-[10px] font-bold text-placeholder uppercase tracking-widest text-danger">Max DD</span>
-              <i class="pi pi-question-circle text-[10px] cursor-help" pTooltip="La mayor caída desde un pico en la curva de capital. Mide el riesgo máximo." tooltipPosition="top"></i>
-            </div>
-            <div class="kpi-icon-container bg-rose-50 text-rose-500">
-              <i class="pi pi-exclamation-triangle"></i>
-            </div>
-          </div>
-          <div class="text-2xl font-black text-danger font-mono tracking-tighter">
-            {{ stats().maxDrawdown | currency: 'USD' : 'symbol' : '1.0-0' }}
-          </div>
-          <div class="text-[10px] text-placeholder mt-auto pb-1 font-medium">Historical peak-to-trough</div>
-        </div>
-      </p-card>
-    </div>
-
-    <!-- Segunda fila: KPIs avanzados (expectativa, rachas, mayor ganancia/pérdida) -->
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-6 mb-10">
-      <!-- Total operaciones -->
-      <p-card class="kpi-card stats-card relative overflow-hidden">
-        <div class="flex flex-col h-full justify-between gap-1">
-          <div class="flex items-center justify-between">
-            <div class="flex items-center gap-3">
-              <span class="text-[10px] font-bold text-placeholder uppercase tracking-widest">Operaciones</span>
-              <i class="pi pi-question-circle text-[10px] cursor-help" pTooltip="Número total de operaciones cerradas en el periodo." tooltipPosition="top"></i>
-            </div>
-            <div class="kpi-icon-container bg-violet-50 text-violet-500">
-              <i class="pi pi-chart-bar"></i>
-            </div>
-          </div>
-          <div class="text-2xl font-black font-mono tracking-tighter text-secondary">
-            {{ stats().totalTrades | number: '1.0-0' }}
-          </div>
-          <div class="text-[10px] text-placeholder mt-auto pb-1">
-            {{ stats().totalWins ?? 0 }}W / {{ stats().totalLosses ?? 0 }}L
-          </div>
-        </div>
-      </p-card>
-
-      <!-- Expectancy -->
-      <p-card class="kpi-card stats-card relative overflow-hidden">
-        <div class="flex flex-col h-full justify-between gap-1">
-          <div class="flex items-center justify-between">
-            <div class="flex items-center gap-3">
-              <span class="text-[10px] font-bold text-placeholder uppercase tracking-widest">Expectancy</span>
-              <i class="pi pi-question-circle text-[10px] cursor-help" pTooltip="Beneficio esperado por operación (promedio ponderado por probabilidad)." tooltipPosition="top"></i>
-            </div>
-            <div class="kpi-icon-container bg-cyan-50 text-cyan-500">
-              <i class="pi pi-calculator"></i>
-            </div>
-          </div>
-          <div class="text-2xl font-black font-mono tracking-tighter" [class.pnl-positive]="(stats().expectancy ?? 0) >= 0" [class.pnl-negative]="(stats().expectancy ?? 0) < 0">
-            {{ stats().expectancy | currency: 'USD' : 'symbol' : '1.0-0' }}
-          </div>
-          <div class="text-[10px] text-placeholder mt-auto pb-1">Por trade</div>
-        </div>
-      </p-card>
-
-      <!-- Mayor ganancia -->
-      <p-card class="kpi-card stats-card relative overflow-hidden">
-        <div class="flex flex-col h-full justify-between gap-1">
-          <div class="flex items-center justify-between">
-            <div class="flex items-center gap-3">
-              <span class="text-[10px] font-bold text-placeholder uppercase tracking-widest">Mayor ganancia</span>
-              <i class="pi pi-question-circle text-[10px] cursor-help" pTooltip="La operación ganadora con mayor beneficio." tooltipPosition="top"></i>
-            </div>
-            <div class="kpi-icon-container bg-emerald-50 text-emerald-500">
-              <i class="pi pi-arrow-up"></i>
-            </div>
-          </div>
-          <div class="text-2xl font-black font-mono tracking-tighter text-success">
-            {{ (stats().largestWin ?? 0) | currency: 'USD' : 'symbol' : '1.0-0' }}
-          </div>
-        </div>
-      </p-card>
-
-      <!-- Mayor pérdida -->
-      <p-card class="kpi-card stats-card relative overflow-hidden">
-        <div class="flex flex-col h-full justify-between gap-1">
-          <div class="flex items-center justify-between">
-            <div class="flex items-center gap-3">
-              <span class="text-[10px] font-bold text-placeholder uppercase tracking-widest">Mayor pérdida</span>
-              <i class="pi pi-question-circle text-[10px] cursor-help" pTooltip="La operación perdedora con mayor pérdida." tooltipPosition="top"></i>
-            </div>
-            <div class="kpi-icon-container bg-rose-50 text-rose-500">
-              <i class="pi pi-arrow-down"></i>
-            </div>
-          </div>
-          <div class="text-2xl font-black font-mono tracking-tighter text-danger">
-            {{ (stats().largestLoss ?? 0) | currency: 'USD' : 'symbol' : '1.0-0' }}
-          </div>
-        </div>
-      </p-card>
-
-      <!-- Rachas -->
-      <p-card class="kpi-card stats-card relative overflow-hidden">
-        <div class="flex flex-col h-full justify-between gap-1">
-          <div class="flex items-center justify-between">
-            <div class="flex items-center gap-3">
-              <span class="text-[10px] font-bold text-placeholder uppercase tracking-widest">Rachas</span>
-              <i class="pi pi-question-circle text-[10px] cursor-help" pTooltip="Máximo de operaciones ganadoras o perdedoras consecutivas." tooltipPosition="top"></i>
-            </div>
-            <div class="kpi-icon-container bg-slate-50 text-slate-500">
-              <i class="pi pi-list"></i>
-            </div>
-          </div>
-          <div class="text-lg font-black font-mono tracking-tighter flex items-baseline gap-2">
-            <span class="text-success">{{ stats().bestWinStreak ?? 0 }}W</span>
-            <span class="text-disabled">/</span>
-            <span class="text-danger">{{ stats().bestLossStreak ?? 0 }}L</span>
-          </div>
-          <div class="text-[10px] text-placeholder mt-auto pb-1">Mejor racha</div>
-        </div>
-      </p-card>
-    </div>
-
-    <div class="grid grid-cols-1">
-      <p-card class="bullish-table-container overflow-hidden">
-        <div class="p-6">
-          <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
-            <div>
-              <h2 class="text-2xl font-black tracking-tight m-0">Curva de capital</h2>
-              <p class="text-xs text-placeholder mt-1">Rendimiento acumulado de la cuenta (dato más relevante)</p>
-            </div>
-            <div class="timeframe-selector">
-              <p-selectButton [options]="timeframeOptions" [ngModel]="selectedTimeframe()" (ngModelChange)="onTimeframeSelect($event)" optionLabel="label" optionValue="value" class="timeframe-buttons">
-                <ng-template pTemplate="item" let-item>
-                  <div class="flex items-center gap-2 px-1">
-                    <i [class]="item.icon" class="text-[10px]"></i>
-                    <span class="text-[10px] font-bold uppercase tracking-wider">{{ item.label }}</span>
-                  </div>
-                </ng-template>
-              </p-selectButton>
-            </div>
-          </div>
-
-          <div class="chart-area">
-            @if (chartData()) {
-              <p-chart type="line" [data]="chartData()" [options]="chartOptions" height="100%"></p-chart>
-            } @else {
-              <div class="flex flex-col justify-center items-center h-full bg-surface-muted rounded-2xl border border-dashed border-default">
-                <i class="pi pi-chart-line text-4xl text-disabled mb-3"></i>
-                <p class="text-muted font-medium">No hay datos suficientes para mostrar la curva.</p>
-              </div>
-            }
-          </div>
-        </div>
-      </p-card>
-
-      <!-- 2. Drawdown (riesgo) -->
-      <p-card class="bullish-table-container overflow-hidden mt-6">
-        <div class="p-6">
-          <h2 class="text-xl font-black tracking-tight m-0">Drawdown en el tiempo</h2>
-          <p class="text-xs text-placeholder mt-1">Caída desde el pico máximo de la curva de capital</p>
-          <div class="chart-area-sm">
-            @if (drawdownChartData()) {
-              <p-chart type="line" [data]="drawdownChartData()" [options]="drawdownChartOptions" height="100%"></p-chart>
-            } @else {
-              <div class="flex flex-col justify-center items-center h-full bg-surface-muted rounded-2xl border border-dashed border-default">
-                <i class="pi pi-chart-line text-4xl text-disabled mb-3"></i>
-                <p class="text-muted font-medium">No hay datos para el drawdown.</p>
-              </div>
-            }
-          </div>
-        </div>
-      </p-card>
-
-      <!-- 3. P&L por periodo (consistencia en el tiempo) -->
-      @if (selectedTimeframe() !== 'all') {
-        <p-card class="bullish-table-container overflow-hidden mt-6">
-          <div class="p-6">
-            <h2 class="text-xl font-black tracking-tight m-0">P&amp;L por periodo</h2>
-            <p class="text-xs text-placeholder mt-1">Beneficio o pérdida agregada por {{ selectedTimeframe() === 'day' ? 'día' : selectedTimeframe() === 'week' ? 'semana' : selectedTimeframe() === 'month' ? 'mes' : 'año' }}</p>
-            <div class="chart-area-sm">
-              @if (pnlBarChartData()) {
-                <p-chart type="bar" [data]="pnlBarChartData()" [options]="pnlBarChartOptions" height="100%"></p-chart>
-              }
-            </div>
-          </div>
-        </p-card>
+  } @else if (dataService.stats()) {
+    <gridster [options]="gridsterOptions" class="dashboard-grid">
+      @for (widget of layoutService.activeWidgets(); track widget.id) {
+        <gridster-item [item]="widget">
+          <app-widget-host
+            [widgetId]="widget.id"
+            (remove)="onRemoveWidget($event)">
+          </app-widget-host>
+        </gridster-item>
       }
-
-      <!-- 4. Fila de 3 donuts: contribución $, dirección, resultado por cantidad -->
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-6">
-        <!-- Donut: Beneficio bruto vs Pérdida bruta ($) -->
-        <p-card class="bullish-table-container overflow-hidden">
-          <div class="p-6">
-            <h2 class="text-lg font-black tracking-tight m-0">Beneficio vs Pérdida ($)</h2>
-            <p class="text-xs text-placeholder mt-1">Contribución en dólares: ganado vs perdido</p>
-            <div class="chart-donut-container">
-              @if (grossPnLDonutData()) {
-                <p-chart type="doughnut" [data]="grossPnLDonutData()" [options]="donutChartOptionsDollars" height="100%"></p-chart>
-              } @else {
-                <div class="flex flex-col justify-center items-center h-full min-h-[220px] bg-surface-muted rounded-2xl border border-dashed border-default">
-                  <i class="pi pi-pie-chart text-3xl text-disabled mb-2"></i>
-                  <p class="text-muted text-sm">Sin datos</p>
-                </div>
-              }
-            </div>
-          </div>
-        </p-card>
-
-        <!-- Donut: Long vs Short -->
-        <p-card class="bullish-table-container overflow-hidden">
-          <div class="p-6">
-            <h2 class="text-lg font-black tracking-tight m-0">Long vs Short</h2>
-            <p class="text-xs text-placeholder mt-1">Distribución de operaciones por dirección</p>
-            <div class="chart-donut-container">
-              @if (longShortDonutData()) {
-                <p-chart type="doughnut" [data]="longShortDonutData()" [options]="donutChartOptions" height="100%"></p-chart>
-              } @else {
-                <div class="flex flex-col justify-center items-center h-full min-h-[220px] bg-surface-muted rounded-2xl border border-dashed border-default">
-                  <i class="pi pi-pie-chart text-3xl text-disabled mb-2"></i>
-                  <p class="text-muted text-sm">Sin datos</p>
-                </div>
-              }
-            </div>
-          </div>
-        </p-card>
-
-        <!-- Donut: Ganadoras vs Perdedoras -->
-        <p-card class="bullish-table-container overflow-hidden">
-          <div class="p-6">
-            <h2 class="text-lg font-black tracking-tight m-0">Ganadoras vs Perdedoras</h2>
-            <p class="text-xs text-placeholder mt-1">Proporción de trades ganadores y perdedores</p>
-            <div class="chart-donut-container">
-              @if (winsLossesDonutData()) {
-                <p-chart type="doughnut" [data]="winsLossesDonutData()" [options]="donutChartOptions" height="100%"></p-chart>
-              } @else {
-                <div class="flex flex-col justify-center items-center h-full min-h-[220px] bg-surface-muted rounded-2xl border border-dashed border-default">
-                  <i class="pi pi-pie-chart text-3xl text-disabled mb-2"></i>
-                  <p class="text-muted text-sm">Sin datos</p>
-                </div>
-              }
-            </div>
-          </div>
-        </p-card>
-      </div>
-
-      <!-- 5. P&L por instrumento (qué activos aportan) -->
-      <p-card class="bullish-table-container overflow-hidden mt-6">
-        <div class="p-6">
-          <h2 class="text-xl font-black tracking-tight m-0">P&amp;L por instrumento</h2>
-          <p class="text-xs text-placeholder mt-1">Top 8 activos por contribución al resultado (positiva o negativa)</p>
-          <div class="chart-horizontal-bar-container">
-            @if (pnlByInstrumentBarData()) {
-              <p-chart type="bar" [data]="pnlByInstrumentBarData()" [options]="horizontalBarOptions" height="100%"></p-chart>
-            } @else {
-              <div class="flex flex-col justify-center items-center h-full min-h-[220px] bg-surface-muted rounded-2xl border border-dashed border-default">
-                <i class="pi pi-chart-bar text-3xl text-disabled mb-2"></i>
-                <p class="text-muted text-sm">Sin datos</p>
-              </div>
-            }
-          </div>
-        </div>
-      </p-card>
-
-      <!-- 6. Actividad por periodo (volumen de trading) -->
-      @if (selectedTimeframe() !== 'all' && tradesByPeriodBarData()) {
-        <p-card class="bullish-table-container overflow-hidden mt-6">
-          <div class="p-6">
-            <h2 class="text-xl font-black tracking-tight m-0">Actividad por periodo</h2>
-            <p class="text-xs text-placeholder mt-1">Número de operaciones cerradas por {{ selectedTimeframe() === 'day' ? 'día' : selectedTimeframe() === 'week' ? 'semana' : selectedTimeframe() === 'month' ? 'mes' : 'año' }}</p>
-            <div class="chart-area-sm">
-              <p-chart type="bar" [data]="tradesByPeriodBarData()" [options]="tradesByPeriodBarOptions" height="100%"></p-chart>
-            </div>
-          </div>
-        </p-card>
-      }
-    </div>
+    </gridster>
   } @else {
     <div class="flex flex-col items-center justify-center p-12 border-2 border-dashed border-default rounded-xl bg-surface-muted">
       <i class="pi pi-chart-bar text-5xl text-disabled mb-4"></i>
@@ -387,3 +50,72 @@
   }
 </app-page-layout>
 
+<!-- Config panel drawer -->
+<p-drawer
+  [(visible)]="configPanelVisible"
+  position="right"
+  [style]="{ width: '360px' }"
+  header="Configurar Dashboard">
+
+  <div class="config-panel">
+    <p class="text-xs text-placeholder mb-4">Activa o desactiva los widgets que quieres ver en tu dashboard. Arrastra y redimensiona directamente en el grid.</p>
+
+    <div class="config-section mb-6">
+      <h4 class="text-sm font-bold text-secondary uppercase tracking-wider mb-3">
+        <i class="pi pi-chart-bar mr-2"></i>KPIs
+      </h4>
+      @for (widget of allWidgets; track widget.id) {
+        @if (widget.category === 'kpi') {
+          <div class="config-widget-item" (click)="toggleWidget(widget.id)">
+            <div class="flex items-center gap-3">
+              <div class="config-widget-icon">
+                <i [class]="widget.icon"></i>
+              </div>
+              <div>
+                <div class="text-sm font-semibold">{{ widget.name }}</div>
+                <div class="text-xs text-placeholder">{{ widget.description }}</div>
+              </div>
+            </div>
+            <div class="config-widget-toggle" [class.active]="isWidgetActive(widget.id)">
+              <div class="config-widget-toggle-dot"></div>
+            </div>
+          </div>
+        }
+      }
+    </div>
+
+    <div class="config-section mb-6">
+      <h4 class="text-sm font-bold text-secondary uppercase tracking-wider mb-3">
+        <i class="pi pi-chart-line mr-2"></i>Gráficos
+      </h4>
+      @for (widget of allWidgets; track widget.id) {
+        @if (widget.category === 'chart') {
+          <div class="config-widget-item" (click)="toggleWidget(widget.id)">
+            <div class="flex items-center gap-3">
+              <div class="config-widget-icon">
+                <i [class]="widget.icon"></i>
+              </div>
+              <div>
+                <div class="text-sm font-semibold">{{ widget.name }}</div>
+                <div class="text-xs text-placeholder">{{ widget.description }}</div>
+              </div>
+            </div>
+            <div class="config-widget-toggle" [class.active]="isWidgetActive(widget.id)">
+              <div class="config-widget-toggle-dot"></div>
+            </div>
+          </div>
+        }
+      }
+    </div>
+
+    <div class="border-t border-default pt-4">
+      <button
+        pButton
+        label="Restaurar por defecto"
+        icon="pi pi-refresh"
+        class="p-button-outlined p-button-sm w-full"
+        (click)="resetLayout(); configPanelVisible.set(false)">
+      </button>
+    </div>
+  </div>
+</p-drawer>

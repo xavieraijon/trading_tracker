@@ -1,61 +1,52 @@
-.stats-card {
-    background: var(--glass-bg);
-    backdrop-filter: var(--glass-blur);
-    -webkit-backdrop-filter: var(--glass-blur);
-    border: 1px solid var(--glass-border);
-    border-radius: 20px;
-    box-shadow: var(--shadow-sm);
-    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-    height: 160px;
+// ── Gridster grid ─────────────────────────────────────
+:host {
+  display: block;
+}
 
-    &:hover {
-        transform: translateY(-6px) scale(1.02);
-        background: var(--bg-card);
-        box-shadow: var(--shadow-md);
+.dashboard-grid {
+  min-height: calc(100vh - 200px);
+  background: transparent !important;
+}
+
+// Override gridster defaults for a clean look
+::ng-deep {
+  gridster {
+    background: transparent !important;
+
+    .gridster-preview {
+      background: var(--primary-color) !important;
+      opacity: 0.08 !important;
+      border-radius: 16px !important;
     }
+
+    .gridster-column,
+    .gridster-row {
+      border-color: var(--glass-border) !important;
+      opacity: 0.3;
+    }
+  }
+
+  gridster-item {
+    border-radius: 16px;
+    overflow: visible;
+    transition: box-shadow 0.2s ease;
+
+    &.gridster-item-moving {
+      z-index: 100 !important;
+      box-shadow: var(--shadow-lg) !important;
+      opacity: 0.9;
+    }
+
+    &.gridster-item-resizing {
+      z-index: 100 !important;
+      box-shadow: var(--shadow-lg) !important;
+    }
+  }
 }
 
-.border-left-pnl {
-    border-left: 4px solid var(--primary-color);
-}
-
-.border-left-danger {
-    border-left: 4px solid var(--error);
-}
-
-.chart-area {
-    min-height: 600px;
-    height: 600px;
-    margin-top: 2rem;
-    position: relative;
-    width: 100%;
-}
-
-.chart-area-sm {
-    min-height: 320px;
-    height: 320px;
-    margin-top: 1rem;
-    position: relative;
-    width: 100%;
-}
-
-.chart-donut-container {
-    min-height: 220px;
-    height: 260px;
-    margin-top: 0.5rem;
-    position: relative;
-    width: 100%;
-}
-
-.chart-horizontal-bar-container {
-    min-height: 220px;
-    height: 280px;
-    margin-top: 0.5rem;
-    position: relative;
-    width: 100%;
-}
-
-.kpi-icon-container {
+// ── KPI specific styles (inherited from widget content) ──
+::ng-deep {
+  .kpi-icon-container {
     width: 32px;
     height: 32px;
     border-radius: 10px;
@@ -66,20 +57,20 @@
     box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.15);
 
     i {
-        color: white;
-        filter: drop-shadow(0 2px 2px rgba(0,0,0,0.1));
+      color: white;
+      filter: drop-shadow(0 2px 2px rgba(0, 0, 0, 0.1));
     }
 
     &.bg-emerald-50 { background: #10b981; }
-    &.bg-blue-50   { background: #3b82f6; }
-    &.bg-orange-50 { background: #f59e0b; }
-    &.bg-rose-50   { background: #ef4444; }
-    &.bg-slate-50  { background: #64748b; }
-    &.bg-violet-50 { background: #8b5cf6; }
-    &.bg-cyan-50   { background: #06b6d4; }
-}
+    &.bg-blue-50    { background: #3b82f6; }
+    &.bg-orange-50  { background: #f59e0b; }
+    &.bg-rose-50    { background: #ef4444; }
+    &.bg-slate-50   { background: #64748b; }
+    &.bg-violet-50  { background: #8b5cf6; }
+    &.bg-cyan-50    { background: #06b6d4; }
+  }
 
-.sparkline-container {
+  .sparkline-container {
     position: absolute;
     bottom: 0;
     left: 0;
@@ -88,43 +79,187 @@
     opacity: 0.8;
     z-index: 1;
     overflow: hidden;
-    border-bottom-left-radius: 20px;
-    border-bottom-right-radius: 20px;
-}
+    border-bottom-left-radius: 16px;
+    border-bottom-right-radius: 16px;
+  }
 
-.text-success { color: var(--success); }
-.text-danger  { color: var(--error); }
+  .text-success { color: var(--success); }
+  .text-danger  { color: var(--error); }
 
-.font-black       { font-weight: 900; }
-.tracking-widest  { letter-spacing: 0.1em; }
-.tracking-tighter { letter-spacing: -0.05em; }
+  .font-black       { font-weight: 900; }
+  .tracking-widest  { letter-spacing: 0.1em; }
+  .tracking-tighter { letter-spacing: -0.05em; }
 
-/* Help icons refinement */
-.pi-question-circle {
+  .pnl-positive { color: var(--success); }
+  .pnl-negative { color: var(--error); }
+
+  /* Help icons refinement */
+  .pi-question-circle {
     opacity: 0.25;
     color: var(--text-placeholder);
     transition: all 0.2s ease;
     cursor: help;
 
     &:hover {
-        opacity: 0.8;
-        color: var(--text-muted);
-        transform: scale(1.1);
+      opacity: 0.8;
+      color: var(--text-muted);
+      transform: scale(1.1);
     }
+  }
 }
 
-/* Animations */
+// ── Config panel styles ──────────────────────────────
+.config-panel {
+  padding: 16px;
+}
+
+.config-widget-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 12px;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  margin-bottom: 4px;
+
+  &:hover {
+    background: var(--bg-card);
+  }
+}
+
+.config-widget-icon {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  background: var(--bg-card);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  color: var(--text-muted);
+  flex-shrink: 0;
+}
+
+.config-widget-toggle {
+  width: 40px;
+  height: 22px;
+  border-radius: 11px;
+  background: var(--glass-border);
+  position: relative;
+  transition: all 0.25s ease;
+  flex-shrink: 0;
+
+  &.active {
+    background: var(--primary-color);
+  }
+}
+
+.config-widget-toggle-dot {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: white;
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  transition: transform 0.25s ease;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+
+  .config-widget-toggle.active & {
+    transform: translateX(18px);
+  }
+}
+
+// ── Resize handle styling ─────────────────────────────
+::ng-deep {
+  .gridster-item-resizable-handler {
+    &.handle-se {
+      width: 16px !important;
+      height: 16px !important;
+      border-right: 3px solid var(--text-disabled) !important;
+      border-bottom: 3px solid var(--text-disabled) !important;
+      border-radius: 0 0 4px 0 !important;
+      opacity: 0;
+      transition: opacity 0.2s ease;
+      right: 4px !important;
+      bottom: 4px !important;
+    }
+
+    &.handle-e {
+      width: 6px !important;
+      right: 0 !important;
+      cursor: ew-resize;
+      opacity: 0;
+      transition: opacity 0.2s ease;
+
+      &::after {
+        content: '';
+        position: absolute;
+        top: 50%;
+        right: 2px;
+        transform: translateY(-50%);
+        width: 3px;
+        height: 24px;
+        border-radius: 2px;
+        background: var(--text-disabled);
+      }
+    }
+
+    &.handle-s {
+      height: 6px !important;
+      bottom: 0 !important;
+      cursor: ns-resize;
+      opacity: 0;
+      transition: opacity 0.2s ease;
+
+      &::after {
+        content: '';
+        position: absolute;
+        bottom: 2px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 24px;
+        height: 3px;
+        border-radius: 2px;
+        background: var(--text-disabled);
+      }
+    }
+  }
+
+  gridster-item:hover .gridster-item-resizable-handler {
+    opacity: 0.6;
+
+    &:hover {
+      opacity: 1;
+    }
+  }
+}
+
+// ── Animations ────────────────────────────────────────
 @keyframes fadeInSlideUp {
-    from {
-        opacity: 0;
-        transform: translateY(10px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
-.kpi-card {
-    animation: fadeInSlideUp 0.5s ease-out forwards;
+// ── Responsive ────────────────────────────────────────
+@media (max-width: 768px) {
+  ::ng-deep {
+    gridster {
+      .gridster-column,
+      .gridster-row {
+        display: none !important;
+      }
+    }
+  }
+
+  .config-panel {
+    padding: 8px;
+  }
 }
