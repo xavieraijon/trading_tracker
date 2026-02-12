@@ -1,4 +1,4 @@
-import { Component, inject, OnInit, signal, computed } from '@angular/core';
+import { Component, inject, OnInit, signal, computed, effect } from '@angular/core';
 import { Router, NavigationEnd, RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { filter, map, startWith } from 'rxjs';
@@ -38,6 +38,16 @@ export class App implements OnInit {
   accountsService = inject(AccountsService);
   filterStore = inject(FilterStore);
   private router = inject(Router);
+
+  constructor() {
+    // Cargar cuentas cuando el usuario esté autenticado (login o refresh con token).
+    // Sin esto, al hacer login ngOnInit ya se ejecutó sin auth y load() nunca se llama.
+    effect(() => {
+      if (this.authService.isAuthenticated()) {
+        this.accountsService.load();
+      }
+    });
+  }
 
   // Detect if current route is an auth page
   isAuthPage = toSignal(
@@ -96,10 +106,6 @@ export class App implements OnInit {
   ngOnInit() {
     // Sync with global filter state
     this.selectedAccountValue.set(this.filterStore.selectedAccountId());
-
-    if (this.authService.isAuthenticated()) {
-      this.accountsService.load();
-    }
   }
 
   onAccountChange() {

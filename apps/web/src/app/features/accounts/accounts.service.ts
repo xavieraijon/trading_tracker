@@ -40,6 +40,8 @@ export class AccountsService {
   private apiUrl = '/api/accounts';
 
   accounts = signal<Account[]>([]);
+  /** true mientras la petición de cuentas está en curso (login o refresh). */
+  accountsLoading = signal<boolean>(false);
   private filterStore = inject(FilterStore);
 
   filteredAccounts = computed(() => {
@@ -69,8 +71,13 @@ export class AccountsService {
   constructor() {}
 
   load() {
-    this.findAll().subscribe(data => {
-      this.accounts.set(data);
+    this.accountsLoading.set(true);
+    this.findAll().subscribe({
+      next: (data) => {
+        this.accounts.set(data);
+        this.accountsLoading.set(false);
+      },
+      error: () => this.accountsLoading.set(false)
     });
   }
 

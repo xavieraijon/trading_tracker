@@ -2,7 +2,16 @@
   title="Panel de Rendimiento"
   subtitle="Análisis de resultados y métricas de BullishBanana">
 
-  @if (stats()) {
+  @if (accountsService.accountsLoading()) {
+    <div class="flex flex-col items-center justify-center py-24 gap-4">
+      <p-progressSpinner
+        styleClass="w-14 h-14"
+        strokeWidth="3"
+        ariaLabel="Cargando datos">
+      </p-progressSpinner>
+      <p class="text-placeholder font-medium">Cargando cuentas y estadísticas…</p>
+    </div>
+  } @else if (stats()) {
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-6 mb-10">
       <!-- Beneficio Neto -->
       <p-card class="kpi-card stats-card border-left-pnl relative overflow-hidden">

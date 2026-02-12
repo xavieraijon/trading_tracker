@@ -6,6 +6,7 @@ import { CardModule } from 'primeng/card';
 import { ChartModule } from 'primeng/chart';
 import { TooltipModule } from 'primeng/tooltip';
 import { SelectButtonModule } from 'primeng/selectbutton';
+import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { TradesService } from '../trades/trades.service';
 import { AccountsService } from '../accounts/accounts.service';
 import { FilterStore } from '../../core/filter.store';
@@ -13,7 +14,7 @@ import { FilterStore } from '../../core/filter.store';
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [CommonModule, CardModule, ChartModule, TooltipModule, SelectButtonModule, FormsModule, PageLayoutComponent],
+  imports: [CommonModule, CardModule, ChartModule, TooltipModule, SelectButtonModule, FormsModule, PageLayoutComponent, ProgressSpinnerModule],
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.scss'
 })
@@ -21,7 +22,7 @@ export class DashboardComponent {
   stats = signal<any>(null);
   chartData = signal<any>(null);
   selectedTimeframe = signal<'all' | 'day' | 'week' | 'month' | 'year'>('all');
-  private accountsService = inject(AccountsService);
+  accountsService = inject(AccountsService);
 
   timeframeOptions = [
     { label: 'Todos', value: 'all', icon: 'pi pi-list' },
