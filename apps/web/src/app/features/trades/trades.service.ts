@@ -6,11 +6,28 @@ export interface TradeStats {
   totalTrades: number;
   winRate: number;
   profitFactor: number;
+  totalPnL: number;
+  avgWin: number;
   avgLoss: number;
   expectancy: number;
   avgRR: number;
   maxDrawdown: number;
-  equityCurve: { date: string, equity: number }[];
+  equityCurve: EquityCurvePoint[];
+  largestWin: number;
+  largestLoss: number;
+  bestWinStreak: number;
+  bestLossStreak: number;
+  totalWins: number;
+  totalLosses: number;
+}
+
+export interface EquityCurvePoint {
+  date: string;
+  equity: number;
+  pnl?: number;
+  instrument?: string;
+  accountName?: string;
+  side?: string;
 }
 
 export interface Trade {

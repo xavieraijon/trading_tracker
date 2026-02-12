@@ -183,8 +183,15 @@ export class TradesService {
         avgWin: 0,
         avgLoss: 0,
         expectancy: 0,
+        avgRR: 0,
         maxDrawdown: 0,
-        equityCurve: []
+        equityCurve: [],
+        largestWin: 0,
+        largestLoss: 0,
+        bestWinStreak: 0,
+        bestLossStreak: 0,
+        totalWins: 0,
+        totalLosses: 0
       };
     }
 
@@ -250,6 +257,30 @@ export class TradesService {
         ? tradesWithCalculatedR.reduce((acc, r) => acc + r, 0) / tradesWithCalculatedR.length
         : 0;
 
+    const largestWin = winningTrades.length > 0
+        ? Math.max(...winningTrades.map((t: any) => Number(t.pnlNet)))
+        : 0;
+    const largestLoss = losingTrades.length > 0
+        ? Math.min(...losingTrades.map((t: any) => Number(t.pnlNet)))
+        : 0;
+
+    let bestWinStreak = 0;
+    let bestLossStreak = 0;
+    let currentWinStreak = 0;
+    let currentLossStreak = 0;
+    for (const t of trades) {
+      const pnl = Number(t.pnlNet);
+      if (pnl > 0) {
+        currentWinStreak += 1;
+        currentLossStreak = 0;
+        if (currentWinStreak > bestWinStreak) bestWinStreak = currentWinStreak;
+      } else {
+        currentLossStreak += 1;
+        currentWinStreak = 0;
+        if (currentLossStreak > bestLossStreak) bestLossStreak = currentLossStreak;
+      }
+    }
+
     return {
       totalTrades: trades.length,
       winRate,
@@ -260,7 +291,13 @@ export class TradesService {
       expectancy,
       avgRR,
       maxDrawdown,
-      equityCurve
+      equityCurve,
+      largestWin,
+      largestLoss,
+      bestWinStreak,
+      bestLossStreak,
+      totalWins: winningTrades.length,
+      totalLosses: losingTrades.length
     };
   }
 
