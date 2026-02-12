@@ -3,43 +3,41 @@
   display: block;
 }
 
-.dashboard-grid {
-  min-height: calc(100vh - 200px);
-  background: transparent !important;
-}
-
-// Override gridster defaults for a clean look
+// Override gridster defaults for a clean, integrated look
 ::ng-deep {
   gridster {
     background: transparent !important;
+    // Remove gridster's own scroll — the page itself scrolls
+    overflow: visible !important;
 
     .gridster-preview {
       background: var(--primary-color) !important;
-      opacity: 0.08 !important;
+      opacity: 0.1 !important;
       border-radius: 16px !important;
     }
 
     .gridster-column,
     .gridster-row {
       border-color: var(--glass-border) !important;
-      opacity: 0.3;
+      opacity: 0.2;
     }
   }
 
   gridster-item {
     border-radius: 16px;
-    overflow: visible;
-    transition: box-shadow 0.2s ease;
+    overflow: hidden !important; // Clip content to rounded corners
+    transition: box-shadow 0.3s ease, opacity 0.3s ease;
 
     &.gridster-item-moving {
       z-index: 100 !important;
-      box-shadow: var(--shadow-lg) !important;
-      opacity: 0.9;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3) !important;
+      opacity: 0.85;
+      border-radius: 16px;
     }
 
     &.gridster-item-resizing {
       z-index: 100 !important;
-      box-shadow: var(--shadow-lg) !important;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2) !important;
     }
   }
 }
@@ -55,6 +53,7 @@
     justify-content: center;
     font-size: 0.9rem;
     box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.15);
+    flex-shrink: 0;
 
     i {
       color: white;
@@ -79,8 +78,6 @@
     opacity: 0.8;
     z-index: 1;
     overflow: hidden;
-    border-bottom-left-radius: 16px;
-    border-bottom-right-radius: 16px;
   }
 
   .text-success { color: var(--success); }
@@ -171,7 +168,7 @@
   }
 }
 
-// ── Resize handle styling ─────────────────────────────
+// ── Resize handles ───────────────────────────────────
 ::ng-deep {
   .gridster-item-resizable-handler {
     &.handle-se {
@@ -233,18 +230,6 @@
     &:hover {
       opacity: 1;
     }
-  }
-}
-
-// ── Animations ────────────────────────────────────────
-@keyframes fadeInSlideUp {
-  from {
-    opacity: 0;
-    transform: translateY(10px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
   }
 }
 

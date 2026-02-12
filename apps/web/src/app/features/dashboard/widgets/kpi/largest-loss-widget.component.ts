@@ -1,30 +1,37 @@
 import { Component, input } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { CardModule } from 'primeng/card';
 import { TooltipModule } from 'primeng/tooltip';
 
 @Component({
   selector: 'app-largest-loss-widget',
   standalone: true,
-  imports: [CommonModule, CardModule, TooltipModule],
+  imports: [CommonModule, TooltipModule],
   template: `
     @if (stats(); as s) {
-      <div class="flex flex-col h-full justify-between gap-1">
-        <div class="flex items-center justify-between">
-          <div class="flex items-center gap-3">
-            <span class="text-[10px] font-bold text-placeholder uppercase tracking-widest">Mayor pérdida</span>
+      <div class="kpi-layout">
+        <div class="kpi-header">
+          <div class="flex items-center gap-2">
+            <span class="kpi-label">Mayor pérdida</span>
             <i class="pi pi-question-circle text-[10px] cursor-help" pTooltip="La operación perdedora con mayor pérdida." tooltipPosition="top"></i>
           </div>
-          <div class="kpi-icon-container bg-rose-50 text-rose-500">
+          <div class="kpi-icon-container bg-rose-50">
             <i class="pi pi-arrow-down"></i>
           </div>
         </div>
-        <div class="text-2xl font-black font-mono tracking-tighter text-danger">
+        <div class="kpi-value text-danger">
           {{ (s.largestLoss ?? 0) | currency: 'USD' : 'symbol' : '1.0-0' }}
         </div>
+        <div class="kpi-footer">Worst single trade</div>
       </div>
     }
   `,
+  styles: [`
+    .kpi-layout { display: flex; flex-direction: column; height: 100%; position: relative; }
+    .kpi-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 4px; }
+    .kpi-label { font-size: 10px; font-weight: 700; color: var(--text-placeholder); text-transform: uppercase; letter-spacing: 0.1em; }
+    .kpi-value { font-size: 1.5rem; font-weight: 900; font-family: 'Outfit', monospace; letter-spacing: -0.05em; flex: 1; display: flex; align-items: center; }
+    .kpi-footer { font-size: 10px; color: var(--text-placeholder); min-height: 16px; }
+  `],
 })
 export class LargestLossWidgetComponent {
   stats = input.required<any>();

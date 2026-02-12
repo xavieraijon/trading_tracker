@@ -38,9 +38,9 @@ export class DashboardComponent implements OnInit {
   allWidgets = WIDGET_DEFINITIONS;
 
   gridsterOptions: GridsterConfig = {
-    gridType: 'scrollVertical',
+    gridType: 'verticalFixed',
     compactType: 'compactUp&Left',
-    margin: 12,
+    margin: 10,
     outerMargin: true,
     outerMarginTop: 0,
     outerMarginRight: 0,
@@ -52,12 +52,14 @@ export class DashboardComponent implements OnInit {
     maxRows: 200,
     defaultItemCols: 2,
     defaultItemRows: 2,
-    fixedColWidth: 0,
     fixedRowHeight: 80,
     pushItems: true,
-    swap: true,
+    pushResizeItems: true,
+    swap: false,
+    disablePushOnResize: false,
     pushDirections: { north: true, east: true, south: true, west: true },
     displayGrid: 'onDrag&Resize',
+    disableScrollHorizontal: true,
     draggable: {
       enabled: true,
       dragHandleClass: 'widget-host__titlebar',
@@ -67,12 +69,12 @@ export class DashboardComponent implements OnInit {
       enabled: true,
       handles: { s: true, e: true, se: true },
     },
-    itemChangeCallback: (item: GridsterItemConfig) => {
+    itemChangeCallback: (_item: GridsterItemConfig) => {
       this.onGridChange();
     },
-    itemResizeCallback: (item: GridsterItemConfig) => {
+    itemResizeCallback: (_item: GridsterItemConfig) => {
       // Force chart redraw on resize
-      window.dispatchEvent(new Event('resize'));
+      setTimeout(() => window.dispatchEvent(new Event('resize')), 100);
     },
   };
 
