@@ -1,5 +1,12 @@
 /* Main Layout Utilities & Global Overrides */
 
+/* Topbar: glass-effect with bottom border only for sticky header */
+.layout-topbar.glass-effect {
+    border-left: none;
+    border-right: none;
+    border-top: none;
+}
+
 .layout-main-container {
     /* Ensure the content-wrapper max-width logic is applied to the main container but without resetting margins */
     max-width: 100%;
