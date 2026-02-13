@@ -1,4 +1,4 @@
-import { Injectable, inject, signal, effect } from '@angular/core';
+import { Injectable, inject, signal, effect, computed } from '@angular/core';
 import { TradesService } from '../../trades/trades.service';
 import { AccountsService } from '../../accounts/accounts.service';
 import { FilterStore } from '../../../core/filter.store';
@@ -11,8 +11,20 @@ export class DashboardDataService {
 
   // ── Core state ──────────────────────────────────────────
   stats = signal<any>(null);
+  /** Global dashboard date range filter (manual picker). When set, all widgets use data within this range. */
+  dashboardDateRange = signal<Date[] | null>(null);
   selectedTimeframe = signal<'all' | 'day' | 'week' | 'month' | 'year'>('all');
   loading = signal(false);
+
+  /** Stats derived from current stats filtered by dashboardDateRange. KPIs and charts use this. */
+  filteredStats = computed(() => {
+    const s = this.stats();
+    if (!s?.equityCurve?.length) return s;
+    const range = this.dashboardDateRange();
+    const curve = !range || range.length < 2 ? s.equityCurve : this.getFilteredCurve(s.equityCurve, range);
+    if (curve === s.equityCurve) return s;
+    return this.buildStatsFromCurve(curve);
+  });
 
   // ── Chart data signals ──────────────────────────────────
   chartData = signal<any>(null);
@@ -53,11 +65,11 @@ export class DashboardDataService {
         titleFont: { size: 14, weight: 'bold', family: 'Outfit' },
         bodyFont: { size: 13, family: 'Outfit' },
         displayColors: false,
-        callbacks: {
+          callbacks: {
           title: (items: any) => {
             const timeframe = this.selectedTimeframe();
             const index = items[0].dataIndex;
-            const stats = this.stats();
+            const stats = this.filteredStats();
             if (timeframe === 'all') {
               const trade = stats.equityCurve[index];
               return `${trade.side === 'LONG' ? '🟩 LONG' : '🟥 SHORT'} - ${trade.instrument}`;
@@ -67,7 +79,7 @@ export class DashboardDataService {
           label: (item: any) => {
             const timeframe = this.selectedTimeframe();
             const index = item.dataIndex;
-            const stats = this.stats();
+            const stats = this.filteredStats();
             let dataPoint;
             if (timeframe === 'all') {
               dataPoint = stats.equityCurve[index];
@@ -308,9 +320,18 @@ export class DashboardDataService {
     effect(() => {
       this.loadStats();
     });
+    effect(() => {
+      this.dashboardDateRange();
+      this.selectedTimeframe();
+      if (this.stats()) this.prepareAllChartData();
+    });
   }
 
   // ── Public API ──────────────────────────────────────────
+
+  onDateRangeChange(range: Date[] | null): void {
+    this.dashboardDateRange.set(range ?? null);
+  }
 
   loadStats(): void {
     const accountId = this.filterStore.selectedAccountId();
@@ -329,7 +350,7 @@ export class DashboardDataService {
           return;
         }
         this.stats.set(data);
-        this.prepareAllChartData(data);
+        this.prepareAllChartData();
         this.loading.set(false);
       },
       error: () => {
@@ -362,23 +383,24 @@ export class DashboardDataService {
     this.loading.set(false);
   }
 
-  private prepareAllChartData(data: any): void {
+  private prepareAllChartData(): void {
+    const curve = this.filteredStats()?.equityCurve ?? [];
     this.prepareChartData();
     this.prepareDrawdownChartData();
     this.preparePnLBarChartData();
-    this.prepareLongShortDonut(data.equityCurve);
-    this.prepareWinsLossesDonut(data.equityCurve);
-    this.prepareGrossPnLDonut(data.equityCurve);
-    this.preparePnlByInstrumentBar(data.equityCurve);
-    this.prepareTradesByPeriodBar(data.equityCurve);
-    this.prepareSparklines(data.equityCurve);
+    this.prepareLongShortDonut(curve);
+    this.prepareWinsLossesDonut(curve);
+    this.prepareGrossPnLDonut(curve);
+    this.preparePnlByInstrumentBar(curve);
+    this.prepareTradesByPeriodBar(curve);
+    this.prepareSparklines(curve);
   }
 
   private prepareTimeframeDependentCharts(): void {
     this.prepareChartData();
     this.prepareDrawdownChartData();
     this.preparePnLBarChartData();
-    this.prepareTradesByPeriodBar(this.stats()?.equityCurve ?? []);
+    this.prepareTradesByPeriodBar(this.filteredStats()?.equityCurve ?? []);
   }
 
   prepareSparklines(curve: any[]): void {
@@ -419,7 +441,7 @@ export class DashboardDataService {
   }
 
   prepareChartData(): void {
-    const stats = this.stats();
+    const stats = this.filteredStats();
     if (!stats || !stats.equityCurve || stats.equityCurve.length === 0) return;
     let dataPoints = stats.equityCurve;
     const timeframe = this.selectedTimeframe();
@@ -464,7 +486,7 @@ export class DashboardDataService {
   }
 
   prepareDrawdownChartData(): void {
-    const stats = this.stats();
+    const stats = this.filteredStats();
     if (!stats?.equityCurve?.length) {
       this.drawdownChartData.set(null);
       return;
@@ -506,7 +528,7 @@ export class DashboardDataService {
   }
 
   preparePnLBarChartData(): void {
-    const stats = this.stats();
+    const stats = this.filteredStats();
     if (!stats?.equityCurve?.length) {
       this.pnlBarChartData.set(null);
       return;
@@ -677,5 +699,97 @@ export class DashboardDataService {
     date.setUTCDate(date.getUTCDate() + 4 - (date.getUTCDay() || 7));
     const yearStart = new Date(Date.UTC(date.getUTCFullYear(), 0, 1));
     return Math.ceil(((date.getTime() - yearStart.getTime()) / 86400000 + 1) / 7);
+  }
+
+  private getFilteredCurve(curve: any[], range: Date[]): any[] {
+    if (!curve?.length || range.length < 2) return curve;
+    const start = new Date(range[0]);
+    const end = new Date(range[1]);
+    start.setHours(0, 0, 0, 0);
+    end.setHours(23, 59, 59, 999);
+    return curve.filter((p: any) => {
+      const d = new Date(p.date).getTime();
+      return d >= start.getTime() && d <= end.getTime();
+    });
+  }
+
+  private buildStatsFromCurve(curve: any[]): any {
+    if (!curve?.length) {
+      return {
+        totalTrades: 0,
+        winRate: 0,
+        profitFactor: 0,
+        totalPnL: 0,
+        avgWin: 0,
+        avgLoss: 0,
+        expectancy: 0,
+        avgRR: 0,
+        maxDrawdown: 0,
+        equityCurve: [],
+        largestWin: 0,
+        largestLoss: 0,
+        bestWinStreak: 0,
+        bestLossStreak: 0,
+        totalWins: 0,
+        totalLosses: 0,
+      };
+    }
+    const totalTrades = curve.length;
+    const pnls = curve.map((p: any) => Number(p.pnl ?? 0));
+    const totalWins = pnls.filter(p => p > 0).length;
+    const totalLosses = pnls.filter(p => p <= 0).length;
+    const grossProfit = pnls.filter(p => p > 0).reduce((a, b) => a + b, 0);
+    const grossLoss = Math.abs(pnls.filter(p => p < 0).reduce((a, b) => a + b, 0));
+    const totalPnL = pnls.reduce((a, b) => a + b, 0);
+    const winRate = totalTrades > 0 ? (totalWins / totalTrades) * 100 : 0;
+    const profitFactor = grossLoss === 0 ? grossProfit : grossProfit / grossLoss;
+    const avgWin = totalWins > 0 ? grossProfit / totalWins : 0;
+    const avgLoss = totalLosses > 0 ? grossLoss / totalLosses : 0;
+    const probWin = totalWins / totalTrades;
+    const probLoss = totalLosses / totalTrades;
+    const expectancy = probWin * avgWin - probLoss * avgLoss;
+    let peak = 0;
+    let maxDrawdown = 0;
+    curve.forEach((p: any) => {
+      const eq = Number(p.equity);
+      if (eq > peak) peak = eq;
+      const dd = peak - eq;
+      if (dd > maxDrawdown) maxDrawdown = dd;
+    });
+    const largestWin = pnls.length > 0 ? Math.max(...pnls.filter(p => p > 0), 0) : 0;
+    const largestLoss = pnls.length > 0 ? Math.min(...pnls.filter(p => p < 0), 0) : 0;
+    let bestWinStreak = 0;
+    let bestLossStreak = 0;
+    let winStreak = 0;
+    let lossStreak = 0;
+    pnls.forEach(p => {
+      if (p > 0) {
+        winStreak++;
+        lossStreak = 0;
+        if (winStreak > bestWinStreak) bestWinStreak = winStreak;
+      } else {
+        lossStreak++;
+        winStreak = 0;
+        if (lossStreak > bestLossStreak) bestLossStreak = lossStreak;
+      }
+    });
+    return {
+      totalTrades,
+      winRate,
+      profitFactor,
+      totalPnL,
+      avgWin,
+      avgLoss,
+      expectancy,
+      avgRR: 0,
+      maxDrawdown,
+      equityCurve: curve,
+      largestWin,
+      largestLoss,
+      bestWinStreak,
+      bestLossStreak,
+      totalWins,
+      totalLosses,
+    };
   }
 }

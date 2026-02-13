@@ -24,34 +24,34 @@
     <div class="widget-host__content" [class.widget-host__content--kpi]="isKpi()">
       @switch (widgetId()) {
         @case ('netProfit') {
-          <app-net-profit-widget [stats]="dataService.stats()" />
+          <app-net-profit-widget [stats]="dataService.filteredStats()" />
         }
         @case ('winRate') {
-          <app-win-rate-widget [stats]="dataService.stats()" />
+          <app-win-rate-widget [stats]="dataService.filteredStats()" />
         }
         @case ('profitFactor') {
-          <app-profit-factor-widget [stats]="dataService.stats()" />
+          <app-profit-factor-widget [stats]="dataService.filteredStats()" />
         }
         @case ('avgWinLoss') {
-          <app-avg-win-loss-widget [stats]="dataService.stats()" />
+          <app-avg-win-loss-widget [stats]="dataService.filteredStats()" />
         }
         @case ('maxDrawdown') {
-          <app-max-drawdown-widget [stats]="dataService.stats()" />
+          <app-max-drawdown-widget [stats]="dataService.filteredStats()" />
         }
         @case ('totalTrades') {
-          <app-total-trades-widget [stats]="dataService.stats()" />
+          <app-total-trades-widget [stats]="dataService.filteredStats()" />
         }
         @case ('expectancy') {
-          <app-expectancy-widget [stats]="dataService.stats()" />
+          <app-expectancy-widget [stats]="dataService.filteredStats()" />
         }
         @case ('largestWin') {
-          <app-largest-win-widget [stats]="dataService.stats()" />
+          <app-largest-win-widget [stats]="dataService.filteredStats()" />
         }
         @case ('largestLoss') {
-          <app-largest-loss-widget [stats]="dataService.stats()" />
+          <app-largest-loss-widget [stats]="dataService.filteredStats()" />
         }
         @case ('streaks') {
-          <app-streaks-widget [stats]="dataService.stats()" />
+          <app-streaks-widget [stats]="dataService.filteredStats()" />
         }
         @case ('equityCurve') {
           <app-equity-curve-widget />

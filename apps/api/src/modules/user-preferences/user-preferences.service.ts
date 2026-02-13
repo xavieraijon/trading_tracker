@@ -21,4 +21,21 @@ export class UserPreferencesService {
     });
     return { success: true };
   }
+
+  async getTheme(userId: string) {
+    const pref = await this.prisma.userPreference.findUnique({
+      where: { userId },
+      select: { theme: true },
+    });
+    return { theme: pref?.theme ?? null };
+  }
+
+  async saveTheme(userId: string, theme: string) {
+    await this.prisma.userPreference.upsert({
+      where: { userId },
+      create: { userId, theme },
+      update: { theme },
+    });
+    return { success: true };
+  }
 }

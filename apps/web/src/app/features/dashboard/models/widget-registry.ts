@@ -293,31 +293,22 @@ export function hydrateWidgetConstraints(widget: DashboardWidgetItem): Dashboard
   };
 }
 
+/** Default dashboard layout (used for new users and "Restaurar por defecto") */
+const DEFAULT_LAYOUT: DashboardLayout = {
+  version: 1,
+  widgets: [
+    { id: 'equityCurve', x: 2, y: 4, w: 6, h: 4, minW: 6, minH: 3, maxH: 8 },
+    { id: 'drawdown', x: 0, y: 10, w: 12, h: 4, minW: 6, minH: 3, maxH: 7 },
+    { id: 'grossPnlDonut', x: 0, y: 0, w: 4, h: 4, minW: 3, minH: 3, maxW: 6, maxH: 6 },
+    { id: 'winsLossesDonut', x: 8, y: 4, w: 4, h: 4, minW: 3, minH: 3, maxW: 6, maxH: 6 },
+    { id: 'pnlByInstrument', x: 4, y: 0, w: 6, h: 4, minW: 6, minH: 3, maxH: 7 },
+    { id: 'netProfit', x: 10, y: 0, w: 2, h: 2, minW: 2, minH: 2, maxW: 4, maxH: 3 },
+    { id: 'winRate', x: 10, y: 2, w: 2, h: 2, minW: 2, minH: 2, maxW: 4, maxH: 3 },
+    { id: 'profitFactor', x: 0, y: 4, w: 2, h: 2, minW: 2, minH: 2, maxW: 4, maxH: 3 },
+    { id: 'maxDrawdown', x: 0, y: 6, w: 2, h: 2, minW: 2, minH: 2, maxW: 4, maxH: 3 },
+  ],
+};
+
 export function getDefaultLayout(): DashboardLayout {
-  let y = 0;
-
-  const kpis = WIDGET_DEFINITIONS.filter(w => w.category === 'kpi');
-  const charts = WIDGET_DEFINITIONS.filter(w => w.category === 'chart');
-
-  const widgets: DashboardWidgetItem[] = [];
-
-  // KPI Row 1: 5 KPIs x 2 cols each
-  for (let i = 0; i < 5; i++) {
-    widgets.push(createWidgetItem(kpis[i], i * 2, y));
-  }
-  y += 2;
-
-  // KPI Row 2: 5 KPIs x 2 cols each
-  for (let i = 5; i < 10; i++) {
-    widgets.push(createWidgetItem(kpis[i], (i - 5) * 2, y));
-  }
-  y += 2;
-
-  // Charts stacked
-  for (const chart of charts) {
-    widgets.push(createWidgetItem(chart, 0, y));
-    y += chart.defaultH;
-  }
-
-  return { version: 1, widgets };
+  return JSON.parse(JSON.stringify(DEFAULT_LAYOUT));
 }

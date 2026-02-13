@@ -16,4 +16,14 @@ export class UserPreferencesController {
   saveDashboardLayout(@Request() req, @Body() body: { dashboard: any }) {
     return this.preferencesService.saveDashboardLayout(req.user.userId, body.dashboard);
   }
+
+  @Get('theme')
+  getTheme(@Request() req) {
+    return this.preferencesService.getTheme(req.user.userId);
+  }
+
+  @Put('theme')
+  saveTheme(@Request() req, @Body() body: { theme: string }) {
+    return this.preferencesService.saveTheme(req.user.userId, body.theme);
+  }
 }

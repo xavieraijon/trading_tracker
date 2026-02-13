@@ -69,6 +69,7 @@
                                         <div class="flex items-center gap-2">
                                             <i class="pi pi-wallet text-muted"></i>
                                             <span>{{ selectedOption.name }}</span>
+                                            <p-tag [value]="getAccountTypeBadgeLabel(selectedOption)" [severity]="getAccountTypeBadgeSeverity(selectedOption)" class="text-xs"></p-tag>
                                         </div>
                                     }
                                     @if (!selectedOption) {
@@ -79,9 +80,10 @@
                                     }
                                 </ng-template>
                                 <ng-template let-account pTemplate="item">
-                                    <div class="flex items-center gap-2">
+                                    <div class="flex items-center gap-2 flex-wrap">
                                         <i class="pi pi-wallet text-sm text-muted"></i>
                                         <span>{{ account.name }}</span>
+                                        <p-tag [value]="getAccountTypeBadgeLabel(account)" [severity]="getAccountTypeBadgeSeverity(account)" class="text-xs"></p-tag>
                                         <span class="text-xs text-muted ml-auto bg-surface-muted px-2 py-0.5 rounded">{{ account.currency }}</span>
                                     </div>
                                 </ng-template>

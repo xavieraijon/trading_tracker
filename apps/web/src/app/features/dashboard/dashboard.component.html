@@ -1,6 +1,6 @@
 <app-page-layout
-  title="Panel de Rendimiento"
-  subtitle="Análisis de resultados y métricas de BullishBanana">
+  title="Dashboard"
+  subtitle="">
 
   <ng-container actions>
     <button
@@ -31,17 +31,55 @@
       <p class="text-placeholder font-medium">Cargando cuentas y estadísticas…</p>
     </div>
   } @else if (dataService.stats()) {
+    <!-- Filtro global: rango de fechas manual + selector de agregación -->
+    <div class="dashboard-filters">
+      <div class="dashboard-filters__group">
+        <label for="dashboardDateRange" class="dashboard-filters__label">Rango de fechas</label>
+        <p-datepicker
+          id="dashboardDateRange"
+          [ngModel]="dataService.dashboardDateRange()"
+          (ngModelChange)="dataService.onDateRangeChange($event)"
+          selectionMode="range"
+          [readonlyInput]="true"
+          placeholder="Todos los periodos"
+          [showIcon]="true"
+          iconDisplay="input"
+          [showButtonBar]="true"
+          appendTo="body"
+          variant="filled"
+          class="dashboard-filters__datepicker">
+        </p-datepicker>
+      </div>
+      <div class="dashboard-filters__group">
+        <span class="dashboard-filters__label">Agregación</span>
+        <p-selectButton
+          [options]="dataService.timeframeOptions"
+          [ngModel]="dataService.selectedTimeframe()"
+          (ngModelChange)="dataService.onTimeframeSelect($event)"
+          optionLabel="label"
+          optionValue="value"
+          class="dashboard-filters__timeframe">
+          <ng-template pTemplate="item" let-item>
+            <div class="flex items-center gap-2 px-1">
+              <i [class]="item.icon" class="text-[10px]"></i>
+              <span class="text-[10px] font-bold uppercase tracking-wider">{{ item.label }}</span>
+            </div>
+          </ng-template>
+        </p-selectButton>
+      </div>
+    </div>
     <ktd-grid
-      [cols]="cols"
-      [rowHeight]="rowHeight"
-      [gap]="gap"
+      [cols]="cols()"
+      [rowHeight]="rowHeight()"
+      [gap]="gap()"
       [compactType]="compactType"
-      [layout]="gridLayout"
+      [layout]="gridLayout()"
       (layoutUpdated)="onLayoutUpdated($event)"
       (resizeEnded)="onResizeEnded()"
       class="dashboard-grid">
-      @for (widget of gridLayout; track widget.id) {
+      @for (widget of gridLayout(); track widget.id) {
         <ktd-grid-item
+          class="shadow-surface"
           [id]="widget.id"
           [transition]="'transform 300ms ease, width 300ms ease, height 300ms ease'">
           <app-widget-host

@@ -1,3 +1,38 @@
+// ── Dashboard filters (global date range + aggregation) ──
+.dashboard-filters {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 1rem 1.5rem;
+  margin-bottom: 1rem;
+  padding: 0.75rem 0;
+}
+
+.dashboard-filters__group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.dashboard-filters__label {
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: var(--text-placeholder);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.dashboard-filters__datepicker {
+  min-width: 12rem;
+}
+
+.dashboard-filters__timeframe {
+  ::ng-deep .p-selectbutton .p-button {
+    padding: 0.35rem 0.6rem;
+    font-size: 0.7rem;
+  }
+}
+
 // ── KTD Grid ─────────────────────────────────────────
 :host {
   display: block;
@@ -181,8 +216,60 @@
 }
 
 // ── Responsive ────────────────────────────────────────
-@media (max-width: 768px) {
+
+// Tablet
+@media (max-width: 1023.98px) {
+  ::ng-deep {
+    .widget-host__titlebar {
+      padding: 4px 8px;
+      min-height: 28px;
+    }
+
+    .widget-host__title {
+      font-size: 10px;
+    }
+
+    .widget-host__content--kpi {
+      padding: 8px 12px 10px;
+    }
+  }
+}
+
+// Small screens
+@media (max-width: 767.98px) {
   .config-panel {
     padding: 8px;
+  }
+
+  ::ng-deep {
+    ktd-grid-item {
+      border-radius: 12px;
+    }
+
+    .widget-host {
+      border-radius: 12px;
+    }
+
+    .widget-host--kpi {
+      border-radius: 14px;
+    }
+
+    .widget-host__content--kpi {
+      padding: 6px 10px 8px;
+    }
+  }
+}
+
+// Extra-small screens
+@media (max-width: 575.98px) {
+  ::ng-deep {
+    .widget-host__traffic-lights {
+      gap: 4px;
+    }
+
+    .widget-host__btn {
+      width: 10px;
+      height: 10px;
+    }
   }
 }

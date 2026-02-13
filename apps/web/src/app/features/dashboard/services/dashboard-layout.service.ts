@@ -67,6 +67,7 @@ export class DashboardLayoutService {
           const defaultLayout = getDefaultLayout();
           this.layout.set(defaultLayout);
           this.saveToLocalStorage(defaultLayout);
+          this.persistLayout(defaultLayout);
         }
       },
       error: () => {
@@ -74,6 +75,7 @@ export class DashboardLayoutService {
           const defaultLayout = getDefaultLayout();
           this.layout.set(defaultLayout);
           this.saveToLocalStorage(defaultLayout);
+          this.persistLayout(defaultLayout);
         }
       },
     });
