@@ -5,45 +5,49 @@ import { TableModule } from 'primeng/table';
 import { TagModule } from 'primeng/tag';
 import { SelectButtonModule } from 'primeng/selectbutton';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
+import { PageLayoutComponent } from '../../../../shared/components/page-layout/page-layout.component';
 import { FundingApiService } from '../../services/funding-api.service';
 import { PayoutRequest } from '../../models/payout';
 
 @Component({
   selector: 'app-payout-register',
   standalone: true,
-  imports: [CommonModule, CurrencyPipe, DatePipe, FormsModule, TableModule, TagModule, SelectButtonModule, ProgressSpinnerModule],
+  imports: [CommonModule, CurrencyPipe, DatePipe, FormsModule, TableModule, TagModule, SelectButtonModule, ProgressSpinnerModule, PageLayoutComponent],
   template: `
-    <div class="p-4 flex flex-col gap-4 max-w-4xl mx-auto">
-      <h2 class="text-xl font-bold">Payout Register</h2>
+    <app-page-layout
+      title="Registro de Payouts"
+      subtitle="Historial y estado de tus solicitudes de payout"
+      [loading]="loading()">
 
-      <!-- Filter tabs with PrimeNG SelectButton -->
-      <p-selectbutton
-        [options]="statusOptions"
-        [(ngModel)]="activeTab"
-        (ngModelChange)="filterByStatus($event)"
-        optionLabel="label"
-        optionValue="value"
-        size="small"
-      />
+      <div actions>
+        <p-selectbutton
+          [options]="statusOptions"
+          [(ngModel)]="activeTab"
+          (ngModelChange)="filterByStatus($event)"
+          optionLabel="label"
+          optionValue="value"
+          size="small"
+        />
+      </div>
 
       @if (loading()) {
         <div class="flex justify-center py-8">
           <p-progressSpinner strokeWidth="3" animationDuration="1s" />
         </div>
       } @else if (payouts().length === 0) {
-        <div class="text-gray-400 text-center py-8">No payout requests found.</div>
+        <div class="text-gray-400 text-center py-8">No se encontraron solicitudes de payout.</div>
       } @else {
         <p-table [value]="payouts()" [rows]="20" [paginator]="payouts().length > 20"
                  styleClass="p-datatable-sm p-datatable-striped"
                  [rowHover]="true">
           <ng-template #header>
             <tr>
-              <th>Account</th>
-              <th>Requested</th>
-              <th>Eligible</th>
-              <th>Paid</th>
-              <th class="text-right">Amount</th>
-              <th class="text-center">Status</th>
+              <th>Cuenta</th>
+              <th>Solicitado</th>
+              <th>Elegible</th>
+              <th>Pagado</th>
+              <th class="text-right">Monto</th>
+              <th class="text-center">Estado</th>
             </tr>
           </ng-template>
           <ng-template #body let-p>
@@ -60,12 +64,12 @@ import { PayoutRequest } from '../../models/payout';
           </ng-template>
           <ng-template #emptymessage>
             <tr>
-              <td colspan="6" class="text-center text-gray-400 py-4">No payouts match the filter.</td>
+              <td colspan="6" class="text-center text-gray-400 py-4">No hay payouts con este filtro.</td>
             </tr>
           </ng-template>
         </p-table>
       }
-    </div>
+    </app-page-layout>
   `,
 })
 export class PayoutRegisterComponent implements OnInit {
@@ -76,10 +80,10 @@ export class PayoutRegisterComponent implements OnInit {
   activeTab = '';
 
   statusOptions = [
-    { label: 'All', value: '' },
-    { label: 'Requested', value: 'REQUESTED' },
-    { label: 'Processing', value: 'PROCESSING' },
-    { label: 'Paid', value: 'PAID' },
+    { label: 'Todos', value: '' },
+    { label: 'Solicitado', value: 'REQUESTED' },
+    { label: 'Procesando', value: 'PROCESSING' },
+    { label: 'Pagado', value: 'PAID' },
   ];
 
   ngOnInit() {

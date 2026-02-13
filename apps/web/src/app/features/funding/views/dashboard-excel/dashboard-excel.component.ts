@@ -4,6 +4,7 @@ import { ScrollingModule } from '@angular/cdk/scrolling';
 import { TagModule } from 'primeng/tag';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { TooltipModule } from 'primeng/tooltip';
+import { PageLayoutComponent } from '../../../../shared/components/page-layout/page-layout.component';
 import { FundingApiService } from '../../services/funding-api.service';
 import { DailyAccountStatus } from '../../models/daily-status';
 import { AccountStateSnapshot } from '../../models/snapshot';
@@ -21,13 +22,14 @@ interface AccountRow {
 @Component({
   selector: 'app-dashboard-excel',
   standalone: true,
-  imports: [CommonModule, CurrencyPipe, DatePipe, ScrollingModule, TagModule, ProgressSpinnerModule, TooltipModule, DayCellComponent, StateLegendComponent],
+  imports: [CommonModule, CurrencyPipe, DatePipe, ScrollingModule, TagModule, ProgressSpinnerModule, TooltipModule, PageLayoutComponent, DayCellComponent, StateLegendComponent],
   template: `
-    <div class="flex flex-col gap-4 p-4">
-      <div class="flex items-center justify-between">
-        <h2 class="text-xl font-bold">Funded Accounts – Daily Overview</h2>
-        <app-state-legend />
-      </div>
+    <app-page-layout
+      title="Funding Overview"
+      subtitle="Vista diaria de todas tus cuentas fondeadas"
+      [loading]="loading()">
+
+      <app-state-legend actions />
 
       @if (loading()) {
         <div class="flex justify-center py-8">
@@ -79,7 +81,7 @@ interface AccountRow {
           </table>
         </div>
       }
-    </div>
+    </app-page-layout>
   `,
 })
 export class DashboardExcelComponent implements OnInit {

@@ -13,23 +13,58 @@
     <ul class="list-none p-0 m-0 overflow-hidden">
         @for (item of menuItems(); track item.label) {
             <li class="mb-1">
-                <a [routerLink]="item.routerLink"
-                   routerLinkActive="active-route"
-                   class="flex items-center px-4 py-3 cursor-pointer rounded-xl transition-all duration-200 hover:bg-surface-hover group text-muted no-underline">
-                    <i [class]="item.icon + ' text-xl shrink-0 group-hover:text-primary transition-colors duration-200'"></i>
-                    <span class="ml-3 font-semibold brand-text overflow-hidden transition-all duration-300 whitespace-nowrap"
-                          [class.opacity-0]="app.sidebarActive()"
-                          [class.w-0]="app.sidebarActive()">
-                         {{ item.label }}
-                    </span>
-                </a>
+                <!-- Parent item (with or without children) -->
+                @if (item.children) {
+                    <!-- Collapsible group header -->
+                    <button (click)="toggleFunding()"
+                            class="w-full flex items-center px-4 py-3 cursor-pointer rounded-xl transition-all duration-200 hover:bg-surface-hover group text-muted border-none bg-transparent">
+                        <i [class]="item.icon + ' text-xl shrink-0 group-hover:text-primary transition-colors duration-200'"></i>
+                        <span class="ml-3 font-semibold brand-text overflow-hidden transition-all duration-300 whitespace-nowrap flex-1 text-left"
+                              [class.opacity-0]="app.sidebarActive()"
+                              [class.w-0]="app.sidebarActive()">
+                            {{ item.label }}
+                        </span>
+                        <i class="pi text-xs transition-transform duration-200 shrink-0"
+                           [class.pi-chevron-down]="fundingExpanded()"
+                           [class.pi-chevron-right]="!fundingExpanded()"
+                           [class.opacity-0]="app.sidebarActive()"
+                           [class.w-0]="app.sidebarActive()"></i>
+                    </button>
+
+                    <!-- Children (animated collapse) -->
+                    <ul class="list-none p-0 m-0 overflow-hidden transition-all duration-300"
+                        [style.max-height]="fundingExpanded() ? '300px' : '0'"
+                        [style.opacity]="fundingExpanded() ? '1' : '0'">
+                        @for (child of item.children; track child.label) {
+                            <li>
+                                <a [routerLink]="child.routerLink"
+                                   routerLinkActive="active-route"
+                                   [routerLinkActiveOptions]="{ exact: child.routerLink[0] === '/funding' }"
+                                   class="flex items-center pl-8 pr-4 py-2.5 cursor-pointer rounded-xl transition-all duration-200 hover:bg-surface-hover group text-muted no-underline">
+                                    <i [class]="child.icon + ' text-base shrink-0 group-hover:text-primary transition-colors duration-200'"></i>
+                                    <span class="ml-3 text-sm font-medium brand-text overflow-hidden transition-all duration-300 whitespace-nowrap"
+                                          [class.opacity-0]="app.sidebarActive()"
+                                          [class.w-0]="app.sidebarActive()">
+                                        {{ child.label }}
+                                    </span>
+                                </a>
+                            </li>
+                        }
+                    </ul>
+                } @else {
+                    <!-- Regular item (same as before) -->
+                    <a [routerLink]="item.routerLink"
+                       routerLinkActive="active-route"
+                       class="flex items-center px-4 py-3 cursor-pointer rounded-xl transition-all duration-200 hover:bg-surface-hover group text-muted no-underline">
+                        <i [class]="item.icon + ' text-xl shrink-0 group-hover:text-primary transition-colors duration-200'"></i>
+                        <span class="ml-3 font-semibold brand-text overflow-hidden transition-all duration-300 whitespace-nowrap"
+                              [class.opacity-0]="app.sidebarActive()"
+                              [class.w-0]="app.sidebarActive()">
+                             {{ item.label }}
+                        </span>
+                    </a>
+                }
             </li>
         }
     </ul>
-
-    <!-- Funding section: collapsible PanelMenu -->
-    <div class="mt-1 sidebar-panel-menu"
-         [class.collapsed-sidebar]="app.sidebarActive()">
-        <p-panelmenu [model]="fundingMenuItems()" styleClass="sidebar-funding-menu" />
-    </div>
 </div>

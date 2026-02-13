@@ -4,6 +4,7 @@ import { TagModule } from 'primeng/tag';
 import { MessageModule } from 'primeng/message';
 import { CardModule } from 'primeng/card';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
+import { PageLayoutComponent } from '../../../../shared/components/page-layout/page-layout.component';
 import { FundingApiService } from '../../services/funding-api.service';
 import { PlanDayResult } from '../../models/plan-day';
 import { STATE_LABELS, OperationalState } from '../../models/operational-state';
@@ -11,17 +12,19 @@ import { STATE_LABELS, OperationalState } from '../../models/operational-state';
 @Component({
   selector: 'app-plan-day',
   standalone: true,
-  imports: [CommonModule, DatePipe, TagModule, MessageModule, CardModule, ProgressSpinnerModule],
+  imports: [CommonModule, DatePipe, TagModule, MessageModule, CardModule, ProgressSpinnerModule, PageLayoutComponent],
   template: `
-    <div class="p-4 flex flex-col gap-6 max-w-2xl mx-auto">
-      <h2 class="text-xl font-bold">Plan del Día</h2>
+    <app-page-layout
+      title="Plan del Día"
+      subtitle="Priorización de cuentas fondeadas para operar hoy"
+      [loading]="loading()">
 
       @if (loading()) {
         <div class="flex justify-center py-8">
           <p-progressSpinner strokeWidth="3" animationDuration="1s" />
         </div>
       } @else if (plan(); as p) {
-        <div class="text-sm text-gray-500 mb-2">{{ p.date | date:'fullDate' }}</div>
+        <div class="text-sm text-gray-500 mb-4">{{ p.date | date:'fullDate' }}</div>
 
         @if (p.calendarBlocked) {
           <p-message severity="warn" icon="pi pi-ban">
@@ -30,10 +33,10 @@ import { STATE_LABELS, OperationalState } from '../../models/operational-state';
         }
 
         @if (p.operate.length > 0) {
-          <div>
-            <h3 class="text-base font-semibold text-green-700 mb-3">Operate Today</h3>
+          <div class="mb-6">
+            <h3 class="text-base font-semibold text-green-700 mb-3">Operar Hoy</h3>
             @for (a of p.operate; track a.accountId) {
-              <p-card styleClass="mb-2 border-green-200">
+              <p-card styleClass="mb-2">
                 <div class="flex items-center justify-between">
                   <div class="flex items-center gap-2">
                     <span class="font-semibold">{{ a.accountName }}</span>
@@ -48,9 +51,9 @@ import { STATE_LABELS, OperationalState } from '../../models/operational-state';
 
         @if (p.block.length > 0) {
           <div>
-            <h3 class="text-base font-semibold text-red-700 mb-3">Blocked</h3>
+            <h3 class="text-base font-semibold text-red-700 mb-3">Bloqueadas</h3>
             @for (a of p.block; track a.accountId) {
-              <p-card styleClass="mb-2 border-red-200">
+              <p-card styleClass="mb-2">
                 <div class="flex items-center justify-between">
                   <div class="flex items-center gap-2">
                     <span class="font-semibold">{{ a.accountName }}</span>
@@ -65,11 +68,11 @@ import { STATE_LABELS, OperationalState } from '../../models/operational-state';
 
         @if (p.operate.length === 0 && !p.calendarBlocked) {
           <p-message severity="info" icon="pi pi-info-circle">
-            <span>No funded accounts available to trade today.</span>
+            <span>No hay cuentas fondeadas disponibles para operar hoy.</span>
           </p-message>
         }
       }
-    </div>
+    </app-page-layout>
   `,
 })
 export class PlanDayComponent implements OnInit {

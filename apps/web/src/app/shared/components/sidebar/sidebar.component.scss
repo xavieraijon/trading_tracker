@@ -22,86 +22,15 @@
 }
 
 .brand-text {
-    /* Ensure text doesn't wrap during animation */
     white-space: nowrap;
 }
 
 /* Micro-animations and hover effects */
-.sidebar-menu a {
+.sidebar-menu a,
+.sidebar-menu button {
     &:hover:not(.active-route) {
         i {
             transform: scale(1.1);
-        }
-    }
-}
-
-/* PanelMenu integration for Funding section */
-.sidebar-panel-menu {
-    ::ng-deep .sidebar-funding-menu {
-        background: transparent;
-        border: none;
-        padding: 0;
-
-        .p-panelmenu-panel {
-            margin-bottom: 0;
-        }
-
-        .p-panelmenu-header {
-            .p-panelmenu-header-content {
-                background: transparent;
-                border: none;
-                border-radius: 0.75rem;
-                padding: 0.75rem 1rem;
-                color: var(--text-muted-color, var(--p-text-muted-color));
-                transition: all 0.2s;
-
-                &:hover {
-                    background: var(--surface-hover, var(--p-surface-hover));
-                }
-
-                .p-panelmenu-header-link {
-                    color: inherit;
-                    font-weight: 600;
-                    gap: 0.75rem;
-                }
-            }
-        }
-
-        .p-panelmenu-content {
-            background: transparent;
-            border: none;
-            padding: 0 0 0 0.5rem;
-        }
-
-        .p-menuitem {
-            .p-menuitem-content {
-                border-radius: 0.75rem;
-                padding: 0;
-                transition: all 0.2s;
-
-                &:hover {
-                    background: var(--surface-hover, var(--p-surface-hover));
-                }
-            }
-
-            .p-menuitem-link {
-                padding: 0.6rem 1rem;
-                color: var(--text-muted-color, var(--p-text-muted-color));
-                font-weight: 600;
-                gap: 0.75rem;
-                font-size: 0.875rem;
-            }
-        }
-    }
-
-    &.collapsed-sidebar {
-        ::ng-deep .sidebar-funding-menu {
-            .p-panelmenu-header-content .p-panelmenu-header-link span,
-            .p-menuitem-link span {
-                opacity: 0;
-                width: 0;
-                overflow: hidden;
-            }
         }
     }
 }
