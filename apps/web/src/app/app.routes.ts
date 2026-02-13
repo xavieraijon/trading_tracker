@@ -22,6 +22,11 @@ export const appRoutes: Route[] = [
     loadChildren: () => import('./features/trades/trades.routes').then(m => m.TRADES_ROUTES)
   },
   {
+    path: 'funding',
+    canActivate: [authGuard],
+    loadChildren: () => import('./features/funding/funding.routes').then(m => m.FUNDING_ROUTES)
+  },
+  {
     path: 'calendar',
     canActivate: [authGuard],
     loadComponent: () => import('./features/analytics/calendar-view/calendar-view.component').then(m => m.CalendarViewComponent)

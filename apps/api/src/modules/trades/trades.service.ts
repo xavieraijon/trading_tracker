@@ -1,12 +1,16 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException, Optional, Inject } from '@nestjs/common';
 import { PrismaService } from '../../prisma/prisma.service';
 import { CreateTradeDto } from './dto/create-trade.dto';
 import { UpdateTradeDto } from './dto/update-trade.dto';
 import { parseMT5Html } from './mt5-parser';
+import { BackfillService } from '../funding/services/backfill.service';
 
 @Injectable()
 export class TradesService {
-  constructor(private prisma: PrismaService) {}
+  constructor(
+    private prisma: PrismaService,
+    @Optional() @Inject(BackfillService) private backfillService?: BackfillService,
+  ) {}
 
   async findAccountByExternalId(userId: string, externalId: string) {
     return this.prisma.account.findFirst({
@@ -438,7 +442,24 @@ export class TradesService {
       importedCount++;
     }
 
-    return { imported: importedCount, skipped: skippedCount, total: parsedTrades.length };
+    const result = { imported: importedCount, skipped: skippedCount, total: parsedTrades.length };
+
+    // Hook: rebuild funding derived data if any trades were imported
+    if (importedCount > 0 && this.backfillService) {
+      const dates = parsedTrades
+        .filter((t) => t.closeAt)
+        .map((t) => new Date(t.closeAt));
+      if (dates.length > 0) {
+        const fromDate = new Date(Math.min(...dates.map((d) => d.getTime())));
+        const toDate = new Date(Math.max(...dates.map((d) => d.getTime())));
+        // Fire and forget — don't block the import response
+        this.backfillService
+          .onTradesImported(accountId, fromDate, toDate)
+          .catch((err) => console.error('Backfill after import failed:', err));
+      }
+    }
+
+    return result;
   }
 
   async remove(id: string, userId: string) {

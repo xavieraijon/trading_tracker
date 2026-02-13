@@ -33,6 +33,21 @@ export class SidebarComponent {
       routerLink: ['/trades']
     },
     {
+      label: 'Funding',
+      icon: 'pi pi-building',
+      routerLink: ['/funding']
+    },
+    {
+      label: 'Plan del Día',
+      icon: 'pi pi-check-square',
+      routerLink: ['/funding/plan']
+    },
+    {
+      label: 'Payouts',
+      icon: 'pi pi-money-bill',
+      routerLink: ['/funding/payouts']
+    },
+    {
       label: 'Calendario',
       icon: 'pi pi-calendar',
       routerLink: ['/calendar']

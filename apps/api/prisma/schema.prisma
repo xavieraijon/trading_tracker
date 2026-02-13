@@ -52,7 +52,11 @@ model Account {
   createdAt      DateTime @default(now())
   deletedAt      DateTime?
 
-  trades         Trade[]
+  trades              Trade[]
+  cycles              AccountCycle[]
+  dailyStatuses       DailyAccountStatus[]
+  stateSnapshot       AccountStateSnapshot?
+  payoutRequests      PayoutRequest[]
 }
 
 enum PropFirmStatus {
@@ -112,4 +116,110 @@ enum MarketType {
   SPOT
   CRYPTO
   STOCKS
+}
+
+// --- Funding (derived from accounts + trades, never modifies Trade) ---
+
+enum OperationalState {
+  BREAK_EVEN
+  DRAWDOWN
+  PROFIT
+  PAYOUT_REQUESTED
+  PAYOUT_PROCESSING
+  CHALLENGE
+}
+
+enum CycleStatus {
+  ACTIVE
+  CLOSED
+}
+
+enum PayoutRequestStatus {
+  REQUESTED
+  PROCESSING
+  PAID
+}
+
+enum CalendarEventType {
+  NFP
+  HOLIDAY
+  WEEKEND
+  CUSTOM
+}
+
+model AccountCycle {
+  id                String      @id @default(uuid())
+  accountId         String
+  account           Account     @relation(fields: [accountId], references: [id], onDelete: Cascade)
+  startDate         DateTime    @db.Date
+  endDate           DateTime?   @db.Date
+  cycleStartBalance Decimal     @db.Decimal(18, 2)
+  profitTargetPct   Decimal     @default(2) @db.Decimal(5, 2)
+  status            CycleStatus @default(ACTIVE)
+
+  dailyStatuses     DailyAccountStatus[]
+  payoutRequests    PayoutRequest[]
+  stateSnapshots    AccountStateSnapshot[]
+
+  @@index([accountId, startDate])
+  @@index([accountId, status])
+}
+
+model DailyAccountStatus {
+  id                String           @id @default(uuid())
+  accountId         String
+  account           Account          @relation(fields: [accountId], references: [id], onDelete: Cascade)
+  cycleId           String
+  cycle             AccountCycle     @relation(fields: [cycleId], references: [id], onDelete: Cascade)
+  date              DateTime         @db.Date
+  operationalState  OperationalState
+  balanceEod        Decimal          @db.Decimal(18, 2)
+  pnlDay            Decimal          @db.Decimal(18, 2)
+  tradesCount       Int              @default(0)
+  tags              String[]
+
+  @@unique([accountId, date])
+  @@index([cycleId, date])
+  @@index([accountId, date])
+}
+
+model AccountStateSnapshot {
+  id                    String            @id @default(uuid())
+  accountId             String            @unique
+  account               Account           @relation(fields: [accountId], references: [id], onDelete: Cascade)
+  currentCycleId        String?
+  currentCycle          AccountCycle?     @relation(fields: [currentCycleId], references: [id], onDelete: SetNull)
+  operationalState     OperationalState
+  balance               Decimal           @db.Decimal(18, 2)
+  cycleStartBalance     Decimal           @db.Decimal(18, 2)
+  drawdownPct           Decimal           @default(0) @db.Decimal(8, 4)
+  profitPct             Decimal           @default(0) @db.Decimal(8, 4)
+  daysToPayoutEligible  Int?
+  updatedAt             DateTime          @updatedAt
+}
+
+model PayoutRequest {
+  id           String             @id @default(uuid())
+  accountId    String
+  account      Account            @relation(fields: [accountId], references: [id], onDelete: Cascade)
+  cycleId      String
+  cycle        AccountCycle      @relation(fields: [cycleId], references: [id], onDelete: Cascade)
+  requestedAt  DateTime          @default(now())
+  eligibleDate DateTime          @db.Date
+  paidAt       DateTime?         @db.Date
+  amount       Decimal?          @db.Decimal(18, 2)
+  status       PayoutRequestStatus @default(REQUESTED)
+
+  @@index([accountId, cycleId])
+  @@index([status])
+}
+
+model CalendarEvent {
+  id            String           @id @default(uuid())
+  date          DateTime         @db.Date
+  type          CalendarEventType
+  label         String
+  blocksTrading Boolean          @default(true)
+
+  @@index([date])
 }
