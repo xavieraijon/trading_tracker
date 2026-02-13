@@ -1,15 +1,18 @@
 import { Injectable, signal, computed, inject } from '@angular/core';
+import { KtdGridLayout } from '@katoid/angular-grid-layout';
 import {
   type DashboardLayout,
   type DashboardWidgetItem,
   WIDGET_DEFINITIONS,
   getDefaultLayout,
   getWidgetDefinition,
+  createWidgetItem,
+  hydrateWidgetConstraints,
 } from '../models/widget-registry';
 import { DashboardPreferencesApiService } from './dashboard-preferences-api.service';
 import { Subject, debounceTime } from 'rxjs';
 
-const STORAGE_KEY = 'dashboard_layout_v1';
+const STORAGE_KEY = 'dashboard_layout_v2'; // Bumped version for new format
 
 @Injectable({ providedIn: 'root' })
 export class DashboardLayoutService {
@@ -19,9 +22,11 @@ export class DashboardLayoutService {
   private layout = signal<DashboardLayout>(getDefaultLayout());
   private saveSubject = new Subject<DashboardLayout>();
   private initialized = false;
+  /** Tracks the latest persisted layout (from drag/resize) without updating the signal */
+  private lastPersistedLayout: DashboardLayout | null = null;
 
-  /** Widgets currently active in the grid */
-  activeWidgets = computed(() => this.layout().widgets);
+  /** Widgets currently active in the grid (as KtdGridLayout) */
+  activeWidgets = computed<KtdGridLayout>(() => this.layout().widgets);
 
   /** Widget IDs currently shown */
   activeWidgetIds = computed(() => new Set(this.layout().widgets.map(w => w.id)));
@@ -48,24 +53,23 @@ export class DashboardLayoutService {
     // 1. Try localStorage cache
     const cached = this.loadFromLocalStorage();
     if (cached) {
-      this.layout.set(cached);
+      this.layout.set(this.hydrateLayout(cached));
     }
 
     // 2. Sync from backend (overwrites localStorage if newer)
     this.preferencesApi.loadDashboardLayout().subscribe({
       next: (serverLayout) => {
         if (serverLayout) {
-          this.layout.set(serverLayout);
-          this.saveToLocalStorage(serverLayout);
+          const hydrated = this.hydrateLayout(serverLayout);
+          this.layout.set(hydrated);
+          this.saveToLocalStorage(hydrated);
         } else if (!cached) {
-          // No server data and no cache -> use default
           const defaultLayout = getDefaultLayout();
           this.layout.set(defaultLayout);
           this.saveToLocalStorage(defaultLayout);
         }
       },
       error: () => {
-        // Backend unavailable, use cache or default
         if (!cached) {
           const defaultLayout = getDefaultLayout();
           this.layout.set(defaultLayout);
@@ -75,11 +79,34 @@ export class DashboardLayoutService {
     });
   }
 
-  /** Update the full widget list (called by gridster on drag/resize) */
-  updateWidgets(widgets: DashboardWidgetItem[]): void {
-    const newLayout: DashboardLayout = { ...this.layout(), widgets: [...widgets] };
-    this.layout.set(newLayout);
-    this.persistLayout(newLayout);
+  /**
+   * Persist layout from ktd-grid drag/resize WITHOUT updating the signal.
+   * This avoids the infinite loop: layoutUpdated -> signal change -> [layout] input change -> layoutUpdated.
+   * The signal is NOT updated here — ktd-grid already has the correct positions internally.
+   * The signal will be correct on next load (from localStorage) or on structural changes.
+   */
+  persistWithoutSignalUpdate(updatedLayout: KtdGridLayout): void {
+    const widgets: DashboardWidgetItem[] = updatedLayout.map(item => {
+      const existing = this.layout().widgets.find(w => w.id === item.id);
+      return {
+        ...item,
+        minW: existing?.minW ?? item.minW,
+        minH: existing?.minH ?? item.minH,
+        maxW: existing?.maxW ?? item.maxW,
+        maxH: existing?.maxH ?? item.maxH,
+      };
+    });
+
+    const persistedLayout: DashboardLayout = { ...this.layout(), widgets };
+    // Store latest state for persistence only — DO NOT call layout.set() to avoid feedback loop
+    this.lastPersistedLayout = persistedLayout;
+    this.saveToLocalStorage(persistedLayout);
+    this.saveSubject.next(persistedLayout);
+  }
+
+  /** Get the most up-to-date layout (persisted positions take priority) */
+  private currentLayout(): DashboardLayout {
+    return this.lastPersistedLayout ?? this.layout();
   }
 
   /** Add a widget to the grid */
@@ -89,28 +116,27 @@ export class DashboardLayoutService {
     const def = getWidgetDefinition(widgetId);
     if (!def) return;
 
-    const newWidget: DashboardWidgetItem = {
-      id: widgetId,
-      cols: def.defaultCols,
-      rows: def.defaultRows,
-      x: 0,
-      y: 0, // gridster will auto-place
-    };
+    const newWidget = createWidgetItem(def, 0, 0);
+    const current = this.currentLayout();
 
     const newLayout: DashboardLayout = {
-      ...this.layout(),
-      widgets: [...this.layout().widgets, newWidget],
+      ...current,
+      widgets: [...current.widgets, newWidget],
     };
+    this.lastPersistedLayout = null;
     this.layout.set(newLayout);
     this.persistLayout(newLayout);
   }
 
   /** Remove a widget from the grid */
   removeWidget(widgetId: string): void {
+    const current = this.currentLayout();
+
     const newLayout: DashboardLayout = {
-      ...this.layout(),
-      widgets: this.layout().widgets.filter(w => w.id !== widgetId),
+      ...current,
+      widgets: current.widgets.filter(w => w.id !== widgetId),
     };
+    this.lastPersistedLayout = null;
     this.layout.set(newLayout);
     this.persistLayout(newLayout);
   }
@@ -118,11 +144,20 @@ export class DashboardLayoutService {
   /** Reset to default layout */
   resetToDefault(): void {
     const defaultLayout = getDefaultLayout();
+    this.lastPersistedLayout = null;
     this.layout.set(defaultLayout);
     this.persistLayout(defaultLayout);
   }
 
   // ── Private helpers ────────────────────────────────────
+
+  /** Re-apply min/max constraints from widget definitions (lost during JSON serialization) */
+  private hydrateLayout(layout: DashboardLayout): DashboardLayout {
+    return {
+      ...layout,
+      widgets: layout.widgets.map(hydrateWidgetConstraints),
+    };
+  }
 
   private persistLayout(layout: DashboardLayout): void {
     this.saveToLocalStorage(layout);
@@ -142,8 +177,12 @@ export class DashboardLayoutService {
       const raw = localStorage.getItem(STORAGE_KEY);
       if (!raw) return null;
       const parsed = JSON.parse(raw) as DashboardLayout;
-      if (parsed && parsed.version && Array.isArray(parsed.widgets)) {
-        return parsed;
+      // Validate basic structure and ensure it uses the new w/h format
+      if (parsed && parsed.version && Array.isArray(parsed.widgets) && parsed.widgets.length > 0) {
+        const first = parsed.widgets[0];
+        if ('w' in first && 'h' in first) {
+          return parsed;
+        }
       }
       return null;
     } catch {

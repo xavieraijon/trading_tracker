@@ -1,7 +1,7 @@
 @if (definition(); as def) {
   <div class="widget-host" [class.widget-host--kpi]="isKpi()" [class.widget-host--chart]="!isKpi()">
-    <!-- Title bar (window-style) -->
-    <div class="widget-host__titlebar" [class.widget-host__titlebar--kpi]="isKpi()">
+    <!-- Title bar — drag handle for ktd-grid -->
+    <div class="widget-host__titlebar" [class.widget-host__titlebar--kpi]="isKpi()" ktdGridDragHandle>
       <div class="widget-host__titlebar-left">
         <div class="widget-host__traffic-lights">
           <button class="widget-host__btn widget-host__btn--close" (click)="remove.emit(widgetId())" pTooltip="Ocultar widget" tooltipPosition="top">
@@ -78,6 +78,18 @@
           <app-activity-by-period-widget />
         }
       }
+    </div>
+
+    <!-- Resize handle (bottom-right corner) -->
+    <div class="widget-host__resize-handle" ktdGridResizeHandle>
+      <svg width="10" height="10" viewBox="0 0 10 10" fill="currentColor" opacity="0.3">
+        <circle cx="8" cy="2" r="1" />
+        <circle cx="8" cy="5.5" r="1" />
+        <circle cx="8" cy="9" r="1" />
+        <circle cx="4.5" cy="5.5" r="1" />
+        <circle cx="4.5" cy="9" r="1" />
+        <circle cx="1" cy="9" r="1" />
+      </svg>
     </div>
   </div>
 }

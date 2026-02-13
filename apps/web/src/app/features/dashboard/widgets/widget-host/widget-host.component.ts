@@ -1,6 +1,7 @@
 import { Component, input, output, inject, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { TooltipModule } from 'primeng/tooltip';
+import { KtdGridDragHandle, KtdGridResizeHandle } from '@katoid/angular-grid-layout';
 import { getWidgetDefinition, type WidgetDefinition } from '../../models/widget-registry';
 import { DashboardDataService } from '../../services/dashboard-data.service';
 
@@ -32,6 +33,8 @@ import { ActivityByPeriodWidgetComponent } from '../charts/activity-by-period-wi
   imports: [
     CommonModule,
     TooltipModule,
+    KtdGridDragHandle,
+    KtdGridResizeHandle,
     // KPI
     NetProfitWidgetComponent,
     WinRateWidgetComponent,

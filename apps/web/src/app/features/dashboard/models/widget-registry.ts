@@ -1,4 +1,5 @@
 import { Type } from '@angular/core';
+import { KtdGridLayoutItem } from '@katoid/angular-grid-layout';
 
 export type WidgetCategory = 'kpi' | 'chart';
 
@@ -8,22 +9,17 @@ export interface WidgetDefinition {
   description: string;
   category: WidgetCategory;
   icon: string;
-  defaultCols: number;
-  defaultRows: number;
-  minCols: number;
-  minRows: number;
-  maxCols?: number;
-  maxRows?: number;
+  defaultW: number;
+  defaultH: number;
+  minW: number;
+  minH: number;
+  maxW?: number;
+  maxH?: number;
   component?: Type<unknown>;
 }
 
-export interface DashboardWidgetItem {
-  id: string;
-  cols: number;
-  rows: number;
-  x: number;
-  y: number;
-}
+/** Layout item stored/persisted — compatible with KtdGridLayoutItem */
+export type DashboardWidgetItem = KtdGridLayoutItem;
 
 export interface DashboardLayout {
   version: number;
@@ -38,12 +34,12 @@ export const WIDGET_DEFINITIONS: WidgetDefinition[] = [
     description: 'Beneficio total neto después de todas las operaciones cerradas.',
     category: 'kpi',
     icon: 'pi pi-dollar',
-    defaultCols: 2,
-    defaultRows: 2,
-    minCols: 2,
-    minRows: 2,
-    maxCols: 4,
-    maxRows: 3,
+    defaultW: 2,
+    defaultH: 2,
+    minW: 2,
+    minH: 2,
+    maxW: 4,
+    maxH: 3,
   },
   {
     id: 'winRate',
@@ -51,12 +47,12 @@ export const WIDGET_DEFINITIONS: WidgetDefinition[] = [
     description: 'Porcentaje de operaciones ganadoras sobre el total.',
     category: 'kpi',
     icon: 'pi pi-percentage',
-    defaultCols: 2,
-    defaultRows: 2,
-    minCols: 2,
-    minRows: 2,
-    maxCols: 4,
-    maxRows: 3,
+    defaultW: 2,
+    defaultH: 2,
+    minW: 2,
+    minH: 2,
+    maxW: 4,
+    maxH: 3,
   },
   {
     id: 'profitFactor',
@@ -64,12 +60,12 @@ export const WIDGET_DEFINITIONS: WidgetDefinition[] = [
     description: 'Relación entre el beneficio bruto y las pérdidas brutas.',
     category: 'kpi',
     icon: 'pi pi-bolt',
-    defaultCols: 2,
-    defaultRows: 2,
-    minCols: 2,
-    minRows: 2,
-    maxCols: 4,
-    maxRows: 3,
+    defaultW: 2,
+    defaultH: 2,
+    minW: 2,
+    minH: 2,
+    maxW: 4,
+    maxH: 3,
   },
   {
     id: 'avgWinLoss',
@@ -77,12 +73,12 @@ export const WIDGET_DEFINITIONS: WidgetDefinition[] = [
     description: 'Promedio ganado en trades ganadores vs promedio perdido en perdedores.',
     category: 'kpi',
     icon: 'pi pi-arrows-h',
-    defaultCols: 2,
-    defaultRows: 2,
-    minCols: 2,
-    minRows: 2,
-    maxCols: 4,
-    maxRows: 3,
+    defaultW: 2,
+    defaultH: 2,
+    minW: 2,
+    minH: 2,
+    maxW: 4,
+    maxH: 3,
   },
   {
     id: 'maxDrawdown',
@@ -90,12 +86,12 @@ export const WIDGET_DEFINITIONS: WidgetDefinition[] = [
     description: 'La mayor caída desde un pico en la curva de capital.',
     category: 'kpi',
     icon: 'pi pi-exclamation-triangle',
-    defaultCols: 2,
-    defaultRows: 2,
-    minCols: 2,
-    minRows: 2,
-    maxCols: 4,
-    maxRows: 3,
+    defaultW: 2,
+    defaultH: 2,
+    minW: 2,
+    minH: 2,
+    maxW: 4,
+    maxH: 3,
   },
   {
     id: 'totalTrades',
@@ -103,12 +99,12 @@ export const WIDGET_DEFINITIONS: WidgetDefinition[] = [
     description: 'Número total de operaciones cerradas en el periodo.',
     category: 'kpi',
     icon: 'pi pi-chart-bar',
-    defaultCols: 2,
-    defaultRows: 2,
-    minCols: 2,
-    minRows: 2,
-    maxCols: 4,
-    maxRows: 3,
+    defaultW: 2,
+    defaultH: 2,
+    minW: 2,
+    minH: 2,
+    maxW: 4,
+    maxH: 3,
   },
   {
     id: 'expectancy',
@@ -116,12 +112,12 @@ export const WIDGET_DEFINITIONS: WidgetDefinition[] = [
     description: 'Beneficio esperado por operación (promedio ponderado por probabilidad).',
     category: 'kpi',
     icon: 'pi pi-calculator',
-    defaultCols: 2,
-    defaultRows: 2,
-    minCols: 2,
-    minRows: 2,
-    maxCols: 4,
-    maxRows: 3,
+    defaultW: 2,
+    defaultH: 2,
+    minW: 2,
+    minH: 2,
+    maxW: 4,
+    maxH: 3,
   },
   {
     id: 'largestWin',
@@ -129,12 +125,12 @@ export const WIDGET_DEFINITIONS: WidgetDefinition[] = [
     description: 'La operación ganadora con mayor beneficio.',
     category: 'kpi',
     icon: 'pi pi-arrow-up',
-    defaultCols: 2,
-    defaultRows: 2,
-    minCols: 2,
-    minRows: 2,
-    maxCols: 4,
-    maxRows: 3,
+    defaultW: 2,
+    defaultH: 2,
+    minW: 2,
+    minH: 2,
+    maxW: 4,
+    maxH: 3,
   },
   {
     id: 'largestLoss',
@@ -142,12 +138,12 @@ export const WIDGET_DEFINITIONS: WidgetDefinition[] = [
     description: 'La operación perdedora con mayor pérdida.',
     category: 'kpi',
     icon: 'pi pi-arrow-down',
-    defaultCols: 2,
-    defaultRows: 2,
-    minCols: 2,
-    minRows: 2,
-    maxCols: 4,
-    maxRows: 3,
+    defaultW: 2,
+    defaultH: 2,
+    minW: 2,
+    minH: 2,
+    maxW: 4,
+    maxH: 3,
   },
   {
     id: 'streaks',
@@ -155,12 +151,12 @@ export const WIDGET_DEFINITIONS: WidgetDefinition[] = [
     description: 'Máximo de operaciones ganadoras o perdedoras consecutivas.',
     category: 'kpi',
     icon: 'pi pi-list',
-    defaultCols: 2,
-    defaultRows: 2,
-    minCols: 2,
-    minRows: 2,
-    maxCols: 4,
-    maxRows: 3,
+    defaultW: 2,
+    defaultH: 2,
+    minW: 2,
+    minH: 2,
+    maxW: 4,
+    maxH: 3,
   },
 
   // ── Chart Widgets ────────────────────────────────────────
@@ -170,11 +166,11 @@ export const WIDGET_DEFINITIONS: WidgetDefinition[] = [
     description: 'Rendimiento acumulado de la cuenta.',
     category: 'chart',
     icon: 'pi pi-chart-line',
-    defaultCols: 12,
-    defaultRows: 5,
-    minCols: 6,
-    minRows: 3,
-    maxRows: 8,
+    defaultW: 12,
+    defaultH: 5,
+    minW: 6,
+    minH: 3,
+    maxH: 8,
   },
   {
     id: 'drawdown',
@@ -182,11 +178,11 @@ export const WIDGET_DEFINITIONS: WidgetDefinition[] = [
     description: 'Caída desde el pico máximo de la curva de capital.',
     category: 'chart',
     icon: 'pi pi-chart-line',
-    defaultCols: 12,
-    defaultRows: 4,
-    minCols: 6,
-    minRows: 3,
-    maxRows: 7,
+    defaultW: 12,
+    defaultH: 4,
+    minW: 6,
+    minH: 3,
+    maxH: 7,
   },
   {
     id: 'pnlByPeriod',
@@ -194,11 +190,11 @@ export const WIDGET_DEFINITIONS: WidgetDefinition[] = [
     description: 'Beneficio o pérdida agregada por periodo temporal.',
     category: 'chart',
     icon: 'pi pi-chart-bar',
-    defaultCols: 12,
-    defaultRows: 4,
-    minCols: 6,
-    minRows: 3,
-    maxRows: 7,
+    defaultW: 12,
+    defaultH: 4,
+    minW: 6,
+    minH: 3,
+    maxH: 7,
   },
   {
     id: 'grossPnlDonut',
@@ -206,12 +202,12 @@ export const WIDGET_DEFINITIONS: WidgetDefinition[] = [
     description: 'Contribución en dólares: ganado vs perdido.',
     category: 'chart',
     icon: 'pi pi-pie-chart',
-    defaultCols: 4,
-    defaultRows: 4,
-    minCols: 3,
-    minRows: 3,
-    maxCols: 6,
-    maxRows: 6,
+    defaultW: 4,
+    defaultH: 4,
+    minW: 3,
+    minH: 3,
+    maxW: 6,
+    maxH: 6,
   },
   {
     id: 'longShortDonut',
@@ -219,12 +215,12 @@ export const WIDGET_DEFINITIONS: WidgetDefinition[] = [
     description: 'Distribución de operaciones por dirección.',
     category: 'chart',
     icon: 'pi pi-pie-chart',
-    defaultCols: 4,
-    defaultRows: 4,
-    minCols: 3,
-    minRows: 3,
-    maxCols: 6,
-    maxRows: 6,
+    defaultW: 4,
+    defaultH: 4,
+    minW: 3,
+    minH: 3,
+    maxW: 6,
+    maxH: 6,
   },
   {
     id: 'winsLossesDonut',
@@ -232,12 +228,12 @@ export const WIDGET_DEFINITIONS: WidgetDefinition[] = [
     description: 'Proporción de trades ganadores y perdedores.',
     category: 'chart',
     icon: 'pi pi-pie-chart',
-    defaultCols: 4,
-    defaultRows: 4,
-    minCols: 3,
-    minRows: 3,
-    maxCols: 6,
-    maxRows: 6,
+    defaultW: 4,
+    defaultH: 4,
+    minW: 3,
+    minH: 3,
+    maxW: 6,
+    maxH: 6,
   },
   {
     id: 'pnlByInstrument',
@@ -245,11 +241,11 @@ export const WIDGET_DEFINITIONS: WidgetDefinition[] = [
     description: 'Top 8 activos por contribución al resultado.',
     category: 'chart',
     icon: 'pi pi-chart-bar',
-    defaultCols: 12,
-    defaultRows: 4,
-    minCols: 6,
-    minRows: 3,
-    maxRows: 7,
+    defaultW: 12,
+    defaultH: 4,
+    minW: 6,
+    minH: 3,
+    maxH: 7,
   },
   {
     id: 'activityByPeriod',
@@ -257,16 +253,44 @@ export const WIDGET_DEFINITIONS: WidgetDefinition[] = [
     description: 'Número de operaciones cerradas por periodo temporal.',
     category: 'chart',
     icon: 'pi pi-chart-bar',
-    defaultCols: 12,
-    defaultRows: 4,
-    minCols: 6,
-    minRows: 3,
-    maxRows: 7,
+    defaultW: 12,
+    defaultH: 4,
+    minW: 6,
+    minH: 3,
+    maxH: 7,
   },
 ];
 
 export function getWidgetDefinition(id: string): WidgetDefinition | undefined {
   return WIDGET_DEFINITIONS.find(w => w.id === id);
+}
+
+/** Create a widget item from a definition */
+export function createWidgetItem(def: WidgetDefinition, x: number, y: number): DashboardWidgetItem {
+  return {
+    id: def.id,
+    x,
+    y,
+    w: def.defaultW,
+    h: def.defaultH,
+    minW: def.minW,
+    minH: def.minH,
+    maxW: def.maxW,
+    maxH: def.maxH,
+  };
+}
+
+/** Re-apply min/max constraints from definitions (lost in JSON serialization) */
+export function hydrateWidgetConstraints(widget: DashboardWidgetItem): DashboardWidgetItem {
+  const def = getWidgetDefinition(widget.id);
+  if (!def) return widget;
+  return {
+    ...widget,
+    minW: def.minW,
+    minH: def.minH,
+    maxW: def.maxW,
+    maxH: def.maxH,
+  };
 }
 
 export function getDefaultLayout(): DashboardLayout {
@@ -277,47 +301,22 @@ export function getDefaultLayout(): DashboardLayout {
 
   const widgets: DashboardWidgetItem[] = [];
 
-  // KPIs: 5 per row, each 2 cols wide (total 10 cols -> we use ~2.4 but gridster rounds, use 2 cols each, 5 per row in a 12-col grid is tricky)
-  // With 12 cols and 2 cols each, we fit 6 per row. But original design has 5 per row.
-  // To get 5 per row we'd need non-integer cols. Let's keep 2 cols each = 6 per row, or we can adjust.
-  // Actually with a 10-col grid or using fractional... Let's keep 12 cols and place KPIs as 2 cols each (6 per row).
-  // First row: 5 KPIs (indices 0-4), each 2 cols = 10 cols used, remaining 2 cols empty
-  // Second row: 5 KPIs (indices 5-9), each 2 cols = 10 cols used
-
-  // KPI Row 1
+  // KPI Row 1: 5 KPIs x 2 cols each
   for (let i = 0; i < 5; i++) {
-    widgets.push({
-      id: kpis[i].id,
-      cols: kpis[i].defaultCols,
-      rows: kpis[i].defaultRows,
-      x: i * 2,
-      y,
-    });
+    widgets.push(createWidgetItem(kpis[i], i * 2, y));
   }
   y += 2;
 
-  // KPI Row 2
+  // KPI Row 2: 5 KPIs x 2 cols each
   for (let i = 5; i < 10; i++) {
-    widgets.push({
-      id: kpis[i].id,
-      cols: kpis[i].defaultCols,
-      rows: kpis[i].defaultRows,
-      x: (i - 5) * 2,
-      y,
-    });
+    widgets.push(createWidgetItem(kpis[i], (i - 5) * 2, y));
   }
   y += 2;
 
-  // Charts
+  // Charts stacked
   for (const chart of charts) {
-    widgets.push({
-      id: chart.id,
-      cols: chart.defaultCols,
-      rows: chart.defaultRows,
-      x: 0,
-      y,
-    });
-    y += chart.defaultRows;
+    widgets.push(createWidgetItem(chart, 0, y));
+    y += chart.defaultH;
   }
 
   return { version: 1, widgets };

@@ -1,43 +1,30 @@
-// ── Gridster grid ─────────────────────────────────────
+// ── KTD Grid ─────────────────────────────────────────
 :host {
   display: block;
 }
 
-// Override gridster defaults for a clean, integrated look
+// ktd-grid styles
 ::ng-deep {
-  gridster {
-    background: transparent !important;
-    // Remove gridster's own scroll — the page itself scrolls
-    overflow: visible !important;
-
-    .gridster-preview {
-      background: var(--primary-color) !important;
-      opacity: 0.1 !important;
-      border-radius: 16px !important;
-    }
-
-    .gridster-column,
-    .gridster-row {
-      border-color: var(--glass-border) !important;
-      opacity: 0.2;
-    }
+  ktd-grid {
+    // The grid calculates its own height based on content
   }
 
-  gridster-item {
+  ktd-grid-item {
     border-radius: 16px;
-    overflow: hidden !important; // Clip content to rounded corners
-    transition: box-shadow 0.3s ease, opacity 0.3s ease;
+    overflow: hidden;
 
-    &.gridster-item-moving {
+    // Elevated effect during drag
+    &.ktd-grid-item-dragging {
       z-index: 100 !important;
       box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3) !important;
-      opacity: 0.85;
-      border-radius: 16px;
+      opacity: 0.9;
     }
 
-    &.gridster-item-resizing {
-      z-index: 100 !important;
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2) !important;
+    // Placeholder for drop position
+    &.ktd-grid-item-placeholder {
+      background: var(--primary-color) !important;
+      opacity: 0.12 !important;
+      border-radius: 16px !important;
     }
   }
 }
@@ -168,64 +155,24 @@
   }
 }
 
-// ── Resize handles ───────────────────────────────────
+// ── Resize handle ────────────────────────────────────
 ::ng-deep {
-  .gridster-item-resizable-handler {
-    &.handle-se {
-      width: 16px !important;
-      height: 16px !important;
-      border-right: 3px solid var(--text-disabled) !important;
-      border-bottom: 3px solid var(--text-disabled) !important;
-      border-radius: 0 0 4px 0 !important;
-      opacity: 0;
-      transition: opacity 0.2s ease;
-      right: 4px !important;
-      bottom: 4px !important;
-    }
-
-    &.handle-e {
-      width: 6px !important;
-      right: 0 !important;
-      cursor: ew-resize;
-      opacity: 0;
-      transition: opacity 0.2s ease;
-
-      &::after {
-        content: '';
-        position: absolute;
-        top: 50%;
-        right: 2px;
-        transform: translateY(-50%);
-        width: 3px;
-        height: 24px;
-        border-radius: 2px;
-        background: var(--text-disabled);
-      }
-    }
-
-    &.handle-s {
-      height: 6px !important;
-      bottom: 0 !important;
-      cursor: ns-resize;
-      opacity: 0;
-      transition: opacity 0.2s ease;
-
-      &::after {
-        content: '';
-        position: absolute;
-        bottom: 2px;
-        left: 50%;
-        transform: translateX(-50%);
-        width: 24px;
-        height: 3px;
-        border-radius: 2px;
-        background: var(--text-disabled);
-      }
-    }
+  .ktd-grid-item-resize-icon {
+    position: absolute;
+    right: 4px;
+    bottom: 4px;
+    width: 14px;
+    height: 14px;
+    border-right: 3px solid var(--text-disabled);
+    border-bottom: 3px solid var(--text-disabled);
+    border-radius: 0 0 3px 0;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+    cursor: se-resize;
   }
 
-  gridster-item:hover .gridster-item-resizable-handler {
-    opacity: 0.6;
+  ktd-grid-item:hover .ktd-grid-item-resize-icon {
+    opacity: 0.5;
 
     &:hover {
       opacity: 1;
@@ -235,15 +182,6 @@
 
 // ── Responsive ────────────────────────────────────────
 @media (max-width: 768px) {
-  ::ng-deep {
-    gridster {
-      .gridster-column,
-      .gridster-row {
-        display: none !important;
-      }
-    }
-  }
-
   .config-panel {
     padding: 8px;
   }

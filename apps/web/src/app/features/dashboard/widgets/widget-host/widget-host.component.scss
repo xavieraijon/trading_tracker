@@ -7,12 +7,13 @@
   height: 100%;
   display: flex;
   flex-direction: column;
+  position: relative;
   background: var(--bg-card);
   border: 1px solid var(--glass-border);
   border-radius: 16px;
   box-shadow: var(--shadow-sm);
   overflow: hidden;
-  transition: box-shadow 0.3s ease, transform 0.3s ease;
+  transition: box-shadow 0.3s ease;
 
   &:hover {
     box-shadow: var(--shadow-md);
@@ -135,5 +136,30 @@
     position: relative;
     display: flex;
     flex-direction: column;
+  }
+}
+
+// ── Resize handle ────────────────────────────────────
+.widget-host__resize-handle {
+  position: absolute;
+  right: 4px;
+  bottom: 4px;
+  width: 16px;
+  height: 16px;
+  cursor: se-resize;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-disabled);
+  opacity: 0;
+  transition: opacity 0.2s ease;
+  z-index: 10;
+
+  .widget-host:hover & {
+    opacity: 0.6;
+  }
+
+  &:hover {
+    opacity: 1 !important;
   }
 }

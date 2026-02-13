@@ -31,16 +31,26 @@
       <p class="text-placeholder font-medium">Cargando cuentas y estadísticas…</p>
     </div>
   } @else if (dataService.stats()) {
-    <gridster [options]="gridsterOptions" class="dashboard-grid">
-      @for (widget of layoutService.activeWidgets(); track widget.id) {
-        <gridster-item [item]="widget">
+    <ktd-grid
+      [cols]="cols"
+      [rowHeight]="rowHeight"
+      [gap]="gap"
+      [compactType]="compactType"
+      [layout]="gridLayout"
+      (layoutUpdated)="onLayoutUpdated($event)"
+      (resizeEnded)="onResizeEnded()"
+      class="dashboard-grid">
+      @for (widget of gridLayout; track widget.id) {
+        <ktd-grid-item
+          [id]="widget.id"
+          [transition]="'transform 300ms ease, width 300ms ease, height 300ms ease'">
           <app-widget-host
             [widgetId]="widget.id"
             (remove)="onRemoveWidget($event)">
           </app-widget-host>
-        </gridster-item>
+        </ktd-grid-item>
       }
-    </gridster>
+    </ktd-grid>
   } @else {
     <div class="flex flex-col items-center justify-center p-12 border-2 border-dashed border-default rounded-xl bg-surface-muted">
       <i class="pi pi-chart-bar text-5xl text-disabled mb-4"></i>

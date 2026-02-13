@@ -1,4 +1,4 @@
-import { Component, inject, signal, OnInit } from '@angular/core';
+import { Component, inject, signal, OnInit, effect } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { PageLayoutComponent } from '../../shared/components/page-layout/page-layout.component';
@@ -6,7 +6,10 @@ import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { ButtonModule } from 'primeng/button';
 import { TooltipModule } from 'primeng/tooltip';
 import { DrawerModule } from 'primeng/drawer';
-import { Gridster, GridsterItem, type GridsterConfig, type GridsterItemConfig } from 'angular-gridster2';
+import {
+  KtdGridModule,
+  KtdGridLayout,
+} from '@katoid/angular-grid-layout';
 import { WidgetHostComponent } from './widgets/widget-host/widget-host.component';
 import { DashboardDataService } from './services/dashboard-data.service';
 import { DashboardLayoutService } from './services/dashboard-layout.service';
@@ -23,8 +26,7 @@ import { WIDGET_DEFINITIONS, getWidgetDefinition } from './models/widget-registr
     ButtonModule,
     TooltipModule,
     DrawerModule,
-    Gridster,
-    GridsterItem,
+    KtdGridModule,
     WidgetHostComponent,
   ],
   templateUrl: './dashboard.component.html',
@@ -37,62 +39,48 @@ export class DashboardComponent implements OnInit {
   configPanelVisible = signal(false);
   allWidgets = WIDGET_DEFINITIONS;
 
-  gridsterOptions: GridsterConfig = {
-    gridType: 'verticalFixed',
-    compactType: 'compactUp&Left',
-    margin: 10,
-    outerMargin: true,
-    outerMarginTop: 0,
-    outerMarginRight: 0,
-    outerMarginBottom: 0,
-    outerMarginLeft: 0,
-    minCols: 12,
-    maxCols: 12,
-    minRows: 4,
-    maxRows: 200,
-    defaultItemCols: 2,
-    defaultItemRows: 2,
-    fixedRowHeight: 80,
-    pushItems: true,
-    pushResizeItems: true,
-    swap: false,
-    disablePushOnResize: false,
-    pushDirections: { north: true, east: true, south: true, west: true },
-    displayGrid: 'onDrag&Resize',
-    disableScrollHorizontal: true,
-    draggable: {
-      enabled: true,
-      dragHandleClass: 'widget-host__titlebar',
-      ignoreContentClass: 'widget-host__btn',
-    },
-    resizable: {
-      enabled: true,
-      handles: { s: true, e: true, se: true },
-    },
-    itemChangeCallback: (_item: GridsterItemConfig) => {
-      this.onGridChange();
-    },
-    itemResizeCallback: (_item: GridsterItemConfig) => {
-      // Force chart redraw on resize
-      setTimeout(() => window.dispatchEvent(new Event('resize')), 100);
-    },
-  };
+  // ktd-grid config
+  cols = 12;
+  rowHeight = 80;
+  gap = 10;
+  compactType: 'vertical' | 'horizontal' | null = 'vertical';
+
+  /**
+   * Local layout array for ktd-grid [layout] binding.
+   * ONLY updated on structural changes (load/add/remove/reset) via the effect.
+   * NEVER updated from (layoutUpdated) — ktd-grid manages positions internally.
+   */
+  gridLayout: KtdGridLayout = [];
+
+  constructor() {
+    // Sync gridLayout from the service signal whenever it changes.
+    // Signal only changes on: loadLayout, addWidget, removeWidget, resetToDefault
+    // (NOT on drag/resize — we use persistWithoutSignalUpdate there), so no loop.
+    effect(() => {
+      this.gridLayout = this.layoutService.activeWidgets();
+    });
+  }
 
   ngOnInit(): void {
     this.layoutService.loadLayout();
+    // Set initial layout so grid renders before first effect run
+    this.gridLayout = this.layoutService.activeWidgets();
   }
 
   // ── Grid callbacks ──────────────────────────────────────
 
-  onGridChange(): void {
-    const widgets = this.layoutService.activeWidgets().map(w => ({
-      id: w.id,
-      cols: w.cols,
-      rows: w.rows,
-      x: w.x,
-      y: w.y,
-    }));
-    this.layoutService.updateWidgets(widgets);
+  /**
+   * Called by ktd-grid after drag/resize ends.
+   * Only persist — do NOT update the service signal, so the effect won't run and
+   * gridLayout stays as-is (ktd-grid already has the correct positions).
+   */
+  onLayoutUpdated(layout: KtdGridLayout): void {
+    this.layoutService.persistWithoutSignalUpdate(layout);
+  }
+
+  onResizeEnded(): void {
+    // Force charts to recalculate their size after resize finishes
+    setTimeout(() => window.dispatchEvent(new Event('resize')), 50);
   }
 
   onRemoveWidget(widgetId: string): void {
