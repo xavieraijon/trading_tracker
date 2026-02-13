@@ -1,68 +1,72 @@
 import { Component, inject, signal, OnInit } from '@angular/core';
 import { CommonModule, DatePipe } from '@angular/common';
+import { TagModule } from 'primeng/tag';
+import { MessageModule } from 'primeng/message';
+import { CardModule } from 'primeng/card';
+import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { FundingApiService } from '../../services/funding-api.service';
 import { PlanDayResult } from '../../models/plan-day';
-import { STATE_LABELS, STATE_COLORS, OperationalState } from '../../models/operational-state';
+import { STATE_LABELS, OperationalState } from '../../models/operational-state';
 
 @Component({
   selector: 'app-plan-day',
   standalone: true,
-  imports: [CommonModule, DatePipe],
+  imports: [CommonModule, DatePipe, TagModule, MessageModule, CardModule, ProgressSpinnerModule],
   template: `
     <div class="p-4 flex flex-col gap-6 max-w-2xl mx-auto">
       <h2 class="text-xl font-bold">Plan del Día</h2>
 
       @if (loading()) {
-        <div class="text-gray-400 text-center py-8">Loading...</div>
+        <div class="flex justify-center py-8">
+          <p-progressSpinner strokeWidth="3" animationDuration="1s" />
+        </div>
       } @else if (plan(); as p) {
         <div class="text-sm text-gray-500 mb-2">{{ p.date | date:'fullDate' }}</div>
 
         @if (p.calendarBlocked) {
-          <div class="bg-orange-100 border border-orange-300 text-orange-800 rounded-lg p-4 text-center font-semibold">
-            Calendar blocked — No trading today
-          </div>
+          <p-message severity="warn" icon="pi pi-ban">
+            <span class="font-semibold">Calendar blocked — No trading today</span>
+          </p-message>
         }
 
         @if (p.operate.length > 0) {
           <div>
-            <h3 class="text-base font-semibold text-green-700 mb-2">Operate Today</h3>
+            <h3 class="text-base font-semibold text-green-700 mb-3">Operate Today</h3>
             @for (a of p.operate; track a.accountId) {
-              <div class="flex items-center justify-between bg-green-50 border border-green-200 rounded-lg px-4 py-3 mb-2">
-                <div>
-                  <span class="font-semibold">{{ a.accountName }}</span>
-                  <span class="ml-2 text-xs px-1.5 py-0.5 rounded font-bold text-white"
-                        [style.background-color]="stateColor(a.state)">
-                    {{ stateLabel(a.state) }}
-                  </span>
+              <p-card styleClass="mb-2 border-green-200">
+                <div class="flex items-center justify-between">
+                  <div class="flex items-center gap-2">
+                    <span class="font-semibold">{{ a.accountName }}</span>
+                    <p-tag [value]="stateLabel(a.state)" [severity]="stateSeverity(a.state)" />
+                  </div>
+                  <span class="text-xs text-gray-500">{{ a.reason }}</span>
                 </div>
-                <span class="text-xs text-gray-600">{{ a.reason }}</span>
-              </div>
+              </p-card>
             }
           </div>
         }
 
         @if (p.block.length > 0) {
           <div>
-            <h3 class="text-base font-semibold text-red-700 mb-2">Blocked</h3>
+            <h3 class="text-base font-semibold text-red-700 mb-3">Blocked</h3>
             @for (a of p.block; track a.accountId) {
-              <div class="flex items-center justify-between bg-red-50 border border-red-200 rounded-lg px-4 py-3 mb-2">
-                <div>
-                  <span class="font-semibold">{{ a.accountName }}</span>
-                  <span class="ml-2 text-xs px-1.5 py-0.5 rounded font-bold text-white"
-                        [style.background-color]="stateColor(a.state)">
-                    {{ stateLabel(a.state) }}
-                  </span>
+              <p-card styleClass="mb-2 border-red-200">
+                <div class="flex items-center justify-between">
+                  <div class="flex items-center gap-2">
+                    <span class="font-semibold">{{ a.accountName }}</span>
+                    <p-tag [value]="stateLabel(a.state)" [severity]="stateSeverity(a.state)" />
+                  </div>
+                  <span class="text-xs text-gray-500">{{ a.reason }}</span>
                 </div>
-                <span class="text-xs text-gray-600">{{ a.reason }}</span>
-              </div>
+              </p-card>
             }
           </div>
         }
 
         @if (p.operate.length === 0 && !p.calendarBlocked) {
-          <div class="bg-gray-100 border border-gray-300 rounded-lg p-4 text-center text-gray-600">
-            No funded accounts available to trade today.
-          </div>
+          <p-message severity="info" icon="pi pi-info-circle">
+            <span>No funded accounts available to trade today.</span>
+          </p-message>
         }
       }
     </div>
@@ -88,7 +92,15 @@ export class PlanDayComponent implements OnInit {
     return STATE_LABELS[state] ?? state;
   }
 
-  stateColor(state: OperationalState): string {
-    return STATE_COLORS[state] ?? '#9CA3AF';
+  stateSeverity(state: OperationalState): 'success' | 'danger' | 'info' | 'warn' | 'secondary' | 'contrast' {
+    switch (state) {
+      case OperationalState.BREAK_EVEN: return 'info';
+      case OperationalState.DRAWDOWN: return 'danger';
+      case OperationalState.PROFIT: return 'success';
+      case OperationalState.PAYOUT_REQUESTED: return 'warn';
+      case OperationalState.PAYOUT_PROCESSING: return 'warn';
+      case OperationalState.CHALLENGE: return 'secondary';
+      default: return 'secondary';
+    }
   }
 }

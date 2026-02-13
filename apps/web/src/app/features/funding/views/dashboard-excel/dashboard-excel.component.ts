@@ -1,12 +1,15 @@
 import { Component, inject, signal, OnInit, computed } from '@angular/core';
 import { CommonModule, CurrencyPipe, DatePipe } from '@angular/common';
 import { ScrollingModule } from '@angular/cdk/scrolling';
+import { TagModule } from 'primeng/tag';
+import { ProgressSpinnerModule } from 'primeng/progressspinner';
+import { TooltipModule } from 'primeng/tooltip';
 import { FundingApiService } from '../../services/funding-api.service';
 import { DailyAccountStatus } from '../../models/daily-status';
 import { AccountStateSnapshot } from '../../models/snapshot';
 import { DayCellComponent } from '../../components/day-cell/day-cell.component';
 import { StateLegendComponent } from '../../components/state-legend/state-legend.component';
-import { OperationalState } from '../../models/operational-state';
+import { OperationalState, STATE_LABELS } from '../../models/operational-state';
 
 interface AccountRow {
   accountId: string;
@@ -18,7 +21,7 @@ interface AccountRow {
 @Component({
   selector: 'app-dashboard-excel',
   standalone: true,
-  imports: [CommonModule, CurrencyPipe, DatePipe, ScrollingModule, DayCellComponent, StateLegendComponent],
+  imports: [CommonModule, CurrencyPipe, DatePipe, ScrollingModule, TagModule, ProgressSpinnerModule, TooltipModule, DayCellComponent, StateLegendComponent],
   template: `
     <div class="flex flex-col gap-4 p-4">
       <div class="flex items-center justify-between">
@@ -27,7 +30,9 @@ interface AccountRow {
       </div>
 
       @if (loading()) {
-        <div class="text-center py-8 text-gray-400">Loading...</div>
+        <div class="flex justify-center py-8">
+          <p-progressSpinner strokeWidth="3" animationDuration="1s" />
+        </div>
       } @else if (rows().length === 0) {
         <div class="text-center py-8 text-gray-400">No funded accounts found</div>
       } @else {
@@ -36,7 +41,7 @@ interface AccountRow {
             <thead>
               <tr class="bg-surface-100">
                 <th class="sticky left-0 z-10 bg-surface-100 px-3 py-2 text-left min-w-[140px]">Account</th>
-                <th class="px-2 py-2 text-center min-w-[56px]">State</th>
+                <th class="px-2 py-2 text-center min-w-[90px]">State</th>
                 <th class="px-2 py-2 text-right min-w-[80px]">Balance</th>
                 @for (day of dateColumns(); track day) {
                   <th class="px-1 py-2 text-center min-w-[52px]"
@@ -52,11 +57,8 @@ interface AccountRow {
                 <tr class="border-t border-surface-100 hover:bg-surface-50">
                   <td class="sticky left-0 z-10 bg-surface-0 px-3 py-1.5 font-medium">{{ row.accountName }}</td>
                   <td class="px-2 py-1.5 text-center">
-                    <span class="inline-block px-1.5 py-0.5 rounded text-[10px] font-semibold"
-                          [style.background-color]="getStateColor(row.snapshot?.operationalState)"
-                          style="color: white">
-                      {{ row.snapshot?.operationalState ?? '—' }}
-                    </span>
+                    <p-tag [value]="stateLabel(row.snapshot?.operationalState)"
+                           [severity]="stateSeverity(row.snapshot?.operationalState)" />
                   </td>
                   <td class="px-2 py-1.5 text-right font-mono">
                     {{ row.snapshot?.balance | currency:'USD':'symbol':'1.0-0' }}
@@ -87,7 +89,6 @@ export class DashboardExcelComponent implements OnInit {
   snapshots = signal<AccountStateSnapshot[]>([]);
   dailyStatuses = signal<DailyAccountStatus[]>([]);
 
-  // Generate last 30 days as date columns
   dateColumns = computed(() => {
     const days: string[] = [];
     const today = new Date();
@@ -148,17 +149,21 @@ export class DashboardExcelComponent implements OnInit {
     return d.getDay() === 0 || d.getDay() === 6;
   }
 
-  getStateColor(state?: OperationalState | string): string {
-    if (!state) return '#9CA3AF';
-    const map: Record<string, string> = {
-      BREAK_EVEN: '#3B82F6',
-      DRAWDOWN: '#EF4444',
-      PROFIT: '#4ADE80',
-      PAYOUT_REQUESTED: '#166534',
-      PAYOUT_PROCESSING: '#166534',
-      CHALLENGE: '#9CA3AF',
-    };
-    return map[state] ?? '#9CA3AF';
+  stateLabel(state?: OperationalState | string): string {
+    if (!state) return '—';
+    return STATE_LABELS[state as OperationalState] ?? state;
+  }
+
+  stateSeverity(state?: OperationalState | string): 'success' | 'danger' | 'info' | 'warn' | 'secondary' {
+    switch (state) {
+      case OperationalState.BREAK_EVEN: return 'info';
+      case OperationalState.DRAWDOWN: return 'danger';
+      case OperationalState.PROFIT: return 'success';
+      case OperationalState.PAYOUT_REQUESTED: return 'warn';
+      case OperationalState.PAYOUT_PROCESSING: return 'warn';
+      case OperationalState.CHALLENGE: return 'secondary';
+      default: return 'secondary';
+    }
   }
 
   getDayState(row: AccountRow, day: string): OperationalState | null {

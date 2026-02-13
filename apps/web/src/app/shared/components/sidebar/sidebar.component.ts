@@ -2,6 +2,7 @@ import { Component, inject, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { PanelMenuModule } from 'primeng/panelmenu';
+import { MenuItem } from 'primeng/api';
 import { App } from '../../../app';
 
 @Component({
@@ -13,9 +14,9 @@ import { App } from '../../../app';
 })
 export class SidebarComponent {
 
-
   app = inject(App);
 
+  /** Flat items rendered with the custom <ul> template. */
   menuItems = computed(() => [
     {
       label: 'Dashboard',
@@ -33,24 +34,40 @@ export class SidebarComponent {
       routerLink: ['/trades']
     },
     {
-      label: 'Funding',
-      icon: 'pi pi-building',
-      routerLink: ['/funding']
-    },
-    {
-      label: 'Plan del Día',
-      icon: 'pi pi-check-square',
-      routerLink: ['/funding/plan']
-    },
-    {
-      label: 'Payouts',
-      icon: 'pi pi-money-bill',
-      routerLink: ['/funding/payouts']
-    },
-    {
       label: 'Calendario',
       icon: 'pi pi-calendar',
       routerLink: ['/calendar']
+    }
+  ]);
+
+  /** Collapsible PanelMenu items for the Funding section. */
+  fundingMenuItems = computed<MenuItem[]>(() => [
+    {
+      label: 'Funding',
+      icon: 'pi pi-building',
+      expanded: true,
+      items: [
+        {
+          label: 'Overview',
+          icon: 'pi pi-th-large',
+          routerLink: '/funding'
+        },
+        {
+          label: 'Plan del Día',
+          icon: 'pi pi-check-square',
+          routerLink: '/funding/plan'
+        },
+        {
+          label: 'Payouts',
+          icon: 'pi pi-money-bill',
+          routerLink: '/funding/payouts'
+        },
+        {
+          label: 'Calendario Económico',
+          icon: 'pi pi-calendar-clock',
+          routerLink: '/funding/calendar'
+        }
+      ]
     }
   ]);
 

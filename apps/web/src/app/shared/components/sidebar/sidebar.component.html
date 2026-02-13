@@ -26,4 +26,10 @@
             </li>
         }
     </ul>
+
+    <!-- Funding section: collapsible PanelMenu -->
+    <div class="mt-1 sidebar-panel-menu"
+         [class.collapsed-sidebar]="app.sidebarActive()">
+        <p-panelmenu [model]="fundingMenuItems()" styleClass="sidebar-funding-menu" />
+    </div>
 </div>
