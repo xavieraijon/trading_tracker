@@ -41,13 +41,13 @@
                                 <div class="day-content">
                                     <span class="pnl-value"
                                           [ngClass]="(day.pnl || 0) >= 0 ? 'is-profit' : 'is-loss'">
-                                        {{ (day.pnl || 0) >= 0 ? '+' : ''}}{{ day.pnl | currency:'USD':'symbol':'1.0-1' }}
+                                        <app-amount [value]="day.pnl" currency="USD" digitsInfo="1.0-1" [showPlus]="true" />
                                     </span>
                                     <span class="trade-count">{{ day.tradesCount }} trades</span>
                                 </div>
                             } @else if (day.isCurrentMonth) {
                                 <div class="day-content">
-                                    <span class="pnl-value is-neutral">$0</span>
+                                    <span class="pnl-value is-neutral"><app-amount [value]="0" currency="USD" /></span>
                                     <span class="trade-count">0 trades</span>
                                 </div>
                             }
@@ -59,7 +59,7 @@
                         <span class="summary-label">{{ week.summary.label }}</span>
                         <span class="summary-pnl"
                                [ngClass]="week.summary.pnl >= 0 ? 'is-profit' : 'is-loss'">
-                            {{ week.summary.pnl >= 0 ? '+' : ''}}{{ week.summary.pnl | currency:'USD':'symbol':'1.0-1' }}
+                            <app-amount [value]="week.summary.pnl" currency="USD" digitsInfo="1.0-1" [showPlus]="true" />
                         </span>
                         <span class="summary-stats">{{ week.summary.tradesCount }} trades</span>
                     </div>
@@ -76,7 +76,7 @@
             <div class="popover-header">
                 <span class="popover-date">{{ selectedDay()?.date | date:'EEEE, d MMMM yyyy':'':'es-ES' }}</span>
                 <div class="popover-summary-pill" [ngClass]="(selectedDay()?.pnl || 0) >= 0 ? 'is-profit' : 'is-loss'">
-                    {{ (selectedDay()?.pnl || 0) >= 0 ? '+' : '' }}{{ selectedDay()?.pnl | currency:'USD':'symbol':'1.2-2' }}
+                    <app-amount [value]="selectedDay()?.pnl" currency="USD" digitsInfo="1.2-2" [showPlus]="true" />
                 </div>
             </div>
 
@@ -98,8 +98,8 @@
                                     {{ trade.side }}
                                 </span>
                             </td>
-                            <td class="text-right font-mono font-bold" [ngClass]="trade.pnlNet >= 0 ? 'text-emerald-600' : 'text-rose-600'">
-                                {{ trade.pnlNet >= 0 ? '+' : '' }}{{ trade.pnlNet | currency:'USD':'symbol':'1.2-2' }}
+                            <td class="text-right font-bold" [ngClass]="trade.pnlNet >= 0 ? 'text-emerald-600' : 'text-rose-600'">
+                                <app-amount [value]="trade.pnlNet" currency="USD" digitsInfo="1.2-2" [showPlus]="true" />
                             </td>
                         </tr>
                     </ng-template>
@@ -121,7 +121,7 @@
                 <div class="footer-stat">
                     <span class="label">Balance Día</span>
                     <span class="value pnl" [ngClass]="(selectedDay()?.pnl || 0) >= 0 ? 'text-emerald-600' : 'text-rose-600'">
-                        {{ (selectedDay()?.pnl || 0) >= 0 ? '+' : '' }}{{ selectedDay()?.pnl | currency:'USD':'symbol':'1.2-2' }}
+                        <app-amount [value]="selectedDay()?.pnl" currency="USD" digitsInfo="1.2-2" [showPlus]="true" />
                     </span>
                 </div>
             </div>

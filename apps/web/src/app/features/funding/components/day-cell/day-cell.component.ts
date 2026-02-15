@@ -1,11 +1,12 @@
 import { Component, input, computed } from '@angular/core';
-import { CommonModule, CurrencyPipe } from '@angular/common';
+import { CommonModule } from '@angular/common';
+import { AmountComponent } from '../../../../shared/components/amount/amount.component';
 import { OperationalState, STATE_COLORS, WEEKEND_COLOR } from '../../models/operational-state';
 
 @Component({
   selector: 'app-day-cell',
   standalone: true,
-  imports: [CommonModule, CurrencyPipe],
+  imports: [CommonModule, AmountComponent],
   template: `
     <div
       class="w-full h-full flex flex-col items-center justify-center text-[10px] leading-tight rounded-sm cursor-default"
@@ -14,7 +15,7 @@ import { OperationalState, STATE_COLORS, WEEKEND_COLOR } from '../../models/oper
       [title]="tooltipText()"
     >
       @if (pnl() !== null) {
-        <span class="font-semibold">{{ pnl() | currency:'USD':'symbol':'1.0-0' }}</span>
+        <span class="font-semibold"><app-amount [value]="pnl()" currency="USD" digitsInfo="1.0-0" /></span>
       }
       @if (tradesCount() > 0) {
         <span>{{ tradesCount() }}t</span>

@@ -1,5 +1,5 @@
 import { Component, inject, signal, OnInit, computed } from '@angular/core';
-import { CommonModule, CurrencyPipe } from '@angular/common';
+import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { TagModule } from 'primeng/tag';
 import { ButtonModule } from 'primeng/button';
@@ -10,6 +10,7 @@ import { FundingApiService } from '../../services/funding-api.service';
 import { DailyAccountStatus } from '../../models/daily-status';
 import { AccountStateSnapshot } from '../../models/snapshot';
 import { StateLegendComponent } from '../../components/state-legend/state-legend.component';
+import { AmountComponent } from '../../../../shared/components/amount/amount.component';
 import { OperationalState, STATE_LABELS, STATE_COLORS } from '../../models/operational-state';
 
 /** Misma cabecera que el calendario de Analytics (sección Calendario). */
@@ -27,7 +28,7 @@ interface AccountRow {
 @Component({
   selector: 'app-dashboard-excel',
   standalone: true,
-  imports: [CommonModule, CurrencyPipe, RouterLink, TagModule, ButtonModule, ProgressSpinnerModule, TooltipModule, PageLayoutComponent, StateLegendComponent],
+  imports: [CommonModule, AmountComponent, RouterLink, TagModule, ButtonModule, ProgressSpinnerModule, TooltipModule, PageLayoutComponent, StateLegendComponent],
   template: `
     <app-page-layout
       title="Funding Overview"
@@ -81,8 +82,8 @@ interface AccountRow {
                          [severity]="stateSeverity(row.snapshot?.operationalState)"
                          class="mt-1.5" />
                 </div>
-                <div class="text-right font-mono text-sm font-medium shrink-0">
-                  {{ row.snapshot?.balance | currency:'USD':'symbol':'1.0-0' }}
+                <div class="text-right text-sm font-medium shrink-0">
+                  <app-amount [value]="row.snapshot?.balance" currency="USD" digitsInfo="1.0-0" />
                 </div>
               </div>
 
@@ -128,7 +129,7 @@ interface AccountRow {
                                 @if (getDayPnl(row, cell.dateStr) !== null) {
                                   <span class="pnl-value"
                                         [ngClass]="(getDayPnl(row, cell.dateStr) ?? 0) >= 0 ? 'is-profit' : 'is-loss'">
-                                    {{ (getDayPnl(row, cell.dateStr) ?? 0) >= 0 ? '+' : '' }}{{ getDayPnl(row, cell.dateStr) | currency:'USD':'symbol':'1.0-1' }}
+                                    <app-amount [value]="getDayPnl(row, cell.dateStr)" currency="USD" digitsInfo="1.0-1" [showPlus]="true" />
                                   </span>
                                 } @else if (!isWeekend(cell.dateStr)) {
                                   <span class="pnl-value is-neutral">—</span>

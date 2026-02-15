@@ -14,9 +14,37 @@
 
     <p-toast></p-toast>
     <p-confirmDialog [appendTo]="'body'"></p-confirmDialog>
+
+    <!-- Tab navigation (solo cabecera, sin panels) -->
+    <p-tabs [(value)]="activeTab">
+        <p-tablist>
+            <p-tab value="active">
+                <i class="pi pi-bolt mr-2"></i>
+                Operativas
+                @if (activeCount() > 0) {
+                    <p-badge [value]="activeCount().toString()" class="ml-2"></p-badge>
+                }
+            </p-tab>
+            <p-tab value="completed">
+                <i class="pi pi-check-circle mr-2"></i>
+                Challenges Superados
+                @if (completedCount() > 0) {
+                    <p-badge [value]="completedCount().toString()" severity="success" class="ml-2"></p-badge>
+                }
+            </p-tab>
+            <p-tab value="standby">
+                <i class="pi pi-pause mr-2"></i>
+                En Pausa
+                @if (standbyCount() > 0) {
+                    <p-badge [value]="standbyCount().toString()" severity="warn" class="ml-2"></p-badge>
+                }
+            </p-tab>
+        </p-tablist>
+    </p-tabs>
+
+    <!-- Filter toolbar compartido entre todos los tabs -->
     <app-filter-toolbar (clear)="clearFilters()">
         <div start class="flex flex-wrap gap-4 items-center">
-            <!-- Buscador -->
             <p-iftalabel>
                 <input
                     pInputText
@@ -28,8 +56,6 @@
                 />
                 <label for="search">Búsqueda</label>
             </p-iftalabel>
-
-            <!-- Mercado -->
             <p-iftalabel>
                 <p-select
                     id="market"
@@ -44,24 +70,22 @@
                 ></p-select>
                 <label for="market">Mercado</label>
             </p-iftalabel>
-
-            <!-- Tipo -->
-            <p-iftalabel>
-                <p-select
-                    id="type"
-                    [options]="typeOptions"
-                    [(ngModel)]="selectedType"
-                    optionLabel="label"
-                    optionValue="value"
-                    placeholder="Cualquiera"
-                    appendTo="body"
-                    variant="filled"
-                    styleClass="w-48"
-                ></p-select>
-                <label for="type">Tipo de Cuenta</label>
-            </p-iftalabel>
-
-            <!-- Divisa -->
+            @if (showTypeFilter()) {
+                <p-iftalabel>
+                    <p-select
+                        id="type"
+                        [options]="typeOptions"
+                        [(ngModel)]="selectedType"
+                        optionLabel="label"
+                        optionValue="value"
+                        placeholder="Cualquiera"
+                        appendTo="body"
+                        variant="filled"
+                        styleClass="w-48"
+                    ></p-select>
+                    <label for="type">Tipo de Cuenta</label>
+                </p-iftalabel>
+            }
             <p-iftalabel>
                 <p-select
                     id="currency"
@@ -79,80 +103,245 @@
         </div>
     </app-filter-toolbar>
 
-    <div class="bullish-table-container">
-        <p-table
-            [value]="filteredAccounts()"
-            [rows]="10"
-            [paginator]="true"
-            [size]="'small'"
-            dataKey="id"
-        >
-            <ng-template pTemplate="header">
-                <tr>
-                    <th pSortableColumn="name">Nombre <p-sortIcon field="name"></p-sortIcon></th>
-                    <th pSortableColumn="type">Tipo <p-sortIcon field="type"></p-sortIcon></th>
-                    <th pSortableColumn="propFirmStatus">Categoría <p-sortIcon field="propFirmStatus"></p-sortIcon></th>
-                    <th pSortableColumn="market">Mercado <p-sortIcon field="market"></p-sortIcon></th>
-                    <th pSortableColumn="currency">Divisa <p-sortIcon field="currency"></p-sortIcon></th>
-                    <th pSortableColumn="balance">Balance Actual <p-sortIcon field="balance"></p-sortIcon></th>
-                    <th class="sticky-actions text-center">Acciones</th>
-                </tr>
-            </ng-template>
-            <ng-template pTemplate="body" let-account>
-                <tr>
-                    <td class="font-bold">{{ account.name }}</td>
-                    <td class="text-muted">{{ getAccountTypeLabel(account.type) }}</td>
-                    <td>
-                        @if (account.type === 'PROP_FIRM' && account.propFirmStatus) {
-                            <p-tag [value]="getPropFirmStatusLabel(account.propFirmStatus)" [severity]="getPropFirmStatusSeverity(account.propFirmStatus)"></p-tag>
-                        } @else if (account.type === 'PERSONAL') {
-                            <p-tag value="Real" severity="secondary"></p-tag>
-                        } @else {
-                            <span class="text-muted italic text-xs">Sin asignar</span>
-                        }
-                    </td>
-                    <td><p-tag [value]="account.market" [severity]="getMarketSeverity(account.market)"></p-tag></td>
-                    <td><p-tag [value]="account.currency" severity="secondary"></p-tag></td>
-                    <td class="font-mono" [ngClass]="getBalanceClass(account)">
-                        {{ account.balance | currency:account.currency }}
-                    </td>
-                    <td class="sticky-actions text-center">
-                        <div class="flex justify-center gap-3">
-                            @if (account.type === 'PROP_FIRM') {
-                                <p-button
-                                    icon="pi pi-chart-line"
-                                    [rounded]="true"
-                                    [text]="true"
-                                    severity="info"
-                                    pTooltip="Detalle Funding"
-                                    tooltipPosition="top"
-                                    (onClick)="goToFundingDetail(account)"
-                                ></p-button>
-                            }
-                            <p-button
-                                icon="pi pi-pencil"
-                                [rounded]="true"
-                                [text]="true"
-                                severity="secondary"
-                                pTooltip="Editar cuenta"
-                                tooltipPosition="top"
-                                (onClick)="editAccount(account)"
-                            ></p-button>
-                            <p-button
-                                icon="pi pi-trash"
-                                severity="danger"
-                                [rounded]="true"
-                                [text]="true"
-                                pTooltip="Eliminar"
-                                tooltipPosition="top"
-                                (onClick)="deleteAccount(account)"
-                            ></p-button>
-                        </div>
-                    </td>
-                </tr>
-            </ng-template>
-        </p-table>
-    </div>
+    <!-- Contenido de la tabla según tab activo -->
+        @switch (activeTab()) {
+            <!-- Tab: Operativas -->
+            @case ('active') {
+                <p-table
+                    [value]="filteredAccounts()"
+                    [rows]="10"
+                    [paginator]="true"
+                    [size]="'small'"
+                    dataKey="id"
+                >
+                    <ng-template pTemplate="header">
+                        <tr>
+                            <th pSortableColumn="name">Nombre <p-sortIcon field="name"></p-sortIcon></th>
+                            <th pSortableColumn="type">Tipo <p-sortIcon field="type"></p-sortIcon></th>
+                            <th pSortableColumn="propFirmStatus">Categoría <p-sortIcon field="propFirmStatus"></p-sortIcon></th>
+                            <th pSortableColumn="market">Mercado <p-sortIcon field="market"></p-sortIcon></th>
+                            <th pSortableColumn="currency">Divisa <p-sortIcon field="currency"></p-sortIcon></th>
+                            <th pSortableColumn="balance">Balance Actual <p-sortIcon field="balance"></p-sortIcon></th>
+                            <th class="sticky-actions text-center">Acciones</th>
+                        </tr>
+                    </ng-template>
+                    <ng-template pTemplate="body" let-account>
+                        <tr>
+                            <td>{{ account.name }}</td>
+                            <td class="text-muted">{{ getAccountTypeLabel(account.type) }}</td>
+                            <td>
+                                @if (account.type === 'PROP_FIRM' && account.propFirmStatus) {
+                                    <p-tag [value]="getPropFirmStatusLabel(account.propFirmStatus)" [severity]="getPropFirmStatusSeverity(account.propFirmStatus)"></p-tag>
+                                } @else if (account.type === 'PERSONAL') {
+                                    <p-tag value="Real" severity="secondary"></p-tag>
+                                } @else {
+                                    <span class="text-muted italic text-xs">Sin asignar</span>
+                                }
+                            </td>
+                            <td><p-tag [value]="account.market" [severity]="getMarketSeverity(account.market)"></p-tag></td>
+                            <td><p-tag [value]="account.currency" severity="secondary"></p-tag></td>
+                            <td [ngClass]="getBalanceClass(account)">
+                                <app-amount [value]="account.balance" [currency]="account.currency" />
+                            </td>
+                            <td class="sticky-actions text-center">
+                                <div class="flex justify-center gap-3">
+                                    @if (account.type === 'PROP_FIRM') {
+                                        <p-button
+                                            icon="pi pi-chart-line"
+                                            [rounded]="true"
+                                            [text]="true"
+                                            severity="info"
+                                            pTooltip="Detalle Funding"
+                                            tooltipPosition="top"
+                                            (onClick)="goToFundingDetail(account)"
+                                        ></p-button>
+                                    }
+                                    @if (account.type === 'PROP_FIRM' && account.propFirmStatus === 'CHALLENGE') {
+                                        <p-button
+                                            icon="pi pi-check-circle"
+                                            [rounded]="true"
+                                            [text]="true"
+                                            severity="success"
+                                            pTooltip="Marcar Challenge Superado"
+                                            tooltipPosition="top"
+                                            (onClick)="markAsCompleted(account)"
+                                        ></p-button>
+                                    }
+                                    <p-button
+                                        icon="pi pi-pause"
+                                        [rounded]="true"
+                                        [text]="true"
+                                        severity="warn"
+                                        pTooltip="Poner en Pausa"
+                                        tooltipPosition="top"
+                                        (onClick)="putOnStandby(account)"
+                                    ></p-button>
+                                    <p-button
+                                        icon="pi pi-pencil"
+                                        [rounded]="true"
+                                        [text]="true"
+                                        severity="secondary"
+                                        pTooltip="Editar cuenta"
+                                        tooltipPosition="top"
+                                        (onClick)="editAccount(account)"
+                                    ></p-button>
+                                    <p-button
+                                        icon="pi pi-trash"
+                                        severity="danger"
+                                        [rounded]="true"
+                                        [text]="true"
+                                        pTooltip="Eliminar"
+                                        tooltipPosition="top"
+                                        (onClick)="deleteAccount(account)"
+                                    ></p-button>
+                                </div>
+                            </td>
+                        </tr>
+                    </ng-template>
+                    <ng-template pTemplate="emptymessage">
+                        <tr>
+                            <td colspan="7" class="text-center p-6 text-muted">
+                                No hay cuentas operativas. Crea una nueva cuenta para empezar.
+                            </td>
+                        </tr>
+                    </ng-template>
+                </p-table>
+            }
+
+            <!-- Tab: Challenges Superados -->
+            @case ('completed') {
+                <p-table
+                    [value]="filteredAccounts()"
+                    [rows]="10"
+                    [paginator]="true"
+                    [size]="'small'"
+                    dataKey="id"
+                >
+                    <ng-template pTemplate="header">
+                        <tr>
+                            <th pSortableColumn="name">Nombre <p-sortIcon field="name"></p-sortIcon></th>
+                            <th pSortableColumn="broker">Broker <p-sortIcon field="broker"></p-sortIcon></th>
+                            <th pSortableColumn="market">Mercado <p-sortIcon field="market"></p-sortIcon></th>
+                            <th pSortableColumn="balance">Balance Final <p-sortIcon field="balance"></p-sortIcon></th>
+                            <th pSortableColumn="initialBalance">Balance Inicial <p-sortIcon field="initialBalance"></p-sortIcon></th>
+                            <th class="sticky-actions text-center">Acciones</th>
+                        </tr>
+                    </ng-template>
+                    <ng-template pTemplate="body" let-account>
+                        <tr>
+                            <td class="font-bold">
+                                {{ account.name }}
+                                <p-tag value="Challenge Superado" severity="success" class="ml-2"></p-tag>
+                            </td>
+                            <td class="text-muted">{{ account.broker || '-' }}</td>
+                            <td><p-tag [value]="account.market" [severity]="getMarketSeverity(account.market)"></p-tag></td>
+                            <td class="text-success font-bold">
+                                <app-amount [value]="account.balance" [currency]="account.currency" />
+                            </td>
+                            <td>
+                                <app-amount [value]="account.initialBalance" [currency]="account.currency" />
+                            </td>
+                            <td class="sticky-actions text-center">
+                                <div class="flex justify-center gap-3">
+                                    @if (account.type === 'PROP_FIRM') {
+                                        <p-button
+                                            icon="pi pi-chart-line"
+                                            [rounded]="true"
+                                            [text]="true"
+                                            severity="info"
+                                            pTooltip="Ver Detalle Funding"
+                                            tooltipPosition="top"
+                                            (onClick)="goToFundingDetail(account)"
+                                        ></p-button>
+                                    }
+                                    <p-button
+                                        icon="pi pi-trash"
+                                        severity="danger"
+                                        [rounded]="true"
+                                        [text]="true"
+                                        pTooltip="Eliminar"
+                                        tooltipPosition="top"
+                                        (onClick)="deleteAccount(account)"
+                                    ></p-button>
+                                </div>
+                            </td>
+                        </tr>
+                    </ng-template>
+                    <ng-template pTemplate="emptymessage">
+                        <tr>
+                            <td colspan="6" class="text-center p-6 text-muted">
+                                No hay challenges superados todavía.
+                            </td>
+                        </tr>
+                    </ng-template>
+                </p-table>
+            }
+
+            <!-- Tab: En Pausa -->
+            @case ('standby') {
+                <p-table
+                    [value]="filteredAccounts()"
+                    [rows]="10"
+                    [paginator]="true"
+                    [size]="'small'"
+                    dataKey="id"
+                >
+                    <ng-template pTemplate="header">
+                        <tr>
+                            <th pSortableColumn="name">Nombre <p-sortIcon field="name"></p-sortIcon></th>
+                            <th pSortableColumn="type">Tipo <p-sortIcon field="type"></p-sortIcon></th>
+                            <th pSortableColumn="market">Mercado <p-sortIcon field="market"></p-sortIcon></th>
+                            <th pSortableColumn="currency">Divisa <p-sortIcon field="currency"></p-sortIcon></th>
+                            <th pSortableColumn="balance">Balance <p-sortIcon field="balance"></p-sortIcon></th>
+                            <th class="sticky-actions text-center">Acciones</th>
+                        </tr>
+                    </ng-template>
+                    <ng-template pTemplate="body" let-account>
+                        <tr>
+                            <td class="font-bold">
+                                {{ account.name }}
+                                <p-tag value="En Pausa" severity="warn" class="ml-2"></p-tag>
+                            </td>
+                            <td class="text-muted">{{ getAccountTypeLabel(account.type) }}</td>
+                            <td><p-tag [value]="account.market" [severity]="getMarketSeverity(account.market)"></p-tag></td>
+                            <td><p-tag [value]="account.currency" severity="secondary"></p-tag></td>
+                            <td [ngClass]="getBalanceClass(account)">
+                                <app-amount [value]="account.balance" [currency]="account.currency" />
+                            </td>
+                            <td class="sticky-actions text-center">
+                                <div class="flex justify-center gap-3">
+                                    <p-button
+                                        icon="pi pi-play"
+                                        [rounded]="true"
+                                        [text]="true"
+                                        severity="success"
+                                        pTooltip="Reactivar"
+                                        tooltipPosition="top"
+                                        (onClick)="reactivateAccount(account)"
+                                    ></p-button>
+                                    <p-button
+                                        icon="pi pi-trash"
+                                        severity="danger"
+                                        [rounded]="true"
+                                        [text]="true"
+                                        pTooltip="Eliminar"
+                                        tooltipPosition="top"
+                                        (onClick)="deleteAccount(account)"
+                                    ></p-button>
+                                </div>
+                            </td>
+                        </tr>
+                    </ng-template>
+                    <ng-template pTemplate="emptymessage">
+                        <tr>
+                            <td colspan="6" class="text-center p-6 text-muted">
+                                No hay cuentas en pausa.
+                            </td>
+                        </tr>
+                    </ng-template>
+                </p-table>
+            }
+        }
 
     <app-account-dialog
         [visible]="accountDialog()"

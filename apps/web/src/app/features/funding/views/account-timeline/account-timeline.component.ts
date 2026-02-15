@@ -1,5 +1,5 @@
 import { Component, inject, signal, computed, OnInit } from '@angular/core';
-import { CommonModule, CurrencyPipe, DatePipe, DecimalPipe } from '@angular/common';
+import { CommonModule, DatePipe, DecimalPipe } from '@angular/common';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { TableModule } from 'primeng/table';
@@ -14,6 +14,7 @@ import { ProgressBarModule } from 'primeng/progressbar';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { MessageService } from 'primeng/api';
 import { PageLayoutComponent } from '../../../../shared/components/page-layout/page-layout.component';
+import { AmountComponent } from '../../../../shared/components/amount/amount.component';
 import { FundingApiService } from '../../services/funding-api.service';
 import { AccountCycle } from '../../models/cycle';
 import { PayoutRequest } from '../../models/payout';
@@ -25,7 +26,7 @@ import { OperationalState, STATE_LABELS } from '../../models/operational-state';
   selector: 'app-account-timeline',
   standalone: true,
   imports: [
-    CommonModule, CurrencyPipe, DatePipe, DecimalPipe, FormsModule, RouterLink,
+    CommonModule, DatePipe, DecimalPipe, AmountComponent, FormsModule, RouterLink,
     TableModule, TagModule, CardModule, ButtonModule, DialogModule,
     InputNumberModule, DatePickerModule, ToastModule,
     ProgressBarModule, ProgressSpinnerModule, PageLayoutComponent,
@@ -65,11 +66,11 @@ import { OperationalState, STATE_LABELS } from '../../models/operational-state';
           </p-card>
           <p-card>
             <div class="text-xs text-gray-500">Balance</div>
-            <div class="text-lg font-bold">{{ snap.balance | currency:'USD' }}</div>
+            <div class="text-lg font-bold"><app-amount [value]="snap.balance" currency="USD" /></div>
           </p-card>
           <p-card>
             <div class="text-xs text-gray-500">Balance Inicial</div>
-            <div class="text-lg font-bold">{{ snap.cycleStartBalance | currency:'USD' }}</div>
+            <div class="text-lg font-bold"><app-amount [value]="snap.cycleStartBalance" currency="USD" /></div>
           </p-card>
           <p-card>
             <div class="text-xs text-gray-500">Profit %</div>
@@ -124,18 +125,18 @@ import { OperationalState, STATE_LABELS } from '../../models/operational-state';
           <div class="grid grid-cols-3 gap-4 mb-4">
             <div>
               <div class="text-[10px] uppercase tracking-wide text-[var(--text-muted)]">Balance inicio</div>
-              <div class="text-base font-bold">{{ active.cycleStartBalance | currency:'USD' }}</div>
+              <div class="text-base font-bold"><app-amount [value]="active.cycleStartBalance" currency="USD" /></div>
             </div>
             <div>
               <div class="text-[10px] uppercase tracking-wide text-[var(--text-muted)]">Ganancia actual</div>
               <div class="text-base font-bold" [class.text-green-500]="profitAmount() > 0" [class.text-red-500]="profitAmount() < 0">
-                {{ profitAmount() | currency:'USD':'symbol':'1.2-2' }}
+                <app-amount [value]="profitAmount()" currency="USD" digitsInfo="1.2-2" [showPlus]="true" />
               </div>
             </div>
             <div>
               <div class="text-[10px] uppercase tracking-wide text-[var(--text-muted)]">Target</div>
               <div class="text-base font-bold">
-                {{ targetAmount() | currency:'USD':'symbol':'1.0-0' }}
+                <app-amount [value]="targetAmount()" currency="USD" digitsInfo="1.0-0" />
                 <span class="text-xs text-[var(--text-muted)] font-normal">({{ active.profitTargetPct | number:'1.0-1' }}%)</span>
               </div>
             </div>
@@ -150,11 +151,11 @@ import { OperationalState, STATE_LABELS } from '../../models/operational-state';
               } @else {
                 <span class="text-[10px] uppercase tracking-wide text-[var(--text-muted)]">Progreso hacia target</span>
               }
-              <span class="text-xs font-mono font-semibold"
+              <span class="text-xs font-semibold"
                     [class.text-green-500]="targetReached()"
                     [class.text-amber-500]="!targetReached() && cycleProgress() >= 50"
                     [class.text-[var(--text-muted)]]="!targetReached() && cycleProgress() < 50">
-                {{ profitAmount() | currency:'USD':'symbol':'1.0-0' }} de {{ targetAmount() | currency:'USD':'symbol':'1.0-0' }}
+                <app-amount [value]="profitAmount()" currency="USD" digitsInfo="1.0-0" [showPlus]="true" /> de <app-amount [value]="targetAmount()" currency="USD" digitsInfo="1.0-0" />
                 ({{ cycleProgressClamped() | number:'1.0-0' }}%)
               </span>
             </div>
@@ -184,10 +185,10 @@ import { OperationalState, STATE_LABELS } from '../../models/operational-state';
                     {{ cycle.startDate | date:'mediumDate' }} → {{ cycle.endDate | date:'mediumDate' }}
                   </span>
                   <div class="flex gap-4 text-xs text-gray-500 mt-0.5">
-                    <span>Balance: <strong class="text-gray-700">{{ cycle.cycleStartBalance | currency:'USD' }}</strong></span>
+                    <span>Balance: <strong class="text-gray-700"><app-amount [value]="cycle.cycleStartBalance" currency="USD" /></strong></span>
                     <span>Target: <strong class="text-gray-700">{{ cycle.profitTargetPct | number:'1.0-1' }}%</strong></span>
                     @if (getPayoutForCycle(cycle.id); as payout) {
-                      <span>Payout: <strong class="text-green-600">{{ payout.amount | currency:'USD' }}</strong>
+                      <span>Payout: <strong class="text-green-600"><app-amount [value]="payout.amount" currency="USD" /></strong>
                         @if (payout.status === 'PAID') {
                           <i class="pi pi-check-circle text-green-500 text-[10px] ml-0.5"></i>
                         }
@@ -231,12 +232,12 @@ import { OperationalState, STATE_LABELS } from '../../models/operational-state';
                   <p-tag [value]="stateLabel(ds.operationalState)"
                          [severity]="stateSeverity(ds.operationalState)" />
                 </td>
-                <td class="text-right font-mono"
+                <td class="text-right"
                     [class.text-green-600]="ds.pnlDay > 0"
                     [class.text-red-500]="ds.pnlDay < 0">
-                  {{ ds.pnlDay | currency:'USD':'symbol':'1.2-2' }}
+                  <app-amount [value]="ds.pnlDay" currency="USD" digitsInfo="1.2-2" [showPlus]="true" />
                 </td>
-                <td class="text-right font-mono">{{ ds.balanceEod | currency:'USD' }}</td>
+                <td class="text-right"><app-amount [value]="ds.balanceEod" currency="USD" /></td>
                 <td class="text-center">{{ ds.tradesCount }}</td>
               </tr>
             </ng-template>

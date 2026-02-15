@@ -168,7 +168,6 @@
         </div>
     </app-filter-toolbar>
 
-    <div class="bullish-table-container">
         <p-table
             [value]="trades()"
             [rows]="10"
@@ -214,7 +213,7 @@
                 <td>{{ trade.exitPrice | number:'1.2-6' }}</td>
 
                 <td [class.pnl-positive]="trade.pnlNet > 0" [class.pnl-negative]="trade.pnlNet < 0">
-                    {{ trade.pnlNet | currency:trade.account?.currency || 'USD' }}
+                    <app-amount [value]="trade.pnlNet" [currency]="trade.account?.currency || 'USD'" />
                 </td>
                 <td class="sticky-actions">
                     <div class="flex gap-3 justify-center">
@@ -242,7 +241,6 @@
             </tr>
         </ng-template>
     </p-table>
-    </div>
 
     <app-trade-form
         [visible]="tradeDialog()"

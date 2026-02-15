@@ -1,11 +1,12 @@
 import { Component, input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { TooltipModule } from 'primeng/tooltip';
+import { AmountComponent } from '../../../../shared/components/amount/amount.component';
 
 @Component({
   selector: 'app-largest-loss-widget',
   standalone: true,
-  imports: [CommonModule, TooltipModule],
+  imports: [CommonModule, AmountComponent, TooltipModule],
   template: `
     @if (stats(); as s) {
       <div class="kpi-layout">
@@ -19,7 +20,7 @@ import { TooltipModule } from 'primeng/tooltip';
           </div>
         </div>
         <div class="kpi-value text-danger">
-          {{ (s.largestLoss ?? 0) | currency: 'USD' : 'symbol' : '1.0-0' }}
+          <app-amount [value]="s.largestLoss ?? 0" currency="USD" digitsInfo="1.0-0" />
         </div>
         <div class="kpi-footer">Worst single trade</div>
       </div>

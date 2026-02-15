@@ -24,12 +24,14 @@ import { AccountsService } from '../../../accounts/accounts.service';
 import { PageLayoutComponent } from '../../../../shared/components/page-layout/page-layout.component';
 import { FilterStore } from '../../../../core/filter.store';
 import { FilterToolbarComponent } from '../../../../shared/components/filter-toolbar/filter-toolbar.component';
+import { AmountComponent } from '../../../../shared/components/amount/amount.component';
 
 @Component({
   selector: 'app-trades-list',
   standalone: true,
   imports: [
     CommonModule,
+    AmountComponent,
     FormsModule,
     TableModule,
     ButtonModule,

@@ -1,4 +1,5 @@
 import { Injectable } from '@nestjs/common';
+import { AccountStatus } from '@prisma/client';
 import { PrismaService } from '../../prisma/prisma.service';
 import { CreateAccountDto } from './dto/create-account.dto';
 import { UpdateAccountDto } from './dto/update-account.dto';
@@ -64,6 +65,13 @@ export class AccountsService {
     return this.prisma.account.updateMany({
       where: { id, userId },
       data: updateAccountDto,
+    });
+  }
+
+  changeStatus(id: string, userId: string, status: AccountStatus) {
+    return this.prisma.account.updateMany({
+      where: { id, userId },
+      data: { status },
     });
   }
 

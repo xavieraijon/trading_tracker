@@ -9,6 +9,7 @@ import { TableModule } from 'primeng/table';
 import { TradesService, Trade } from '../../trades/trades.service';
 import { AccountsService } from '../../accounts/accounts.service';
 import { PageLayoutComponent } from '../../../shared/components/page-layout/page-layout.component';
+import { AmountComponent } from '../../../shared/components/amount/amount.component';
 import { FilterStore } from '../../../core/filter.store';
 
 interface CalendarDay {
@@ -37,7 +38,7 @@ interface CalendarWeek {
 @Component({
   selector: 'app-calendar-view',
   standalone: true,
-  imports: [CommonModule, FormsModule, ButtonModule, CardModule, TooltipModule, PopoverModule, TableModule, PageLayoutComponent],
+  imports: [CommonModule, FormsModule, AmountComponent, ButtonModule, CardModule, TooltipModule, PopoverModule, TableModule, PageLayoutComponent],
   templateUrl: './calendar-view.component.html',
   styleUrl: './calendar-view.component.scss'
 })

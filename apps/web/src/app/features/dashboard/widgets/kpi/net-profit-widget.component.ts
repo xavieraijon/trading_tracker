@@ -1,5 +1,6 @@
 import { Component, input, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { AmountComponent } from '../../../../shared/components/amount/amount.component';
 import { ChartModule } from 'primeng/chart';
 import { TooltipModule } from 'primeng/tooltip';
 import { DashboardDataService } from '../../services/dashboard-data.service';
@@ -7,7 +8,7 @@ import { DashboardDataService } from '../../services/dashboard-data.service';
 @Component({
   selector: 'app-net-profit-widget',
   standalone: true,
-  imports: [CommonModule, ChartModule, TooltipModule],
+  imports: [CommonModule, AmountComponent, ChartModule, TooltipModule],
   template: `
     @if (stats(); as s) {
       <div class="kpi-layout">
@@ -21,7 +22,7 @@ import { DashboardDataService } from '../../services/dashboard-data.service';
           </div>
         </div>
         <div class="kpi-value" [class.pnl-positive]="s.totalPnL > 0" [class.pnl-negative]="s.totalPnL < 0">
-          {{ s.totalPnL | currency: 'USD' : 'symbol' : '1.0-0' }}
+          <app-amount [value]="s.totalPnL" currency="USD" digitsInfo="1.0-0" />
         </div>
         <div class="kpi-footer"></div>
         <div class="sparkline-container">

@@ -24,7 +24,7 @@ export class DayCloseJob {
     const fundedAccounts = await this.prisma.account.findMany({
       where: {
         type: 'PROP_FIRM',
-        status: 'active',
+        status: 'ACTIVE',
       },
       select: { id: true, name: true },
     });

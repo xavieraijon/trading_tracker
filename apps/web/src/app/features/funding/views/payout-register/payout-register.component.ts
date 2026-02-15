@@ -1,5 +1,5 @@
 import { Component, inject, signal, OnInit } from '@angular/core';
-import { CommonModule, CurrencyPipe, DatePipe } from '@angular/common';
+import { CommonModule, DatePipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import { TableModule } from 'primeng/table';
@@ -15,6 +15,7 @@ import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { MessageService, ConfirmationService } from 'primeng/api';
 import { PageLayoutComponent } from '../../../../shared/components/page-layout/page-layout.component';
+import { AmountComponent } from '../../../../shared/components/amount/amount.component';
 import { FundingApiService } from '../../services/funding-api.service';
 import { PayoutRequest } from '../../models/payout';
 
@@ -22,7 +23,7 @@ import { PayoutRequest } from '../../models/payout';
   selector: 'app-payout-register',
   standalone: true,
   imports: [
-    CommonModule, CurrencyPipe, DatePipe, FormsModule, RouterLink,
+    CommonModule, DatePipe, AmountComponent, FormsModule, RouterLink,
     TableModule, TagModule, ButtonModule, SelectButtonModule, DialogModule,
     SelectModule, InputNumberModule, DatePickerModule,
     ToastModule, ConfirmDialogModule, ProgressSpinnerModule, PageLayoutComponent,
@@ -81,7 +82,7 @@ import { PayoutRequest } from '../../models/payout';
                 <td>{{ p.requestedAt | date:'mediumDate' }}</td>
                 <td>{{ p.eligibleDate | date:'mediumDate' }}</td>
                 <td>{{ p.paidAt ? (p.paidAt | date:'mediumDate') : '—' }}</td>
-                <td class="text-right font-mono">{{ p.amount ? (p.amount | currency:'USD') : '—' }}</td>
+                <td class="text-right"><app-amount [value]="p.amount" currency="USD" emptyLabel="—" /></td>
                 <td class="text-center">
                   <p-tag [value]="getStatusLabel(p.status)" [severity]="getStatusSeverity(p.status)" />
                 </td>

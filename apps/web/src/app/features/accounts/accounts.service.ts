@@ -1,7 +1,9 @@
-import { Injectable, inject, signal, effect, computed } from '@angular/core';
+import { Injectable, inject, signal, computed } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable, map } from 'rxjs';
+import { Observable } from 'rxjs';
 import { FilterStore } from '../../core/filter.store';
+
+export type AccountStatus = 'ACTIVE' | 'STANDBY' | 'COMPLETED';
 
 export interface Account {
   id: string;
@@ -19,7 +21,7 @@ export interface Account {
   dailyLossLimit?: number | null;
   maxLossLimit?: number | null;
   startedAt?: string | null;
-  status?: string;
+  status: AccountStatus;
   createdAt: string;
   updatedAt: string;
 }
@@ -52,20 +54,21 @@ export class AccountsService {
   accountsLoading = signal<boolean>(false);
   private filterStore = inject(FilterStore);
 
+  /** Only ACTIVE accounts, optionally filtered by category. Used for stats. */
   filteredAccounts = computed(() => {
     const category = this.filterStore.accountCategory();
-    const allAccounts = this.accounts();
+    const activeAccounts = this.accounts().filter(acc => acc.status === 'ACTIVE');
 
-    if (!category) return allAccounts;
+    if (!category) return activeAccounts;
 
-    return allAccounts.filter(acc => {
+    return activeAccounts.filter(acc => {
       if (category === 'PERSONAL') return acc.type === 'PERSONAL';
 
       const isPropFirm = acc.type === 'PROP_FIRM';
-      const status = acc.propFirmStatus || 'CHALLENGE';
+      const propStatus = acc.propFirmStatus || 'CHALLENGE';
 
-      if (category === 'CHALLENGE') return isPropFirm && status === 'CHALLENGE';
-      if (category === 'FUNDED') return isPropFirm && status === 'FUNDED';
+      if (category === 'CHALLENGE') return isPropFirm && propStatus === 'CHALLENGE';
+      if (category === 'FUNDED') return isPropFirm && propStatus === 'FUNDED';
 
       return true;
     });
@@ -75,6 +78,11 @@ export class AccountsService {
     const ids = this.filteredAccounts().map(acc => acc.id);
     return ids.length > 0 ? ids : ['__NONE__'];
   });
+
+  /** Accounts grouped by status — used by the accounts-list tabs. */
+  activeAccounts = computed(() => this.accounts().filter(a => a.status === 'ACTIVE'));
+  standbyAccounts = computed(() => this.accounts().filter(a => a.status === 'STANDBY'));
+  completedAccounts = computed(() => this.accounts().filter(a => a.status === 'COMPLETED'));
 
   constructor() {}
 
@@ -103,6 +111,10 @@ export class AccountsService {
 
   update(id: string, account: UpdateAccountDto): Observable<Account> {
     return this.http.patch<Account>(`${this.apiUrl}/${id}`, account);
+  }
+
+  changeStatus(id: string, status: AccountStatus): Observable<void> {
+    return this.http.patch<void>(`${this.apiUrl}/${id}/status`, { status });
   }
 
   remove(id: string): Observable<void> {

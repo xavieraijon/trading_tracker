@@ -13,9 +13,11 @@ import { authInterceptor } from './core/auth/auth.interceptor';
 
 import { registerLocaleData } from '@angular/common';
 import localeEs from '@angular/common/locales/es';
+import localeEn from '@angular/common/locales/en';
 import { LOCALE_ID } from '@angular/core';
 
 registerLocaleData(localeEs, 'es-ES');
+registerLocaleData(localeEn, 'en-US');
 
 export const appConfig: ApplicationConfig = {
   providers: [

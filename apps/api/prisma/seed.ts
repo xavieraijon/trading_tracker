@@ -83,7 +83,7 @@ async function main() {
         profitTarget: def.profitTarget,
         defaultRisk: def.defaultRisk,
         startedAt: def.startedAt,
-        status: 'active',
+        status: 'ACTIVE',
       },
     });
     accountMap.set(def.name, account.id);

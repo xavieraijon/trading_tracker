@@ -15,8 +15,8 @@
 }
 
 /* PnL & Status */
-.pnl-positive { color: var(--success); font-weight: 600; }
-.pnl-negative { color: var(--error); font-weight: 600; }
+.pnl-positive { color: var(--success); }
+.pnl-negative { color: var(--error); }
 
 .text-success { color: var(--success); }
 .text-danger  { color: var(--error); }

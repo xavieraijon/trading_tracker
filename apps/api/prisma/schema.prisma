@@ -47,7 +47,7 @@ model Account {
   defaultRisk    Decimal? @db.Decimal(18,2)
 
   startedAt      DateTime?
-  status         String   @default("active") // active|archived
+  status         AccountStatus @default(ACTIVE)
   propFirmStatus PropFirmStatus?
   createdAt      DateTime @default(now())
   deletedAt      DateTime?
@@ -57,6 +57,12 @@ model Account {
   dailyStatuses       DailyAccountStatus[]
   stateSnapshot       AccountStateSnapshot?
   payoutRequests      PayoutRequest[]
+}
+
+enum AccountStatus {
+  ACTIVE
+  STANDBY
+  COMPLETED
 }
 
 enum PropFirmStatus {
