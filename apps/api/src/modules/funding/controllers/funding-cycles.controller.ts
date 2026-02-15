@@ -1,8 +1,9 @@
-import { Controller, Get, Param, Query, UseGuards, Req } from '@nestjs/common';
+import { Controller, Get, Patch, Param, Query, Body, UseGuards, Req } from '@nestjs/common';
 import { JwtAuthGuard } from '../../auth/jwt-auth.guard';
 import { CycleService } from '../services/cycle.service';
 import { SnapshotService } from '../services/snapshot.service';
 import { DateRangeQueryDto } from '../dto/query-filters.dto';
+import { UpdateCycleDto } from '../dto/update-cycle.dto';
 
 @Controller('funding')
 @UseGuards(JwtAuthGuard)
@@ -38,5 +39,11 @@ export class FundingCyclesController {
   @Get('snapshots')
   async getAllSnapshots(@Req() req: any) {
     return this.snapshotService.findAllForUser(req.user.id);
+  }
+
+  /** PATCH /funding/cycles/:id — update active cycle configuration */
+  @Patch('cycles/:id')
+  async updateCycle(@Param('id') cycleId: string, @Body() dto: UpdateCycleDto) {
+    return this.cycleService.updateProfitTarget(cycleId, dto.profitTargetPct);
   }
 }

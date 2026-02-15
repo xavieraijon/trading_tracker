@@ -105,6 +105,10 @@ export class BackfillService {
         where: { accountId, startDate: startDateOnly },
       });
 
+      const profitTargetPct = account.profitTarget && b.startBalance > 0
+        ? (Number(account.profitTarget) / b.startBalance) * 100
+        : 2;
+
       if (!existing) {
         existing = await this.prisma.accountCycle.create({
           data: {
@@ -112,6 +116,7 @@ export class BackfillService {
             startDate: startDateOnly,
             endDate: endDateOnly,
             cycleStartBalance: b.startBalance,
+            profitTargetPct,
             status: b.endDate ? CycleStatus.CLOSED : CycleStatus.ACTIVE,
           },
         });

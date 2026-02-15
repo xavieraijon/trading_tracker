@@ -1,49 +1,23 @@
+/* Base calendar styles are in styles/components/_calendar.scss (global).
+   Here only Analytics-specific: 8th column (Total) and weekly summary. */
+
 :host {
     display: block;
 }
 
+/* Full calendar: min-width + 8th column (Total) */
 .calendar-wrapper {
-    background-color: var(--bg-card);
-    border-radius: 12px;
-    box-shadow: var(--shadow-sm);
-    border: 1px solid var(--border-subtle);
-    overflow-x: auto;
-
-    .calendar-body, .calendar-header {
+    .calendar-body,
+    .calendar-header {
         min-width: 900px;
     }
 }
 
-/* Header Row (Weekdays + Total) */
 .calendar-header {
-    display: grid;
     grid-template-columns: repeat(7, 1fr) 140px;
-    border-bottom: 1px solid var(--border-default);
-    background-color: var(--bg-card);
-    position: sticky;
-    top: 0;
-    z-index: 20;
 
     @media (min-width: 1024px) {
         grid-template-columns: repeat(7, 1fr) 180px;
-    }
-}
-
-.header-cell {
-    padding: 0.75rem;
-    color: var(--text-muted);
-    font-size: 0.7rem;
-    font-weight: 600;
-    text-transform: capitalize;
-    text-align: center;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-
-    @media (min-width: 768px) {
-        padding: 1rem;
-        font-size: 0.85rem;
-        text-align: left;
     }
 }
 
@@ -56,23 +30,11 @@
     box-shadow: -4px 0 10px rgba(0, 0, 0, 0.05);
 }
 
-/* Weeks Rows */
-.calendar-body {
-    display: flex;
-    flex-direction: column;
-}
-
 .calendar-week-row {
-    display: grid;
     grid-template-columns: repeat(7, 1fr) 140px;
-    border-bottom: 1px solid var(--border-default);
 
     @media (min-width: 1024px) {
         grid-template-columns: repeat(7, 1fr) 180px;
-    }
-
-    &:last-child {
-        border-bottom: none;
     }
 }
 
@@ -122,90 +84,6 @@
         border-color: rgba(239, 68, 68, 0.2);
         box-shadow: 0 4px 12px -2px rgba(239, 68, 68, 0.1);
     }
-}
-
-/* Day Cell */
-.day-cell {
-    background-color: var(--bg-card);
-    min-height: 80px;
-    padding: 0.5rem;
-    position: relative;
-    border-right: 1px solid var(--border-subtle);
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    transition: all 0.2s ease;
-
-    @media (min-width: 768px) {
-        min-height: 120px;
-        padding: 0.75rem;
-    }
-
-    &:nth-child(7) {
-        border-right: none;
-    }
-
-    &:hover {
-        background-color: var(--bg-card-hover);
-    }
-
-    &.has-trades {
-        cursor: pointer;
-
-        &:hover {
-            background-color: var(--bg-muted);
-            box-shadow: inset 0 0 0 2px #3b82f6;
-            transform: translateY(-2px);
-            z-index: 10;
-        }
-    }
-}
-
-.day-number {
-    font-size: 0.85rem;
-    font-weight: 700;
-    color: var(--text-primary);
-    font-family: var(--font-family);
-
-    @media (min-width: 768px) {
-        font-size: 1.1rem;
-    }
-}
-
-.day-content {
-    margin-top: auto;
-}
-
-.pnl-value {
-    font-size: 0.75rem;
-    font-weight: 700;
-    margin-bottom: 0.15rem;
-    display: block;
-
-    @media (min-width: 768px) {
-        font-size: 0.95rem;
-        margin-bottom: 0.25rem;
-    }
-}
-
-.trade-count {
-    font-size: 0.65rem;
-    color: var(--text-placeholder);
-    font-weight: 500;
-
-    @media (min-width: 768px) {
-        font-size: 0.75rem;
-    }
-}
-
-/* State Modifiers */
-.is-profit { color: #10b981; }
-.is-loss   { color: #ef4444; }
-.is-neutral { color: var(--text-placeholder); }
-
-.day-out-month {
-    .day-number { color: var(--text-disabled); }
-    background-color: var(--bg-muted);
 }
 
 /* Weekly Summary Column */

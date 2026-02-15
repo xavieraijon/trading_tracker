@@ -1,5 +1,6 @@
 import { Component, inject, signal, OnInit } from '@angular/core';
 import { CommonModule, DatePipe } from '@angular/common';
+import { RouterLink } from '@angular/router';
 import { TagModule } from 'primeng/tag';
 import { MessageModule } from 'primeng/message';
 import { CardModule } from 'primeng/card';
@@ -12,12 +13,18 @@ import { STATE_LABELS, OperationalState } from '../../models/operational-state';
 @Component({
   selector: 'app-plan-day',
   standalone: true,
-  imports: [CommonModule, DatePipe, TagModule, MessageModule, CardModule, ProgressSpinnerModule, PageLayoutComponent],
+  imports: [CommonModule, DatePipe, RouterLink, TagModule, MessageModule, CardModule, ProgressSpinnerModule, PageLayoutComponent],
   template: `
     <app-page-layout
       title="Plan del Día"
       subtitle="Priorización de cuentas fondeadas para operar hoy"
       [loading]="loading()">
+
+      <div actions>
+        <a routerLink="/funding" class="text-primary text-sm hover:underline">
+          <i class="pi pi-arrow-left mr-1"></i>Overview
+        </a>
+      </div>
 
       @if (loading()) {
         <div class="flex justify-center py-8">
@@ -102,7 +109,7 @@ export class PlanDayComponent implements OnInit {
       case OperationalState.PROFIT: return 'success';
       case OperationalState.PAYOUT_REQUESTED: return 'warn';
       case OperationalState.PAYOUT_PROCESSING: return 'warn';
-      case OperationalState.CHALLENGE: return 'secondary';
+      case OperationalState.REST_DAY: return 'secondary';
       default: return 'secondary';
     }
   }

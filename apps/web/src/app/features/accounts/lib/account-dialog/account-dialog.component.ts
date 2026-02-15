@@ -66,7 +66,10 @@ export class AccountDialogComponent implements OnChanges, OnInit {
       broker: [''],
       propFirmStatus: [null],
       externalId: [''],
-      defaultRisk: [0, [Validators.min(0)]]
+      defaultRisk: [0, [Validators.min(0)]],
+      profitTarget: [null],
+      dailyLossLimit: [null],
+      maxLossLimit: [null],
     });
   }
 
@@ -97,7 +100,10 @@ export class AccountDialogComponent implements OnChanges, OnInit {
         broker: this.account.broker || '',
         propFirmStatus: this.account.propFirmStatus || null,
         externalId: this.account.externalId || '',
-        defaultRisk: this.account.defaultRisk || 0
+        defaultRisk: this.account.defaultRisk || 0,
+        profitTarget: this.account.profitTarget ?? null,
+        dailyLossLimit: this.account.dailyLossLimit ?? null,
+        maxLossLimit: this.account.maxLossLimit ?? null,
       });
     } else if (changes['account'] && !this.account) {
         this.accountForm.reset({
@@ -108,7 +114,10 @@ export class AccountDialogComponent implements OnChanges, OnInit {
             market: 'CFD',
             broker: '',
             externalId: '',
-            defaultRisk: 0
+            defaultRisk: 0,
+            profitTarget: null,
+            dailyLossLimit: null,
+            maxLossLimit: null,
         });
     }
   }

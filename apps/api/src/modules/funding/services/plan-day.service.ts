@@ -90,13 +90,13 @@ export class PlanDayService {
         continue;
       }
 
-      // Block accounts in CHALLENGE
-      if (state === OperationalState.CHALLENGE) {
+      // Block accounts on rest day
+      if (state === OperationalState.REST_DAY) {
         block.push({
           accountId: s.accountId,
           accountName: s.account.name,
           state,
-          reason: 'Challenge / rest day',
+          reason: 'Rest day',
         });
         continue;
       }

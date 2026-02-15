@@ -1,7 +1,8 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { Cron } from '@nestjs/schedule';
 import { PrismaService } from '../../../prisma/prisma.service';
-import { PayoutRequestStatus } from '@prisma/client';
+import { SnapshotService } from '../services/snapshot.service';
+import { PayoutRequestStatus, OperationalState } from '@prisma/client';
 
 /**
  * Daily check on pending payout requests.
@@ -11,7 +12,10 @@ import { PayoutRequestStatus } from '@prisma/client';
 export class PayoutWatcherJob {
   private readonly logger = new Logger(PayoutWatcherJob.name);
 
-  constructor(private prisma: PrismaService) {}
+  constructor(
+    private prisma: PrismaService,
+    private snapshotService: SnapshotService,
+  ) {}
 
   /** Runs every day at 08:00 UTC. */
   @Cron('0 8 * * *', { name: 'payout-watcher' })
@@ -32,24 +36,31 @@ export class PayoutWatcherJob {
 
     for (const payout of eligiblePayouts) {
       try {
+        // Update payout status
         await this.prisma.payoutRequest.update({
           where: { id: payout.id },
           data: { status: PayoutRequestStatus.PROCESSING },
         });
+
+        // Update snapshot via service (recalculates drawdownPct, profitPct)
+        const snapshot = await this.snapshotService.findByAccount(payout.accountId);
+        if (snapshot) {
+          await this.snapshotService.upsertSnapshot({
+            accountId: payout.accountId,
+            currentCycleId: snapshot.currentCycleId,
+            operationalState: OperationalState.PAYOUT_PROCESSING,
+            balance: Number(snapshot.balance),
+            cycleStartBalance: Number(snapshot.cycleStartBalance),
+            daysToPayoutEligible: snapshot.daysToPayoutEligible,
+          });
+        }
+
         this.logger.log(
           `Payout ${payout.id} for ${payout.account.name} moved to PROCESSING`,
         );
       } catch (error) {
         this.logger.error(`Failed to update payout ${payout.id}: ${error.message}`);
       }
-    }
-
-    // Also update snapshots for these accounts
-    for (const payout of eligiblePayouts) {
-      await this.prisma.accountStateSnapshot.updateMany({
-        where: { accountId: payout.accountId },
-        data: { operationalState: 'PAYOUT_PROCESSING' },
-      });
     }
 
     this.logger.log(

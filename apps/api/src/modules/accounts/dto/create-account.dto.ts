@@ -38,4 +38,19 @@ export class CreateAccountDto {
   @IsOptional()
   @Min(0)
   defaultRisk?: number;
+
+  @IsNumber()
+  @IsOptional()
+  @Min(0)
+  profitTarget?: number;
+
+  @IsNumber()
+  @IsOptional()
+  @Min(0)
+  dailyLossLimit?: number;
+
+  @IsNumber()
+  @IsOptional()
+  @Min(0)
+  maxLossLimit?: number;
 }

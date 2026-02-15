@@ -1,5 +1,6 @@
 import { Component, inject, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { Router } from '@angular/router';
 import { TableModule } from 'primeng/table';
 import { ButtonModule } from 'primeng/button';
 import { ToolbarModule } from 'primeng/toolbar';
@@ -7,6 +8,7 @@ import { ToastModule } from 'primeng/toast';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { TagModule } from 'primeng/tag';
+import { TooltipModule } from 'primeng/tooltip';
 import { SelectModule } from 'primeng/select';
 import { InputTextModule } from 'primeng/inputtext';
 import { IftaLabelModule } from 'primeng/iftalabel';
@@ -28,6 +30,7 @@ import { computed } from '@angular/core';
     ToastModule,
     ConfirmDialogModule,
     TagModule,
+    TooltipModule,
     AccountDialogComponent,
     PageLayoutComponent,
     FilterToolbarComponent,
@@ -54,6 +57,7 @@ export class AccountsListComponent implements OnInit {
   private accountsService = inject(AccountsService);
   private messageService = inject(MessageService);
   private confirmationService = inject(ConfirmationService);
+  private router = inject(Router);
 
   ngOnInit() {
     this.loadAccounts();
@@ -187,5 +191,9 @@ export class AccountsListComponent implements OnInit {
 
   getBalanceClass(account: Account): string {
     return account.balance >= account.initialBalance ? 'text-success font-bold' : 'text-danger font-bold';
+  }
+
+  goToFundingDetail(account: Account) {
+    this.router.navigate(['/funding/account', account.id]);
   }
 }

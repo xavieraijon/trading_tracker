@@ -6,7 +6,7 @@ import { toSignal } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 
 import { ButtonModule } from 'primeng/button';
-import { MenuModule } from 'primeng/menu';
+import { TieredMenuModule } from 'primeng/tieredmenu';
 import { AvatarModule } from 'primeng/avatar';
 import { SelectModule } from 'primeng/select';
 import { SelectButtonModule } from 'primeng/selectbutton';
@@ -23,7 +23,7 @@ import { ThemeService, type ThemeMode } from './core/theme/theme.service';
     CommonModule,
     RouterModule,
     ButtonModule,
-    MenuModule,
+    TieredMenuModule,
     AvatarModule,
     SelectModule,
     SelectButtonModule,

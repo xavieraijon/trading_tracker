@@ -15,6 +15,11 @@ export interface Account {
   propFirmStatus?: 'CHALLENGE' | 'FUNDED';
   externalId?: string;
   defaultRisk?: number;
+  profitTarget?: number | null;
+  dailyLossLimit?: number | null;
+  maxLossLimit?: number | null;
+  startedAt?: string | null;
+  status?: string;
   createdAt: string;
   updatedAt: string;
 }

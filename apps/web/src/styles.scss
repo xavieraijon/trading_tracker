@@ -22,6 +22,10 @@
     @import 'styles/layout/auth';
 }
 
+/* Components (shared calendar, etc.) */
+@layer components {
+    @import 'styles/components/calendar';
+}
 
 /* Utilities */
 @layer utilities {

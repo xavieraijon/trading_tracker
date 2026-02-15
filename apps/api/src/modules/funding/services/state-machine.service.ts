@@ -99,7 +99,7 @@ export class StateMachineService {
       }
 
       case 'calendar_block': {
-        return OperationalState.CHALLENGE;
+        return OperationalState.REST_DAY;
       }
 
       default:

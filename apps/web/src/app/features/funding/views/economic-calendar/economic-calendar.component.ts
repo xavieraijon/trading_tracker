@@ -1,5 +1,6 @@
 import { Component, inject, signal, OnInit } from '@angular/core';
 import { CommonModule, DatePipe } from '@angular/common';
+import { RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { TableModule } from 'primeng/table';
 import { TagModule } from 'primeng/tag';
@@ -19,7 +20,7 @@ import { CalendarEvent } from '../../models/calendar-event';
   selector: 'app-economic-calendar',
   standalone: true,
   imports: [
-    CommonModule, DatePipe, FormsModule,
+    CommonModule, DatePipe, RouterLink, FormsModule,
     TableModule, TagModule, ButtonModule, DatePickerModule,
     SelectModule, InputTextModule, IftaLabelModule,
     ConfirmDialogModule, ProgressSpinnerModule, PageLayoutComponent,
@@ -29,6 +30,12 @@ import { CalendarEvent } from '../../models/calendar-event';
     <app-page-layout
       title="Calendario Económico"
       subtitle="Eventos que pueden bloquear la operativa (NFP, festivos, etc.)">
+
+      <div actions>
+        <a routerLink="/funding" class="text-primary text-sm hover:underline">
+          <i class="pi pi-arrow-left mr-1"></i>Overview
+        </a>
+      </div>
 
       <!-- Quick add form -->
       <div class="flex flex-wrap gap-3 items-end bg-surface-50 rounded-2xl p-4 border border-surface-200 mb-6">
@@ -58,41 +65,45 @@ import { CalendarEvent } from '../../models/calendar-event';
       } @else if (events().length === 0) {
         <p class="text-gray-400 text-sm text-center py-8">No se encontraron eventos.</p>
       } @else {
-        <p-table [value]="events()" [rows]="20" [paginator]="events().length > 20"
-                 styleClass="p-datatable-sm p-datatable-striped"
-                 [rowHover]="true">
-          <ng-template #header>
-            <tr>
-              <th>Fecha</th>
-              <th>Tipo</th>
-              <th>Descripción</th>
-              <th class="text-center">Bloquea</th>
-              <th class="text-center" style="width: 5rem"></th>
-            </tr>
-          </ng-template>
-          <ng-template #body let-ev>
-            <tr>
-              <td>{{ ev.date | date:'mediumDate' }}</td>
-              <td>
-                <p-tag [value]="ev.type" [severity]="getTypeSeverity(ev.type)" />
-              </td>
-              <td>{{ ev.label }}</td>
-              <td class="text-center">
-                <p-tag [value]="ev.blocksTrading ? 'Sí' : 'No'"
-                       [severity]="ev.blocksTrading ? 'danger' : 'secondary'" />
-              </td>
-              <td class="text-center">
-                <p-button icon="pi pi-trash" [rounded]="true" [text]="true" severity="danger" size="small"
-                          (onClick)="confirmDelete(ev)" />
-              </td>
-            </tr>
-          </ng-template>
-          <ng-template #emptymessage>
-            <tr>
-              <td colspan="5" class="text-center text-gray-400 py-4">No hay eventos.</td>
-            </tr>
-          </ng-template>
-        </p-table>
+        <div class="bullish-table-container">
+          <p-table [value]="events()" [rows]="20" [paginator]="events().length > 20"
+                   [size]="'small'"
+                   [stripedRows]="true"
+                   [rowHover]="true"
+                   dataKey="id">
+            <ng-template pTemplate="header">
+              <tr>
+                <th>Fecha</th>
+                <th>Tipo</th>
+                <th>Descripción</th>
+                <th class="text-center">Bloquea</th>
+                <th class="text-center" style="width: 5rem"></th>
+              </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-ev>
+              <tr>
+                <td>{{ ev.date | date:'mediumDate' }}</td>
+                <td>
+                  <p-tag [value]="ev.type" [severity]="getTypeSeverity(ev.type)" />
+                </td>
+                <td>{{ ev.label }}</td>
+                <td class="text-center">
+                  <p-tag [value]="ev.blocksTrading ? 'Sí' : 'No'"
+                         [severity]="ev.blocksTrading ? 'danger' : 'secondary'" />
+                </td>
+                <td class="text-center">
+                  <p-button icon="pi pi-trash" [rounded]="true" [text]="true" severity="danger" size="small"
+                            (onClick)="confirmDelete(ev)" />
+                </td>
+              </tr>
+            </ng-template>
+            <ng-template pTemplate="emptymessage">
+              <tr>
+                <td colspan="5" class="text-center text-gray-400 py-4">No hay eventos.</td>
+              </tr>
+            </ng-template>
+          </p-table>
+        </div>
       }
 
       <p-confirmDialog />

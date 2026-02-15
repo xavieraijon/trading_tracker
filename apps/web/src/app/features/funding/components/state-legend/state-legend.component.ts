@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { OperationalState, STATE_LABELS, STATE_COLORS, WEEKEND_COLOR } from '../../models/operational-state';
+import { OperationalState, STATE_LABELS, STATE_COLORS } from '../../models/operational-state';
 
 @Component({
   selector: 'app-state-legend',
@@ -8,7 +8,8 @@ import { OperationalState, STATE_LABELS, STATE_COLORS, WEEKEND_COLOR } from '../
     <div class="flex flex-wrap gap-3 p-2 text-xs">
       @for (item of items; track item.label) {
         <div class="flex items-center gap-1">
-          <span class="inline-block w-3 h-3 rounded-sm" [style.background-color]="item.color"></span>
+          <span class="inline-block w-3 h-3 rounded-sm"
+                [style.background-color]="item.color"></span>
           <span>{{ item.label }}</span>
         </div>
       }
@@ -21,6 +22,6 @@ export class StateLegendComponent {
       label: STATE_LABELS[s],
       color: STATE_COLORS[s],
     })),
-    { label: 'Weekend', color: WEEKEND_COLOR },
+    { label: 'Fin de semana', color: 'var(--calendar-weekend-bg, #e2e8f0)' },
   ];
 }

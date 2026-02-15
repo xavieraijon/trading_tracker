@@ -126,7 +126,7 @@ enum OperationalState {
   PROFIT
   PAYOUT_REQUESTED
   PAYOUT_PROCESSING
-  CHALLENGE
+  REST_DAY
 }
 
 enum CycleStatus {

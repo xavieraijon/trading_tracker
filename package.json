@@ -6,7 +6,17 @@
     "db:up": "docker-compose -f docker/docker-compose.yml up -d postgres",
     "api:serve": "npx nx serve api",
     "web:serve": "npx nx serve web",
-    "dev": "concurrently -n \"API,WEB\" -c \"magenta,cyan\" \"npx nx serve api\" \"npx nx serve web\""
+    "dev": "concurrently -n \"API,WEB\" -c \"magenta,cyan\" \"npx nx serve api\" \"npx nx serve web\"",
+    "demo:db:create": "docker-compose -f docker/docker-compose.yml exec -T postgres psql -U app -d postgres -c 'CREATE DATABASE trading_journal_demo;' || true",
+    "demo:db:drop": "docker-compose -f docker/docker-compose.yml exec -T postgres psql -U app -d postgres -c 'DROP DATABASE IF EXISTS trading_journal_demo;'",
+    "demo:migrate": "DATABASE_URL='postgresql://app:app@localhost:5433/trading_journal_demo' npx prisma db push --schema apps/api/prisma/schema.prisma --skip-generate",
+    "demo:seed": "DATABASE_URL='postgresql://app:app@localhost:5433/trading_journal_demo' npx prisma db seed",
+    "demo:setup": "npm run demo:db:create && npm run demo:migrate && npm run demo:seed",
+    "demo:reset": "npm run demo:db:drop && npm run demo:setup",
+    "demo:start": "DATABASE_URL='postgresql://app:app@localhost:5433/trading_journal_demo' npm run dev"
+  },
+  "prisma": {
+    "seed": "ts-node --compiler-options {\"module\":\"CommonJS\",\"esModuleInterop\":true} apps/api/prisma/seed.ts"
   },
   "private": true,
   "devDependencies": {
@@ -17,6 +27,7 @@
     "@angular/compiler-cli": "~21.1.0",
     "@angular/language-service": "~21.1.0",
     "@eslint/js": "^9.8.0",
+    "@faker-js/faker": "^10.3.0",
     "@nestjs/schematics": "^11.0.0",
     "@nestjs/testing": "^11.0.0",
     "@nx/angular": "^22.4.4",

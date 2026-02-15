@@ -59,6 +59,45 @@
                         class="w-full">
                     </p-select>
                 </div>
+
+                <div class="grid grid-cols-3 gap-4">
+                    <div class="form-group">
+                        <label for="profitTarget" class="form-label">Profit Target</label>
+                        <p-inputNumber
+                            id="profitTarget"
+                            formControlName="profitTarget"
+                            mode="currency"
+                            [currency]="accountForm.get('currency')?.value || 'USD'"
+                            locale="es-ES"
+                            placeholder="Ej: 4000"
+                            class="w-full"
+                        ></p-inputNumber>
+                    </div>
+                    <div class="form-group">
+                        <label for="dailyLossLimit" class="form-label">Pérdida Diaria</label>
+                        <p-inputNumber
+                            id="dailyLossLimit"
+                            formControlName="dailyLossLimit"
+                            mode="currency"
+                            [currency]="accountForm.get('currency')?.value || 'USD'"
+                            locale="es-ES"
+                            placeholder="Ej: 2000"
+                            class="w-full"
+                        ></p-inputNumber>
+                    </div>
+                    <div class="form-group">
+                        <label for="maxLossLimit" class="form-label">Pérdida Máxima</label>
+                        <p-inputNumber
+                            id="maxLossLimit"
+                            formControlName="maxLossLimit"
+                            mode="currency"
+                            [currency]="accountForm.get('currency')?.value || 'USD'"
+                            locale="es-ES"
+                            placeholder="Ej: 5000"
+                            class="w-full"
+                        ></p-inputNumber>
+                    </div>
+                </div>
             }
 
             <div class="form-group">

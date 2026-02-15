@@ -83,6 +83,11 @@ export class FundingApiService {
     return this.http.delete<void>(`${this.base}/calendar-events/${id}`);
   }
 
+  // --- Cycles (update) ---
+  updateCycleProfitTarget(cycleId: string, profitTargetPct: number): Observable<AccountCycle> {
+    return this.http.patch<AccountCycle>(`${this.base}/cycles/${cycleId}`, { profitTargetPct });
+  }
+
   // --- Rebuild ---
   rebuild(accountId: string, fromDate?: string): Observable<{ daysProcessed: number; cycles: number }> {
     return this.http.post<{ daysProcessed: number; cycles: number }>(`${this.base}/rebuild`, { accountId, fromDate });

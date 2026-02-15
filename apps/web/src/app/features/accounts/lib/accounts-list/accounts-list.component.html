@@ -118,11 +118,24 @@
                     </td>
                     <td class="sticky-actions text-center">
                         <div class="flex justify-center gap-3">
+                            @if (account.type === 'PROP_FIRM') {
+                                <p-button
+                                    icon="pi pi-chart-line"
+                                    [rounded]="true"
+                                    [text]="true"
+                                    severity="info"
+                                    pTooltip="Detalle Funding"
+                                    tooltipPosition="top"
+                                    (onClick)="goToFundingDetail(account)"
+                                ></p-button>
+                            }
                             <p-button
                                 icon="pi pi-pencil"
                                 [rounded]="true"
                                 [text]="true"
                                 severity="secondary"
+                                pTooltip="Editar cuenta"
+                                tooltipPosition="top"
                                 (onClick)="editAccount(account)"
                             ></p-button>
                             <p-button
@@ -130,6 +143,8 @@
                                 severity="danger"
                                 [rounded]="true"
                                 [text]="true"
+                                pTooltip="Eliminar"
+                                tooltipPosition="top"
                                 (onClick)="deleteAccount(account)"
                             ></p-button>
                         </div>

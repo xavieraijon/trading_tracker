@@ -1,0 +1,211 @@
+/* Shared calendar grid and day cells (Analytics + Funding). 7 columns base. */
+
+.calendar-wrapper {
+    background-color: var(--bg-card);
+    border-radius: 12px;
+    box-shadow: var(--shadow-sm);
+    border: 1px solid var(--border-subtle);
+    overflow-x: auto;
+}
+
+.calendar-header {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    border-bottom: 1px solid var(--border-default);
+    background-color: var(--bg-card);
+    position: sticky;
+    top: 0;
+    z-index: 20;
+}
+
+.header-cell {
+    padding: 0.75rem;
+    color: var(--text-muted);
+    font-size: 0.7rem;
+    font-weight: 600;
+    text-transform: capitalize;
+    text-align: center;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+
+    @media (min-width: 768px) {
+        padding: 1rem;
+        font-size: 0.85rem;
+        text-align: left;
+    }
+}
+
+.calendar-body {
+    display: flex;
+    flex-direction: column;
+}
+
+.calendar-week-row {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    border-bottom: 1px solid var(--border-default);
+
+    &:last-child {
+        border-bottom: none;
+    }
+}
+
+.day-cell {
+    background-color: var(--bg-card);
+    min-height: 80px;
+    padding: 0.5rem;
+    position: relative;
+    border-right: 1px solid var(--border-subtle);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    transition: all 0.2s ease;
+
+    @media (min-width: 768px) {
+        min-height: 120px;
+        padding: 0.75rem;
+    }
+
+    &:nth-child(7) {
+        border-right: none;
+    }
+
+    &:hover {
+        background-color: var(--bg-card-hover);
+    }
+
+    &.has-trades {
+        cursor: pointer;
+
+        &:hover {
+            background-color: var(--bg-muted);
+            box-shadow: inset 0 0 0 2px #3b82f6;
+            transform: translateY(-2px);
+            z-index: 10;
+        }
+    }
+}
+
+.day-number {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    font-family: var(--font-family);
+
+    @media (min-width: 768px) {
+        font-size: 1.1rem;
+    }
+}
+
+.day-content {
+    margin-top: auto;
+}
+
+.pnl-value {
+    font-size: 0.75rem;
+    font-weight: 700;
+    margin-bottom: 0.15rem;
+    display: block;
+
+    @media (min-width: 768px) {
+        font-size: 0.95rem;
+        margin-bottom: 0.25rem;
+    }
+}
+
+.trade-count {
+    font-size: 0.65rem;
+    color: var(--text-placeholder);
+    font-weight: 500;
+
+    @media (min-width: 768px) {
+        font-size: 0.75rem;
+    }
+}
+
+.is-profit { color: #10b981; }
+.is-loss   { color: #ef4444; }
+.is-neutral { color: var(--text-placeholder); }
+
+.day-out-month {
+    .day-number { color: var(--text-disabled); }
+    background-color: var(--bg-muted);
+}
+
+/* Fin de semana: tono sutil, parecido al fondo pero un poco más oscuro (light y dark) */
+.day-cell.day-cell--weekend {
+    background-color: var(--calendar-weekend-bg, #e2e8f0);
+}
+html.dark .day-cell.day-cell--weekend {
+    background-color: var(--calendar-weekend-bg-dark, #334155);
+}
+
+/* Texto claro cuando la celda tiene fondo de estado oscuro (funding) */
+.day-cell.day-cell--dark-bg {
+    .day-number,
+    .pnl-value,
+    .trade-count {
+        color: #fff;
+    }
+    .trade-count {
+        opacity: 0.9;
+    }
+}
+
+/* Compact variant for funding cards */
+.calendar-wrapper.calendar--compact {
+    .calendar-body,
+    .calendar-header {
+        min-width: 0;
+    }
+
+    .calendar-header {
+        padding: 0 0.25rem;
+    }
+
+    .header-cell {
+        padding: 0.35rem;
+        font-size: 0.65rem;
+
+        @media (min-width: 768px) {
+            padding: 0.5rem;
+            font-size: 0.7rem;
+        }
+    }
+
+    .day-cell {
+        min-height: 48px;
+        padding: 0.35rem;
+
+        @media (min-width: 768px) {
+            min-height: 56px;
+            padding: 0.4rem;
+        }
+    }
+
+    .day-number {
+        font-size: 0.75rem;
+
+        @media (min-width: 768px) {
+            font-size: 0.8rem;
+        }
+    }
+
+    .pnl-value {
+        font-size: 0.65rem;
+        margin-bottom: 0.1rem;
+
+        @media (min-width: 768px) {
+            font-size: 0.7rem;
+        }
+    }
+
+    .trade-count {
+        font-size: 0.6rem;
+
+        @media (min-width: 768px) {
+            font-size: 0.65rem;
+        }
+    }
+}

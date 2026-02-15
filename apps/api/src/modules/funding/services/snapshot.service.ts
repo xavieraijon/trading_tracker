@@ -49,18 +49,21 @@ export class SnapshotService {
     });
   }
 
-  /** Get the snapshot for one account. */
+  /** Get the snapshot for one account (includes account name). */
   async findByAccount(accountId: string) {
     return this.prisma.accountStateSnapshot.findUnique({
       where: { accountId },
+      include: {
+        account: { select: { id: true, name: true, broker: true } },
+      },
     });
   }
 
-  /** Get all funded-account snapshots for a user. */
+  /** Get all prop-firm account snapshots for a user (funded + challenge). */
   async findAllForUser(userId: string) {
     return this.prisma.accountStateSnapshot.findMany({
       where: {
-        account: { userId, type: 'PROP_FIRM', propFirmStatus: 'FUNDED' },
+        account: { userId, type: 'PROP_FIRM' },
       },
       include: {
         account: { select: { id: true, name: true, broker: true } },

@@ -4,7 +4,7 @@ export enum OperationalState {
   PROFIT = 'PROFIT',
   PAYOUT_REQUESTED = 'PAYOUT_REQUESTED',
   PAYOUT_PROCESSING = 'PAYOUT_PROCESSING',
-  CHALLENGE = 'CHALLENGE',
+  REST_DAY = 'REST_DAY',
 }
 
 export const STATE_LABELS: Record<OperationalState, string> = {
@@ -13,22 +13,20 @@ export const STATE_LABELS: Record<OperationalState, string> = {
   [OperationalState.PROFIT]: 'Profit',
   [OperationalState.PAYOUT_REQUESTED]: 'Payout Requested',
   [OperationalState.PAYOUT_PROCESSING]: 'Payout Processing',
-  [OperationalState.CHALLENGE]: 'Challenge / Rest',
+  [OperationalState.REST_DAY]: 'Rest Day',
 };
 
 /**
  * Color mapping for the "Excel" dashboard cells.
- * verde claro → profit | verde oscuro → payout
- * azul → no operada  | rojo → loss
- * naranja → weekend  | gris → challenge/descanso
+ * Colores con buen contraste para que azul y verde destaquen (rojo ya se ve bien).
  */
 export const STATE_COLORS: Record<OperationalState, string> = {
-  [OperationalState.BREAK_EVEN]: '#3B82F6',      // blue  (not traded yet)
-  [OperationalState.DRAWDOWN]: '#EF4444',         // red   (loss)
-  [OperationalState.PROFIT]: '#4ADE80',           // light green
-  [OperationalState.PAYOUT_REQUESTED]: '#166534', // dark green
-  [OperationalState.PAYOUT_PROCESSING]: '#166534',// dark green
-  [OperationalState.CHALLENGE]: '#9CA3AF',        // gray
+  [OperationalState.BREAK_EVEN]: '#2563EB',       // blue-600, más saturado
+  [OperationalState.DRAWDOWN]: '#EF4444',         // red (loss)
+  [OperationalState.PROFIT]: '#16A34A',            // green-600, verde más vivo
+  [OperationalState.PAYOUT_REQUESTED]: '#15803D', // green-700
+  [OperationalState.PAYOUT_PROCESSING]: '#15803D', // green-700
+  [OperationalState.REST_DAY]: '#9CA3AF',          // gray
 };
 
 export const WEEKEND_COLOR = '#F97316'; // orange
