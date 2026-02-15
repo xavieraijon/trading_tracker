@@ -1,4 +1,4 @@
-import { Controller, Get, Patch, Param, Query, Body, UseGuards, Req } from '@nestjs/common';
+import { Controller, Get, Patch, Param, Query, Body, UseGuards, Req, Header } from '@nestjs/common';
 import { JwtAuthGuard } from '../../auth/jwt-auth.guard';
 import { CycleService } from '../services/cycle.service';
 import { SnapshotService } from '../services/snapshot.service';
@@ -37,8 +37,9 @@ export class FundingCyclesController {
 
   /** GET /funding/snapshots — all funded account snapshots for the user */
   @Get('snapshots')
+  @Header('Cache-Control', 'no-store, no-cache, must-revalidate')
   async getAllSnapshots(@Req() req: any) {
-    return this.snapshotService.findAllForUser(req.user.id);
+    return this.snapshotService.findAllForUser(req.user.userId);
   }
 
   /** PATCH /funding/cycles/:id — update active cycle configuration */

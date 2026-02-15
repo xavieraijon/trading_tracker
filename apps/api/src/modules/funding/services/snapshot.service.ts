@@ -49,12 +49,12 @@ export class SnapshotService {
     });
   }
 
-  /** Get the snapshot for one account (includes account name). */
+  /** Get the snapshot for one account (includes account name and propFirmStatus). */
   async findByAccount(accountId: string) {
     return this.prisma.accountStateSnapshot.findUnique({
       where: { accountId },
       include: {
-        account: { select: { id: true, name: true, broker: true } },
+        account: { select: { id: true, name: true, broker: true, propFirmStatus: true } },
       },
     });
   }
@@ -66,7 +66,7 @@ export class SnapshotService {
         account: { userId, type: 'PROP_FIRM' },
       },
       include: {
-        account: { select: { id: true, name: true, broker: true } },
+        account: { select: { id: true, name: true, broker: true, propFirmStatus: true } },
       },
       orderBy: { updatedAt: 'desc' },
     });

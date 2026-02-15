@@ -2,163 +2,178 @@
     [header]="account ? 'Editar Cuenta' : 'Nueva Cuenta'"
     [(visible)]="visible"
     [modal]="true"
-    [style]="{ width: '450px' }"
-    class="p-fluid bullish-dialog"
+    [style]="{ width: '560px' }"
+    [breakpoints]="dialogBreakpoints"
+    [contentStyleClass]="'account-dialog-content'"
+    class="p-fluid account-dialog"
     (onHide)="hideDialog()"
     [appendTo]="'body'"
 >
     <ng-template pTemplate="content">
-        <form [formGroup]="accountForm" class="pt-4">
-            <div class="form-group">
-                <label for="name" class="form-label">Nombre de la Cuenta</label>
-                <input type="text" pInputText id="name" formControlName="name" placeholder="Ej: My Funded Account, Broker X" />
-                @if (accountForm.get('name')?.invalid && accountForm.get('name')?.touched) {
-                    <small class="p-error">El nombre es obligatorio.</small>
-                }
-            </div>
+        <form [formGroup]="accountForm" class="account-dialog-form">
+            <section class="account-dialog-section">
+                <div class="form-group">
+                    <label for="name" class="form-label">Nombre de la Cuenta</label>
+                    <input type="text" pInputText id="name" formControlName="name" placeholder="Ej: My Funded Account, Broker X" />
+                    @if (accountForm.get('name')?.invalid && accountForm.get('name')?.touched) {
+                        <small class="p-error">El nombre es obligatorio.</small>
+                    }
+                </div>
 
-            <div class="grid grid-cols-2 gap-4">
-                <div class="form-group">
-                    <label for="type" class="form-label">Tipo de Cuenta</label>
-                    <p-select
-                        [options]="accountTypes"
-                        formControlName="type"
-                        optionLabel="label"
-                        optionValue="value"
-                        placeholder="Seleccionar"
-                        appendTo="body"
-                        class="w-full">
-                    </p-select>
+                <div class="account-dialog-grid-2">
+                    <div class="form-group">
+                        <label for="type" class="form-label">Tipo de Cuenta</label>
+                        <p-select
+                            id="type"
+                            [options]="accountTypes"
+                            formControlName="type"
+                            optionLabel="label"
+                            optionValue="value"
+                            placeholder="Seleccionar"
+                            appendTo="body"
+                            class="w-full">
+                        </p-select>
+                    </div>
+                    <div class="form-group">
+                        <label for="market" class="form-label">Mercado</label>
+                        <p-select
+                            id="market"
+                            formControlName="market"
+                            [options]="marketTypes"
+                            optionLabel="label"
+                            optionValue="value"
+                            placeholder="Seleccionar"
+                            appendTo="body"
+                            class="w-full">
+                        </p-select>
+                    </div>
                 </div>
-                <div class="form-group">
-                    <label for="market" class="form-label">Mercado</label>
-                    <p-select
-                        id="market"
-                        formControlName="market"
-                        [options]="marketTypes"
-                        optionLabel="label"
-                        optionValue="value"
-                        placeholder="Seleccionar"
-                        appendTo="body"
-                        class="w-full">
-                    </p-select>
+
+                <div class="account-dialog-grid-2">
+                    <div class="form-group">
+                        <label for="broker" class="form-label">Broker / Prop Firm</label>
+                        <p-autoComplete
+                            id="broker"
+                            formControlName="broker"
+                            [suggestions]="filteredBrokers"
+                            (completeMethod)="searchBrokers($event)"
+                            [dropdown]="true"
+                            placeholder="Seleccionar o escribir..."
+                            class="w-full"
+                            inputClass="w-full">
+                        </p-autoComplete>
+                    </div>
+                    <div class="form-group">
+                        <label for="currency" class="form-label">Divisa Base</label>
+                        <p-select
+                            id="currency"
+                            [options]="currencies"
+                            formControlName="currency"
+                            optionLabel="label"
+                            optionValue="value"
+                            placeholder="Seleccione Divisa"
+                            appendTo="body"
+                            class="w-full">
+                        </p-select>
+                    </div>
                 </div>
-            </div>
+            </section>
 
             @if (accountForm.get('type')?.value === 'PROP_FIRM') {
-                <div class="form-group">
-                    <label for="propFirmStatus" class="form-label">Fase / Estado de la Cuenta</label>
-                    <p-select
-                        id="propFirmStatus"
-                        formControlName="propFirmStatus"
-                        [options]="propFirmStatusOptions"
-                        optionLabel="label"
-                        optionValue="value"
-                        placeholder="Seleccionar estado"
-                        appendTo="body"
-                        class="w-full">
-                    </p-select>
-                </div>
-
-                <div class="grid grid-cols-3 gap-4">
+                <section class="account-dialog-section account-dialog-section--prop">
+                    <h3 class="account-dialog-section-title">Límites de la cuenta</h3>
                     <div class="form-group">
-                        <label for="profitTarget" class="form-label">Profit Target</label>
-                        <p-inputNumber
-                            id="profitTarget"
-                            formControlName="profitTarget"
-                            mode="currency"
-                            [currency]="accountForm.get('currency')?.value || 'USD'"
-                            locale="es-ES"
-                            placeholder="Ej: 4000"
-                            class="w-full"
-                        ></p-inputNumber>
+                        <label for="propFirmStatus" class="form-label">Fase / Estado</label>
+                        <p-select
+                            id="propFirmStatus"
+                            formControlName="propFirmStatus"
+                            [options]="propFirmStatusOptions"
+                            optionLabel="label"
+                            optionValue="value"
+                            placeholder="Seleccionar estado"
+                            appendTo="body"
+                            class="w-full">
+                        </p-select>
                     </div>
-                    <div class="form-group">
-                        <label for="dailyLossLimit" class="form-label">Pérdida Diaria</label>
-                        <p-inputNumber
-                            id="dailyLossLimit"
-                            formControlName="dailyLossLimit"
-                            mode="currency"
-                            [currency]="accountForm.get('currency')?.value || 'USD'"
-                            locale="es-ES"
-                            placeholder="Ej: 2000"
-                            class="w-full"
-                        ></p-inputNumber>
+                    <div class="account-dialog-grid-3">
+                        <div class="form-group">
+                            <label for="profitTargetPct" class="form-label">Profit Target (%)</label>
+                            <p-select
+                                id="profitTargetPct"
+                                formControlName="profitTargetPct"
+                                [options]="percentageOptions"
+                                optionLabel="label"
+                                optionValue="value"
+                                placeholder="%"
+                                appendTo="body"
+                                class="w-full">
+                            </p-select>
+                        </div>
+                        <div class="form-group">
+                            <label for="dailyLossLimitPct" class="form-label">Pérdida Diaria (%)</label>
+                            <p-select
+                                id="dailyLossLimitPct"
+                                formControlName="dailyLossLimitPct"
+                                [options]="percentageOptions"
+                                optionLabel="label"
+                                optionValue="value"
+                                placeholder="%"
+                                appendTo="body"
+                                class="w-full">
+                            </p-select>
+                        </div>
+                        <div class="form-group">
+                            <label for="maxLossLimitPct" class="form-label">Pérdida Máxima (%)</label>
+                            <p-select
+                                id="maxLossLimitPct"
+                                formControlName="maxLossLimitPct"
+                                [options]="percentageOptions"
+                                optionLabel="label"
+                                optionValue="value"
+                                placeholder="%"
+                                appendTo="body"
+                                class="w-full">
+                            </p-select>
+                        </div>
                     </div>
-                    <div class="form-group">
-                        <label for="maxLossLimit" class="form-label">Pérdida Máxima</label>
-                        <p-inputNumber
-                            id="maxLossLimit"
-                            formControlName="maxLossLimit"
-                            mode="currency"
-                            [currency]="accountForm.get('currency')?.value || 'USD'"
-                            locale="es-ES"
-                            placeholder="Ej: 5000"
-                            class="w-full"
-                        ></p-inputNumber>
-                    </div>
-                </div>
+                </section>
             }
 
-            <div class="form-group">
-                <label for="broker" class="form-label">Broker / Prop Firm</label>
-                <p-autoComplete
-                    id="broker"
-                    formControlName="broker"
-                    [suggestions]="filteredBrokers"
-                    (completeMethod)="searchBrokers($event)"
-                    [dropdown]="true"
-                    placeholder="Seleccionar o escribir..."
-                    class="w-full"
-                    inputClass="w-full"
-                ></p-autoComplete>
-            </div>
-
-            <div class="form-group">
-                <label for="currency" class="form-label">Divisa Base</label>
-                <p-select
-                    [options]="currencies"
-                    formControlName="currency"
-                    optionLabel="label"
-                    optionValue="value"
-                    placeholder="Seleccione Divisa"
-                    appendTo="body">
-                </p-select>
-            </div>
-
-            <div class="grid grid-cols-2 gap-4">
-                <div class="form-group">
-                    <label for="initialBalance" class="form-label">Balance Inicial</label>
-                    <p-inputNumber
-                        id="initialBalance"
-                        formControlName="initialBalance"
-                        mode="currency"
-                        [currency]="accountForm.get('currency')?.value || 'USD'"
-                        locale="es-ES"
-                        placeholder="0.00"
-                        class="w-full"
-                    ></p-inputNumber>
+            <section class="account-dialog-section">
+                <div class="account-dialog-grid-2">
+                    <div class="form-group">
+                        <label for="initialBalance" class="form-label">Balance Inicial</label>
+                        <p-inputNumber
+                            id="initialBalance"
+                            formControlName="initialBalance"
+                            mode="currency"
+                            [currency]="accountForm.get('currency')?.value || 'USD'"
+                            locale="es-ES"
+                            placeholder="0.00"
+                            class="w-full">
+                        </p-inputNumber>
+                    </div>
+                    <div class="form-group">
+                        <label for="defaultRisk" class="form-label">Riesgo por Operación</label>
+                        <p-inputNumber
+                            id="defaultRisk"
+                            formControlName="defaultRisk"
+                            mode="currency"
+                            [currency]="accountForm.get('currency')?.value || 'USD'"
+                            locale="es-ES"
+                            placeholder="0.00"
+                            class="w-full"
+                            pTooltip="Se usará para calcular R si no hay Stop Loss"
+                            tooltipPosition="top">
+                        </p-inputNumber>
+                    </div>
                 </div>
-                <div class="form-group">
-                    <label for="defaultRisk" class="form-label">Riesgo por Operación</label>
-                    <p-inputNumber
-                        id="defaultRisk"
-                        formControlName="defaultRisk"
-                        mode="currency"
-                        [currency]="accountForm.get('currency')?.value || 'USD'"
-                        locale="es-ES"
-                        placeholder="0.00"
-                        class="w-full"
-                        pTooltip="Se usará para calcular R si no hay Stop Loss"
-                        tooltipPosition="top"
-                    ></p-inputNumber>
-                </div>
-            </div>
+            </section>
         </form>
     </ng-template>
 
     <ng-template pTemplate="footer">
-        <div class="flex justify-end gap-4 p-4">
+        <div class="account-dialog-footer">
             <p-button label="Cancelar" icon="pi pi-times" severity="secondary" [text]="true" (onClick)="hideDialog()"></p-button>
             <p-button label="Guardar Cuenta" icon="pi pi-check" (onClick)="saveAccount()" [loading]="loading" [disabled]="accountForm.invalid" [rounded]="true"></p-button>
         </div>

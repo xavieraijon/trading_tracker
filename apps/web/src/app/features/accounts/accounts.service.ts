@@ -34,6 +34,9 @@ export interface CreateAccountDto {
   propFirmStatus?: 'CHALLENGE' | 'FUNDED';
   externalId?: string;
   defaultRisk?: number;
+  profitTarget?: number | null;
+  dailyLossLimit?: number | null;
+  maxLossLimit?: number | null;
 }
 export type UpdateAccountDto = Partial<CreateAccountDto>;
 

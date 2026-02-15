@@ -12,6 +12,6 @@ export class PlanDayController {
   @Get('plan-day')
   async getPlanDay(@Req() req: any, @Query() query: PlanDayQueryDto) {
     const date = query.date ? new Date(query.date) : undefined;
-    return this.planDayService.computePlan(req.user.id, date);
+    return this.planDayService.computePlan(req.user.userId, date);
   }
 }

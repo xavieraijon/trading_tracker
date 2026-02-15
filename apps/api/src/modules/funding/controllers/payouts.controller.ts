@@ -13,13 +13,13 @@ export class PayoutsController {
   /** GET /funding/payouts?accountId=...&status=... */
   @Get()
   async findAll(@Req() req: any, @Query() query: PayoutQueryDto) {
-    return this.payoutService.findAll(req.user.id, query);
+    return this.payoutService.findAll(req.user.userId, query);
   }
 
   /** POST /funding/payouts */
   @Post()
   async create(@Req() req: any, @Body() dto: CreatePayoutDto) {
-    return this.payoutService.create(req.user.id, dto);
+    return this.payoutService.create(req.user.userId, dto);
   }
 
   /** PATCH /funding/payouts/:id */

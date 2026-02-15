@@ -35,7 +35,7 @@ export class DailyStatusController {
 
     // If no accounts specified, get all user's funded accounts
     if (!accountIds || accountIds.length === 0) {
-      const snapshots = await this.snapshotService.findAllForUser(req.user.id);
+      const snapshots = await this.snapshotService.findAllForUser(req.user.userId);
       accountIds = snapshots.map(s => s.accountId);
       if (accountIds.length === 0) return [];
     }

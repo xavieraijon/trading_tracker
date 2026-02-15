@@ -8,6 +8,10 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app/app.module';
 
 async function bootstrap() {
+  const dbUrl = process.env.DATABASE_URL ?? '';
+  const dbName = dbUrl.split('/').pop()?.split('?')[0] ?? 'unknown';
+  Logger.log(`Database: ${dbName}`);
+
   const app = await NestFactory.create(AppModule);
   const globalPrefix = 'api';
   app.setGlobalPrefix(globalPrefix);

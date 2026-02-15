@@ -86,75 +86,74 @@ import { OperationalState, STATE_LABELS } from '../../models/operational-state';
         </div>
       }
 
-      <!-- Active Payout Period (prominently displayed) -->
+      <!-- Active Payout Period (PrimeNG Card, theme-aware for light/dark) -->
       @if (activeCycle(); as active) {
         <h3 class="text-lg font-semibold mb-3">Periodo de Payout Actual</h3>
-        <div class="border-2 rounded-xl p-5 mb-6 shadow-sm"
-             [class.border-green-200]="!targetReached()"
-             [class.bg-green-50/30]="!targetReached()"
-             [class.border-emerald-300]="targetReached()"
-             [class.bg-emerald-50/40]="targetReached()">
+        <p-card class="mb-6 payout-period-card"
+                [styleClass]="targetReached() ? 'payout-period-card--target-reached' : ''">
           <div class="flex items-center justify-between mb-4">
             <div class="flex items-center gap-2">
-              <span class="flex w-8 h-8 items-center justify-center rounded-full shadow-sm"
-                    [class.bg-green-500]="!targetReached()"
-                    [class.bg-emerald-600]="targetReached()"
-                    class="text-white">
+              <span class="flex w-8 h-8 items-center justify-center rounded-full shrink-0"
+                    [class.bg-primary]="!targetReached()"
+                    [class.bg-green-500]="targetReached()">
                 @if (targetReached()) {
-                  <i class="pi pi-check text-xs"></i>
+                  <i class="pi pi-check text-xs text-white"></i>
                 } @else {
-                  <i class="pi pi-play text-xs"></i>
+                  <i class="pi pi-play text-xs text-white"></i>
                 }
               </span>
               <div>
                 <span class="text-sm font-semibold">Desde {{ active.startDate | date:'mediumDate' }}</span>
                 @if (targetReached()) {
-                  <span class="text-xs text-emerald-700 ml-2 font-semibold">Target alcanzado</span>
+                  <p-tag value="Target alcanzado" severity="success" class="ml-2" />
                 } @else {
-                  <span class="text-xs text-green-600 ml-2">En curso</span>
+                  <p-tag value="En curso" severity="info" class="ml-2" />
                 }
               </div>
             </div>
-            <span class="text-xs text-gray-400 cursor-pointer hover:text-primary transition-colors"
-                  (click)="openEditCycleTarget(active)">
-              <i class="pi pi-pencil text-[10px] mr-1"></i>Editar target
-            </span>
+            <p-button
+              label="Editar target"
+              icon="pi pi-pencil"
+              [text]="true"
+              size="small"
+              severity="secondary"
+              (onClick)="openEditCycleTarget(active)"
+            />
           </div>
 
           <div class="grid grid-cols-3 gap-4 mb-4">
             <div>
-              <div class="text-[10px] text-gray-500 uppercase tracking-wide">Balance inicio</div>
+              <div class="text-[10px] uppercase tracking-wide text-[var(--text-muted)]">Balance inicio</div>
               <div class="text-base font-bold">{{ active.cycleStartBalance | currency:'USD' }}</div>
             </div>
             <div>
-              <div class="text-[10px] text-gray-500 uppercase tracking-wide">Ganancia actual</div>
-              <div class="text-base font-bold" [class.text-green-600]="profitAmount() > 0" [class.text-red-500]="profitAmount() < 0">
+              <div class="text-[10px] uppercase tracking-wide text-[var(--text-muted)]">Ganancia actual</div>
+              <div class="text-base font-bold" [class.text-green-500]="profitAmount() > 0" [class.text-red-500]="profitAmount() < 0">
                 {{ profitAmount() | currency:'USD':'symbol':'1.2-2' }}
               </div>
             </div>
             <div>
-              <div class="text-[10px] text-gray-500 uppercase tracking-wide">Target</div>
+              <div class="text-[10px] uppercase tracking-wide text-[var(--text-muted)]">Target</div>
               <div class="text-base font-bold">
                 {{ targetAmount() | currency:'USD':'symbol':'1.0-0' }}
-                <span class="text-xs text-gray-400 font-normal">({{ active.profitTargetPct | number:'1.0-1' }}%)</span>
+                <span class="text-xs text-[var(--text-muted)] font-normal">({{ active.profitTargetPct | number:'1.0-1' }}%)</span>
               </div>
             </div>
           </div>
 
-          <!-- Progress bar toward target -->
           <div>
             <div class="flex items-center justify-between mb-1.5">
               @if (targetReached()) {
-                <span class="text-[10px] text-emerald-700 uppercase tracking-wide font-semibold">
+                <span class="text-[10px] uppercase tracking-wide font-semibold text-green-500">
                   <i class="pi pi-check-circle text-[10px] mr-1"></i>Target alcanzado
                 </span>
               } @else {
-                <span class="text-[10px] text-gray-500 uppercase tracking-wide">Progreso hacia target</span>
+                <span class="text-[10px] uppercase tracking-wide text-[var(--text-muted)]">Progreso hacia target</span>
               }
               <span class="text-xs font-mono font-semibold"
-                    [class.text-emerald-700]="targetReached()"
-                    [class.text-amber-600]="!targetReached() && cycleProgress() >= 50"
-                    [class.text-gray-600]="!targetReached() && cycleProgress() < 50">
+                    [class.text-green-500]="targetReached()"
+                    [class.text-amber-500]="!targetReached() && cycleProgress() >= 50"
+                    [class.text-[var(--text-muted)]]="!targetReached() && cycleProgress() < 50">
                 {{ profitAmount() | currency:'USD':'symbol':'1.0-0' }} de {{ targetAmount() | currency:'USD':'symbol':'1.0-0' }}
                 ({{ cycleProgressClamped() | number:'1.0-0' }}%)
               </span>
@@ -165,7 +164,7 @@ import { OperationalState, STATE_LABELS } from '../../models/operational-state';
               [style]="{ height: '8px' }"
             />
           </div>
-        </div>
+        </p-card>
       }
 
       <!-- Closed Payout Periods (history) -->
@@ -339,7 +338,9 @@ export class AccountTimelineComponent implements OnInit {
 
   canRequestPayout = computed(() => {
     const snap = this.snapshot();
-    return snap?.operationalState === OperationalState.PROFIT;
+    const isProfit = snap?.operationalState === OperationalState.PROFIT;
+    const isFunded = snap?.account?.propFirmStatus === 'FUNDED';
+    return Boolean(isProfit && isFunded);
   });
 
   // Split cycles into active (single) and closed (history)

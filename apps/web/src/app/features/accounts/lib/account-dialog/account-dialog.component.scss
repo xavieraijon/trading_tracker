@@ -1,3 +1,57 @@
+/* Account dialog: layout y UX según PrimeNG p-fluid y reglas del proyecto */
+.account-dialog-content {
+    padding: 1rem 1.5rem 0;
+}
+
+.account-dialog-form {
+    padding-bottom: 0.5rem;
+}
+
+.account-dialog-section {
+    margin-bottom: 1.5rem;
+
+    &:last-child {
+        margin-bottom: 0;
+    }
+
+    &--prop {
+        padding-top: 0.5rem;
+        border-top: 1px solid var(--border-subtle, rgba(0, 0, 0, 0.08));
+    }
+}
+
+.account-dialog-section-title {
+    font-size: 0.8125rem;
+    font-weight: 600;
+    color: var(--text-muted, #64748b);
+    margin: 0 0 1rem;
+    letter-spacing: 0.02em;
+}
+
+.account-dialog-grid-2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem 1.25rem;
+    margin-bottom: 1rem;
+
+    &:last-child {
+        margin-bottom: 0;
+    }
+}
+
+.account-dialog-grid-3 {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem 1.25rem;
+}
+
+.account-dialog-footer {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 1rem 1.5rem;
+}
 
 .field {
     margin-bottom: 1rem;

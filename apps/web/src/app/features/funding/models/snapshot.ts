@@ -11,5 +11,5 @@ export interface AccountStateSnapshot {
   profitPct: number;
   daysToPayoutEligible: number | null;
   updatedAt: string;
-  account?: { id: string; name: string; broker: string };
+  account?: { id: string; name: string; broker: string; propFirmStatus?: 'CHALLENGE' | 'FUNDED' };
 }

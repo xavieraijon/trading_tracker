@@ -56,6 +56,12 @@ export class AccountDialogComponent implements OnChanges, OnInit {
     { label: 'Fondeada / funded', value: 'FUNDED' }
   ];
 
+  /** Opciones 1–10 % para PT, pérdida diaria y pérdida máxima (estándar en prop firms). */
+  percentageOptions = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map(n => ({ label: `${n}%`, value: n }));
+
+  /** Breakpoints del diálogo (PrimeNG): más ancho en desktop, adaptable en móvil. */
+  dialogBreakpoints = { '960px': '75vw', '640px': '95vw' };
+
   constructor() {
     this.accountForm = this.fb.group({
       name: ['', Validators.required],
@@ -67,9 +73,9 @@ export class AccountDialogComponent implements OnChanges, OnInit {
       propFirmStatus: [null],
       externalId: [''],
       defaultRisk: [0, [Validators.min(0)]],
-      profitTarget: [null],
-      dailyLossLimit: [null],
-      maxLossLimit: [null],
+      profitTargetPct: [null as number | null],
+      dailyLossLimitPct: [null as number | null],
+      maxLossLimitPct: [null as number | null],
     });
   }
 
@@ -91,6 +97,14 @@ export class AccountDialogComponent implements OnChanges, OnInit {
 
   ngOnChanges(changes: SimpleChanges) {
     if (changes['account'] && this.account) {
+      const ib = this.account.initialBalance || 0;
+      const toPct = (abs: number | null | undefined): number | null => {
+        if (abs == null || ib <= 0) return null;
+        const pct = (abs / ib) * 100;
+        return Math.round(pct * 10) / 10;
+      };
+      const clampToOption = (pct: number | null): number | null =>
+        pct == null ? null : Math.min(10, Math.max(1, Math.round(pct)));
       this.accountForm.patchValue({
         name: this.account.name,
         currency: this.account.currency,
@@ -100,10 +114,10 @@ export class AccountDialogComponent implements OnChanges, OnInit {
         broker: this.account.broker || '',
         propFirmStatus: this.account.propFirmStatus || null,
         externalId: this.account.externalId || '',
-        defaultRisk: this.account.defaultRisk || 0,
-        profitTarget: this.account.profitTarget ?? null,
-        dailyLossLimit: this.account.dailyLossLimit ?? null,
-        maxLossLimit: this.account.maxLossLimit ?? null,
+        defaultRisk: this.account.defaultRisk ?? 0,
+        profitTargetPct: clampToOption(toPct(this.account.profitTarget)),
+        dailyLossLimitPct: clampToOption(toPct(this.account.dailyLossLimit)),
+        maxLossLimitPct: clampToOption(toPct(this.account.maxLossLimit)),
       });
     } else if (changes['account'] && !this.account) {
         this.accountForm.reset({
@@ -115,9 +129,9 @@ export class AccountDialogComponent implements OnChanges, OnInit {
             broker: '',
             externalId: '',
             defaultRisk: 0,
-            profitTarget: null,
-            dailyLossLimit: null,
-            maxLossLimit: null,
+            profitTargetPct: null,
+            dailyLossLimitPct: null,
+            maxLossLimitPct: null,
         });
     }
   }
@@ -131,7 +145,16 @@ export class AccountDialogComponent implements OnChanges, OnInit {
     if (this.accountForm.invalid) return;
 
     this.loading = true;
-    const formValue = this.accountForm.value;
+    const formValue = { ...this.accountForm.value };
+    const initialBalance = Number(this.accountForm.get('initialBalance')?.value ?? 0);
+    const toAbsolute = (pct: number | null | undefined) =>
+      pct != null && initialBalance > 0 ? (initialBalance * Number(pct)) / 100 : null;
+    formValue.profitTarget = toAbsolute(this.accountForm.get('profitTargetPct')?.value);
+    formValue.dailyLossLimit = toAbsolute(this.accountForm.get('dailyLossLimitPct')?.value);
+    formValue.maxLossLimit = toAbsolute(this.accountForm.get('maxLossLimitPct')?.value);
+    delete (formValue as Record<string, unknown>)['profitTargetPct'];
+    delete (formValue as Record<string, unknown>)['dailyLossLimitPct'];
+    delete (formValue as Record<string, unknown>)['maxLossLimitPct'];
 
     const request$ = (this.account && this.account.id) ?
         this.accountsService.update(this.account.id, formValue) :
